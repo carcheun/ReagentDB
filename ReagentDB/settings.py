@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reagents',         # our reagents app we created
+    'rest_framework',   # needed for our rest_framework
 ]
 
 MIDDLEWARE = [
