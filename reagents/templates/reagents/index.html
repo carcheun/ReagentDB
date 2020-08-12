@@ -1,0 +1,29 @@
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+
+{% if all_reagents %}
+<table>
+	{% for r in all_reagents %}
+	<tr>
+		<td>{{r.reag_name}}</td>
+		<td>{{r.catalog}}</td>
+		<td>{{r.type}}</td>
+		<td>{{r.size}}</td>
+		<td>{{r.sn}}</td>
+		<td>{{r.log}}</td>
+		<td>{{r.vol}}</td>
+		<td>{{r.mfg_date}}</td>
+		<td>{{r.exp_date}}</td>
+		<td>{{r.vol_cur}}</td>
+		<td>{{r.sequence}}</td>
+		<td>{{r.edit_date}}</td>
+		<td>{{r.reserved}}</td>
+	<tr>
+	{% endfor %}
+</table>
+{% else %}
+	<p>No reagents found!</p>
+{% endif %}
