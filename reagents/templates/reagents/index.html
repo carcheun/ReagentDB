@@ -6,8 +6,25 @@ table, th, td {
 
 {% if all_reagents %}
 <table>
+	<tr>
+		<th>PID</th>
+		<th>reag_name</th>
+		<th>catalog</th>
+		<th>type</th>
+		<th>size</th>
+		<th>sn</td>
+		<th>log</th>
+		<th>vol</th>
+		<th>mfg_date</th>
+		<th>exp_date</th>
+		<th>vol_cur</th>
+		<th>sequence</th>
+		<th>edit_date</th>
+		<th>reserved</th>
+	</tr>
 	{% for r in all_reagents %}
 	<tr>
+		<td>{{r.id}}</td>
 		<td>{{r.reag_name}}</td>
 		<td>{{r.catalog}}</td>
 		<td>{{r.type}}</td>
@@ -21,7 +38,7 @@ table, th, td {
 		<td>{{r.sequence}}</td>
 		<td>{{r.edit_date}}</td>
 		<td>{{r.reserved}}</td>
-	<tr>
+	</tr>
 	{% endfor %}
 </table>
 {% else %}

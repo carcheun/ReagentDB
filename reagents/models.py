@@ -2,8 +2,16 @@ from django.db import models
 
 # Create your models here.
 
-# reagent model
+# TODO: Add field requirements
+# TODO: Add self def for other models
 class Reagent(models.Model):
+    """
+    Reag8 and ReagPA8
+    Reagents currently on hand. Reag8 is the inventory of a single
+    autostainer, ReagPA8 is the inventory of all autostainers.
+    
+    Info from ASHome/ReagTbl.h
+    """
     reag_name = models.TextField()
     catalog = models.TextField()
     type = models.TextField()
@@ -18,14 +26,44 @@ class Reagent(models.Model):
     sequence = models.IntegerField()
     edit_date = models.IntegerField()
     reserved = models.IntegerField()
-    # 2 more edit dates with update DATE and update TIME ??
+    # TODO: 2 more edit dates with update DATE and update TIME ??
     # tag who owns the reagent right now, can leave blank
     owned_by = models.ForeignKey("AutoStainerStation", on_delete=models.SET_NULL,  blank=True, null=True)
     
     def __str__(self):
         return self.reag_name
     
-# each station should be registered to the database
 class AutoStainerStation(models.Model):
-    sn = models.TextField()
+    """
+    Autostainers identified by S/N, can be given custom name
+    SN can be the machine name, read from the INI file
+    name can be human readable, or just remove it
+    """
+    sn = models.TextField(unique=True)
     name = models.TextField()
+    
+class PA(models.Model):
+    """
+    PA_fact8 and PA_user8
+    Reagent catalog, not the current reagents on hand
+    PA_fact8.d contains reagents sold by factory, PA_user8.d
+    are reagents added to catalog by customers
+    
+    Info from ASHome/PaTbl.h
+    """
+    full = models.TextField()
+    alias = models.TextField()
+    source = models.TextField()
+    cat = models.TextField()
+    vol = models.IntegerField()
+    incub = models.IntegerField()
+    ar = models.TextField()
+    desp = models.TextField()
+    fact = models.IntegerField()
+    date = models.IntegerField()
+    time = models.IntegerField()
+    
+    # is this reagent from factory or from customer
+    is_factory = models.BooleanField(default=False)
+    
+    
