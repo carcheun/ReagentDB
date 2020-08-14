@@ -41,7 +41,7 @@ class AutoStainerStation(models.Model):
     """
     sn = models.TextField(unique=True)
     name = models.TextField()
-    
+
 class PA(models.Model):
     """
     PA_fact8 and PA_user8
@@ -51,19 +51,17 @@ class PA(models.Model):
     
     Info from ASHome/PaTbl.h
     """
-    full = models.TextField()
+    fullname = models.TextField()
     alias = models.TextField()
     source = models.TextField()
-    cat = models.TextField()
-    vol = models.IntegerField()
+    catalog = models.TextField()
+    volume = models.IntegerField()
     incub = models.IntegerField()
     ar = models.TextField()
-    desp = models.TextField()
-    fact = models.IntegerField()
-    date = models.IntegerField()
-    time = models.IntegerField()
+    description = models.TextField()
+    factory = models.IntegerField()
+    date = models.DateField()
+    time = models.DateTimeField()
     
     # is this reagent from factory or from customer
     is_factory = models.BooleanField(default=False)
-    
-    

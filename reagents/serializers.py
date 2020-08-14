@@ -2,7 +2,7 @@
 # convert django model data over to JSON or XML format (serialization)
 from rest_framework import serializers
 
-from .models import Reagent, AutoStainerStation
+from .models import Reagent, AutoStainerStation, PA
 
 # information based of of models.py
 class ReagentSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
         fields = ['id', 'sn', 'name']
+        
+class PASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PA
+        fields = ['fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
+            'factory', 'date', 'time', 'is_factory']
