@@ -51,8 +51,6 @@ def pa_list(request):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        # from here, format date and time to the correct format, if recieved from
-        # C++ httplib.h, it will be in x-www-form-urlencoded format
         serializer = PASerializer(data=data)
         if serializer.is_valid():
             serializer.save()

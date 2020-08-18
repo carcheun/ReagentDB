@@ -28,7 +28,7 @@ class Reagent(models.Model):
     reserved = models.IntegerField()
     # TODO: 2 more edit dates with update DATE and update TIME ??
     # tag who owns the reagent right now, can leave blank
-    owned_by = models.ForeignKey("AutoStainerStation", on_delete=models.SET_NULL,  blank=True, null=True)
+    owned_by = models.ForeignKey("AutoStainerStation", on_delete=models.SET_NULL, blank=True, null=True)
     
     def __str__(self):
         return self.reag_name
@@ -54,7 +54,7 @@ class PA(models.Model):
     fullname = models.TextField()
     alias = models.TextField()
     source = models.TextField()
-    catalog = models.TextField()
+    catalog = models.TextField(unique=True, blank=True)
     volume = models.IntegerField()
     incub = models.IntegerField()
     ar = models.TextField()

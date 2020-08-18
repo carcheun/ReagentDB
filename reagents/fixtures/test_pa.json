@@ -1,0 +1,56 @@
+[
+	{
+		"model": "reagents.PA",
+		"pk": 1,
+		"fields" : {
+			"fullname": "IDH1 R132H", 
+			"alias": "IDH1 R132H", 
+			"source": "pa_fixture.json", 
+			"catalog": "MAB-0662", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+			"description": "Dummy Data", 
+			"factory": 1, 
+			"date": "2020-08-14", 
+			"time": "2020-08-14T15:09:29Z", 
+			"is_factory": true
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 2,
+		"fields" : {
+			"fullname": "TSH", 
+			"alias": "TSH", 
+			"source": "pa_fixture.json", 
+			"catalog": "MAB-0162", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"factory": 1, 
+			"date": "2020-08-14", 
+			"time": "2020-08-14T15:09:29Z", 
+			"is_factory": true
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 3,
+		"fields" : {
+			"fullname": "Myoglobin", 
+			"alias": "Myoglobin", 
+			"source": "pa_fixture.json", 
+			"catalog": "RAB-0122", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"factory": 1, 
+			"date": "2020-08-14", 
+			"time": "2020-08-14T15:09:29Z", 
+			"is_factory": true
+		}
+	}
+]
