@@ -1,8 +1,10 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser
+from rest_framework.decorators import api_view
 from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer
 from .models import Reagent, AutoStainerStation, PA
 
@@ -44,11 +46,11 @@ def pa_list(request):
     GET all PA or send POST request to add a new PA
     """
     if request.method == 'GET':
-        reagent = PA.objects.all()
-        serializer = PASerializer(reagent, many=True)
+        pa = PA.objects.all()
+        serializer = PASerializer(pa, many=True)
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
-        data = FormParser().parse(request)
+        data = JSONParser().parse(request)
         # from here, format date and time to the correct format, if recieved from
         # C++ httplib.h, it will be in x-www-form-urlencoded format
         serializer = PASerializer(data=data)
@@ -57,26 +59,38 @@ def pa_list(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
         
-def pa_detail(request, id):
+@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def pa_detail(request, catalog):
     """
-    Retrieve, update or delete a single PA entry
+    Retrieve, update or delete a single PA entry via
+    product number
     """
+    many_copies = False
     try:
-        pa = PA.objects.get(id=id)
-    except pa.DoesNotExist:
-        return HttpResponse(status=404)
-    
+        pa = PA.objects.get(catalog=catalog)
+    except PA.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except PA.MultipleObjectsReturned:
+        # multple objects, return just the first one we can find, 
+        # but there shouldn't be any duplicate catalog numbers anyway
+        pa = PA.objects.filter(catalog=catalog)
+        many_copies = True
+        
     if request.method == 'GET':
-        serializer = PASerializer(pa)
-        return JsonResponse(serializer.data, safe=False)
+        serializer = PASerializer(pa, many=many_copies)
+        return Response(serializer.data)
     
     elif request.method == 'PUT':
-        print("TODO: PUT DATA")
-        return JsonResponse({'status': 'PENDING Function incomplete'})
+        serializer = PASerializer(pa, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     elif request.method == 'DELETE':
         pa.delete()
-        return HttpResponse(status=204)
+        return Response(status=HTTP_204_NO_CONTENT)
         
 
 @csrf_exempt

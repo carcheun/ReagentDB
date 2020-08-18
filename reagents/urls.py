@@ -19,6 +19,6 @@ urlpatterns  = [
     path('api/reagent_list/', views.reagent_list),
     path('api/reagent_list/<int:id>', views.reagent_detail),
     path('api/pa_list/', views.pa_list),
-    path('api/pa_list/<int:id>', views.pa_detail),
+    path('api/pa_list/<str:catalog>', views.pa_detail),
     path('test/', views.hello_world, name='test'),
 ]
