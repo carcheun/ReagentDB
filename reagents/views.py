@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -51,6 +52,11 @@ def pa_list(request):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+        # add date and time if letting database handle it
+        if 'date' not in data or 'time' not in data:
+            time = datetime.now()
+            data['date'] = time.strftime('%Y-%m-%d')
+            data['time'] = time
         serializer = PASerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -80,7 +86,13 @@ def pa_detail(request, catalog):
         return Response(serializer.data)
     
     elif request.method == 'PUT':
-        serializer = PASerializer(pa, data=request.data)
+        data = JSONParser().parse(request)
+        # update date and time
+        if 'date' not in data or 'time' not in data:
+            time = datetime.now()
+            data['date'] = time.strftime('%Y-%m-%d')
+            data['time'] = time
+        serializer = PASerializer(pa, data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -88,7 +100,7 @@ def pa_detail(request, catalog):
         
     elif request.method == 'DELETE':
         pa.delete()
-        return Response(status=HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
 
 @csrf_exempt

@@ -24,7 +24,7 @@ class PAModelTests(TestCase):
         """
         catalog = 'MAB-0662'
         client = Client()
-        response =  client.get('/reagents/api/pa_list/' + catalog)
+        response =  client.get('/reagents/api/pa_list/' + catalog + '/')
         
         r_json = response.json()
         self.assertEqual(response.status_code, 200)
@@ -47,7 +47,7 @@ class PAModelTests(TestCase):
         """
         catalog = 'MISSING_ITEM'
         client = Client()
-        response =  client.get('/reagents/api/pa_list/' + catalog)
+        response =  client.get('/reagents/api/pa_list/' + catalog + '/')
         
         self.assertEqual(response.status_code, 404)
         
@@ -100,7 +100,7 @@ class PAModelTests(TestCase):
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
         
-    def test_post_update_PA_OK(self):
+    def test_post_then_put_PA_OK(self):
         """
         test to update PA entry
         """
@@ -131,12 +131,12 @@ class PAModelTests(TestCase):
         test_post['catalog'] = 'UPD-01235'
         test_post['volume'] = 6000
         
-        response = client.put('/reagents/api/pa_list/' + catalog, json.dumps(test_post), 
+        response = client.put('/reagents/api/pa_list/' + catalog + '/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), test_post)
         
-    def test_post_update_PA_fail(self):
+    def test_post_then_put_PA_fail(self):
         """
         test to try and update PA entry with an already existing catalog
         """
@@ -157,7 +157,7 @@ class PAModelTests(TestCase):
 		}
         
         catalog = 'MAB-0662'
-        response = client.put('/reagents/api/pa_list/' + catalog, json.dumps(test_post),
+        response = client.put('/reagents/api/pa_list/' + catalog + '/', json.dumps(test_post),
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
         

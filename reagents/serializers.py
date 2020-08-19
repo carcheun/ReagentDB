@@ -19,5 +19,12 @@ class AutoStainerStationSerializer(serializers.ModelSerializer):
 class PASerializer(serializers.ModelSerializer):
     class Meta:
         model = PA
-        fields = ['fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
-            'factory', 'date', 'time', 'is_factory']
+        fields = ('fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
+            'factory', 'date', 'time', 'is_factory',)
+        extra_kwargs = {'fullname' : {'required': False},
+            'source' : {'required': False},
+            'volume' : {'required': False},
+            'description': {'required': False},
+            'factory' : {'required': False},
+            'is_factory' : {'required': False}
+        }

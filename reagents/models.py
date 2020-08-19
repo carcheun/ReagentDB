@@ -55,15 +55,14 @@ class PA(models.Model):
     alias = models.TextField()
     source = models.TextField()
     catalog = models.TextField(unique=True, blank=True)
-    volume = models.IntegerField()
+    volume = models.IntegerField(default=0)
     incub = models.IntegerField()
     ar = models.TextField()
     description = models.TextField()
-    factory = models.IntegerField()
-    # TODO: YEEEEEEEEEEEEEEEEEEET date
+    factory = models.IntegerField(default=1)
     date = models.DateField()
-    # update time field?
     time = models.DateTimeField()
     
     # is this reagent from factory or from customer
+    # PA_fact8 vs PA_user8
     is_factory = models.BooleanField(default=False)
