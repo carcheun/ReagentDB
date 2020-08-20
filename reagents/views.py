@@ -23,25 +23,9 @@ def index(request):
     }
     
     return render(request, 'reagents/index.html', context)
-    
-@csrf_exempt
-def reagent_list(request):
-    """
-    GET all reagents or send POST request to add reagent
-    """
-    if request.method == 'GET':
-        reagent = Reagent.objects.all()
-        serializer = ReagentSerializer(reagent, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ReagentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
+@api_view(['GET', 'POST'])
 def pa_list(request):
     """
     GET all PA or send POST request to add a new PA
@@ -49,7 +33,7 @@ def pa_list(request):
     if request.method == 'GET':
         pa = PA.objects.all()
         serializer = PASerializer(pa, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         # add date and time if letting database handle it
@@ -60,8 +44,8 @@ def pa_list(request):
         serializer = PASerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 @csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -123,11 +107,78 @@ def reagent_detail(request, id):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+        return JsonResponse(serializer.errors, status=400)
     
     elif request.method == 'DELETE':
         reagent.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def reagent_list(request):
+    """
+    GET all reagents or send POST request to add reagent
+    """
+    if request.method == 'GET':
+        reagent = Reagent.objects.all()
+        serializer = ReagentSerializer(reagent, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ReagentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def autostainerstation_list(request):
+    """
+    Get a list of the autostation stations currently registered
+    """
+    if request.method == 'GET':
+        autostainer = AutoStainerStation.objects.all()
+        serializer = AutoStainerStationSerializer(autostainer, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AutoStainerStationSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def autostainerstation_detail(request, sn):
+    """
+    Get single autostainerstation or update/delete station details
+    """
+    many_copies = False
+    try:
+        autostainer = AutoStainerStation.objects.get(autostainer_sn=sn)
+    except AutoStainerStation.DoesNotExist:
+        content = {'message' : 'autostainer does not exist'}
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    except AutoStainerStation.MultipleObjectsReturned:
+        # handle duplicates, return first one
+        autostainer = AutoStainerStation.objects.filter(autostainer_sn=sn)
+        many_copies = True
+        
+    if request.method == 'GET':
+        serializer = AutoStainerStationSerializer(autostainer, many=many_copies)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = AutoStainerStationSerializer(autostainer, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        autostainer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class ReagentViewSet(viewsets.ModelViewSet):
     """

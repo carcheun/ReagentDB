@@ -1,0 +1,26 @@
+[
+	{
+		"model": "reagents.AutoStainerStation",
+		"pk": 1,
+		"fields" : {
+			"autostainer_sn": "SN12345", 
+			"name": "Stainer 1"
+		}
+	},
+	{
+		"model": "reagents.AutoStainerStation",
+		"pk": 2,
+		"fields" : {
+			"autostainer_sn": "SN12346", 
+			"name": "Stainer 2"
+		}
+	},
+	{
+		"model": "reagents.AutoStainerStation",
+		"pk": 3,
+		"fields" : {
+			"autostainer_sn": "SN12347", 
+			"name": "Stainer 3"
+		}
+	}
+]

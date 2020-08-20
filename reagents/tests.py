@@ -1,11 +1,12 @@
 import json
 from django.test import TestCase, Client
+from django.forms.models import model_to_dict
 
-from .models import PA
+from .models import PA, AutoStainerStation
 
 # Create your tests here.
 
-class PAModelTests(TestCase):
+class PAViewsTests(TestCase):
     fixtures = ['test_pa.json']
     
     def test_get_all(self):
@@ -13,7 +14,7 @@ class PAModelTests(TestCase):
         test get route works and returns 3 objects from test_pa.json
         """
         client = Client()
-        response = client.get('/reagents/api/pa_list/')
+        response = client.get('/reagents/api/pa/')
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 3)
@@ -24,7 +25,7 @@ class PAModelTests(TestCase):
         """
         catalog = 'MAB-0662'
         client = Client()
-        response =  client.get('/reagents/api/pa_list/' + catalog + '/')
+        response =  client.get('/reagents/api/pa/' + catalog + '/')
         
         r_json = response.json()
         self.assertEqual(response.status_code, 200)
@@ -47,7 +48,7 @@ class PAModelTests(TestCase):
         """
         catalog = 'MISSING_ITEM'
         client = Client()
-        response =  client.get('/reagents/api/pa_list/' + catalog + '/')
+        response =  client.get('/reagents/api/pa/' + catalog + '/')
         
         self.assertEqual(response.status_code, 404)
         
@@ -71,7 +72,7 @@ class PAModelTests(TestCase):
             'is_factory': False
         }
         
-        response = client.post('/reagents/api/pa_list/', json.dumps(test_post), 
+        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), test_post)
@@ -96,13 +97,13 @@ class PAModelTests(TestCase):
             'is_factory': False
         }
         
-        response = client.post('/reagents/api/pa_list/', json.dumps(test_post), 
+        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
         
     def test_post_then_put_PA_OK(self):
         """
-        test to update PA entry
+        test to post and update PA entry
         """
         client = Client()
         test_post = {
@@ -121,7 +122,7 @@ class PAModelTests(TestCase):
         }
         catalog = test_post['catalog']
         
-        response = client.post('/reagents/api/pa_list/', json.dumps(test_post), 
+        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), test_post)
@@ -131,7 +132,7 @@ class PAModelTests(TestCase):
         test_post['catalog'] = 'UPD-01235'
         test_post['volume'] = 6000
         
-        response = client.put('/reagents/api/pa_list/' + catalog + '/', json.dumps(test_post), 
+        response = client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), test_post)
@@ -157,8 +158,85 @@ class PAModelTests(TestCase):
 		}
         
         catalog = 'MAB-0662'
-        response = client.put('/reagents/api/pa_list/' + catalog + '/', json.dumps(test_post),
+        response = client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post),
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+class ReagentsViewsTests(TestCase):
+    fixtures = ['test_autostainerstation.json']
+
+    def test_get_all(self):
+        print('OK')
         
+class AutoStainerStationViewsTests(TestCase):
+    fixtures = ['test_autostainerstation.json']
+    fields = [field.name for field in AutoStainerStation._meta.get_fields()]
+    fields.pop(0)
+
+    def test_get_all(self):
+        """
+        Test get route works and returns all stainers
+        """
+        client = Client()
+        response = client.get('/reagents/api/autostainer/')
+        autostainer = AutoStainerStation.objects.all()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), autostainer.count())
+
+        for a_fixture, r in zip(autostainer, response.json()):
+            d = model_to_dict(a_fixture)
+            for f in self.fields:
+                self.assertEqual(d[f], r[f])
+
+    def test_get_one_OK(self):
+        """
+        Test get one works
+        """
+        client = Client()
+        response = client.get('/reagents/api/autostainer/SN12347/')
+        autostainer = AutoStainerStation.objects.get(autostainer_sn='SN12347')
+
+        d = model_to_dict(autostainer)
+        for f in self.fields:
+            self.assertEqual(d[f], response.json()[f])
+
+    def test_get_one_fail(self):
+        """
+        Return a 404 error when stainer isnt in database
+        """
+        client = Client()
+        response = client.get('/reagents/api/autostainer/DUMMYSN/')
+        autostainer = AutoStainerStation.objects.filter(autostainer_sn='DUMMYSN').first()
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIsNone(autostainer)
+
+    def test_post_single_autostainer(self):
+        """
+        Post request add an autostainer
+        """
+        client = Client()
+        test_post = {
+			'autostainer_sn': 'CYN1014',
+			'name': 'Carolyns Autostainer'
+		}
         
+        response = client.post('/reagents/api/autostainer/', json.dumps(test_post),
+            content_type='application/json')
+        autostainer = AutoStainerStation.objects.filter(autostainer_sn='CYN1014').first()
+        self.assertEqual(response.status_code, 201)
+        self.assertIsNotNone(autostainer)
+
+    def test_delete_single_autostainer(self):
+        """
+        Delete an autostainer
+        """
+        autostainer = AutoStainerStation.objects.all()
+        d = model_to_dict(autostainer[0])
+        sn = d['autostainer_sn']
+
+        client = Client()
+        response = client.delete('/reagents/api/autostainer/' + sn + '/')
+        deleted_autostainer = AutoStainerStation.objects.filter(autostainer_sn=sn).first()
+        self.assertIsNone(deleted_autostainer)

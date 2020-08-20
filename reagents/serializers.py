@@ -14,7 +14,7 @@ class ReagentSerializer(serializers.ModelSerializer):
 class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
-        fields = ['id', 'sn', 'name']
+        fields = ['id', 'autostainer_sn', 'name']
         
 class PASerializer(serializers.ModelSerializer):
     class Meta:

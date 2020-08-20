@@ -12,24 +12,22 @@ class Reagent(models.Model):
     
     Info from ASHome/ReagTbl.h
     """
+    autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
+    reagent_sn = models.TextField()
     reag_name = models.TextField()
     catalog = models.TextField()
-    type = models.TextField()
+    r_type = models.TextField()
     size = models.TextField()
-    sn = models.TextField()
     log = models.TextField()
     vol = models.IntegerField()
-    mfg_date = models.IntegerField()
-    exp_date = models.IntegerField()
-    factory = models.IntegerField()
     vol_cur = models.IntegerField()
     sequence = models.IntegerField()
-    edit_date = models.IntegerField()
     reserved = models.IntegerField()
-    # TODO: 2 more edit dates with update DATE and update TIME ??
-    # tag who owns the reagent right now, can leave blank
-    owned_by = models.ForeignKey("AutoStainerStation", on_delete=models.SET_NULL, blank=True, null=True)
-    
+    mfg_date = models.DateField()
+    exp_date = models.DateField()
+    edit_date = models.DateTimeField()
+    factory = models.BooleanField(default=False)
+
     def __str__(self):
         return self.reag_name
     
@@ -39,7 +37,7 @@ class AutoStainerStation(models.Model):
     SN can be the machine name, read from the INI file
     name can be human readable, or just remove it
     """
-    sn = models.TextField(unique=True)
+    autostainer_sn = models.TextField(unique=True)
     name = models.TextField()
 
 class PA(models.Model):
