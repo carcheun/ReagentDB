@@ -13,8 +13,9 @@ class Reagent(models.Model):
     Info from ASHome/ReagTbl.h
     """
     autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
-    reagent_sn = models.TextField()
+    reagent_sn = models.TextField(unique=True)
     reag_name = models.TextField()
+    # TODO: potential foreign key right here
     catalog = models.TextField()
     r_type = models.TextField()
     size = models.TextField()
@@ -37,7 +38,7 @@ class AutoStainerStation(models.Model):
     SN can be the machine name, read from the INI file
     name can be human readable, or just remove it
     """
-    autostainer_sn = models.TextField(unique=True)
+    autostainer_sn = models.TextField(primary_key=True)
     name = models.TextField()
 
 class PA(models.Model):
@@ -64,3 +65,9 @@ class PA(models.Model):
     # is this reagent from factory or from customer
     # PA_fact8 vs PA_user8
     is_factory = models.BooleanField(default=False)
+
+class QP(models.Model):
+    """
+    Quick pick, a fine selection of PA's
+    """
+    name = models.TextField()

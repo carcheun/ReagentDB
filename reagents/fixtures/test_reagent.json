@@ -1,0 +1,65 @@
+[
+	{
+		"model": "reagents.Reagent",
+		"pk": 1,
+		"fields" : {
+            "autostainer_sn": "SN12346",
+            "reagent_sn": "200846MAB01",
+            "reag_name": "MAB",
+            "catalog": "MAB-0662",
+            "r_type": "AR",
+            "size": "M",
+            "log": "my reagent log",
+            "vol": 3000,
+            "vol_cur": 2500,
+            "sequence": 1111,
+            "reserved": 1,
+            "mfg_date": "2020-08-21",
+            "exp_date": "2030-08-21",
+            "edit_date": "2020-08-21T07:51:00Z",
+            "factory": true
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 2,
+		"fields" : {
+            "autostainer_sn": "SN12346",
+            "reagent_sn": "200846MAB02",
+            "reag_name": "MAB",
+            "catalog": "MAB-0162",
+            "r_type": "r_type",
+            "size": "L",
+            "log": "reagent log",
+            "vol": 15000,
+            "vol_cur": 15000,
+            "sequence": 2222,
+            "reserved": 1,
+            "mfg_date": "2020-08-21",
+            "exp_date": "2040-08-21",
+            "edit_date": "2020-08-21T07:51:00Z",
+            "factory": true
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 3,
+		"fields" : {
+            "autostainer_sn": "SN12345",
+            "reagent_sn": "200845RAB01",
+            "reag_name": "MAB",
+            "catalog": "RAB-0122",
+            "r_type": "r_type",
+            "size": "S",
+            "log": "my log",
+            "vol": 1500,
+            "vol_cur": 100,
+            "sequence": 3333,
+            "reserved": 0,
+            "mfg_date": "2020-08-21",
+            "exp_date": "2025-08-21",
+            "edit_date": "2020-08-21T07:51:00Z",
+            "factory": true
+		}
+	}
+]

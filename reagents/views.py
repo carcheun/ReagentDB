@@ -85,33 +85,33 @@ def pa_detail(request, catalog):
     elif request.method == 'DELETE':
         pa.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
 
 @csrf_exempt
-def reagent_detail(request, id):
+@api_view(['GET', 'PUT', 'DELETE'])
+def reagent_detail(request, reagent_sn):
     """
     Retrieve, update or delete a single reagent
     """
     try:
-        reagent = Reagent.objects.get(id=id)
-    except reagent.DoesNotExist:
-        return HttpResponse(status=404)
-        
+        reagent = Reagent.objects.get(reagent_sn=reagent_sn)
+    except Reagent.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'GET':
         serializer = ReagentSerializer(reagent)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         serializer = ReagentSerializer(reagent, data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
         reagent.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -122,14 +122,14 @@ def reagent_list(request):
     if request.method == 'GET':
         reagent = Reagent.objects.all()
         serializer = ReagentSerializer(reagent, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = ReagentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -179,6 +179,21 @@ def autostainerstation_detail(request, sn):
     elif request.method == 'DELETE':
         autostainer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@csrf_exempt
+@api_view(['GET'])
+def autostainer_get_current_inventory(request, sn):
+    # When I click get inventory, i expect to get
+    # whatever I have on hand
+    # we are given the auto stainer SN, check reagents database
+    # for reagents with auto stainer sn
+
+    # by using django filters __exact we can look for autostainer with sn
+    autostainer = AutoStainerStation.objects.filter(autostainer_sn__exact=sn)
+    reagents = Reagent.objects.filter()
+
+
+    return
     
 class ReagentViewSet(viewsets.ModelViewSet):
     """

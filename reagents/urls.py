@@ -18,7 +18,7 @@ urlpatterns  = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('api/reagent/', views.reagent_list),
-    path('api/reagent/<int:id>/', views.reagent_detail),
+    path('api/reagent/<str:reagent_sn>/', views.reagent_detail),
     
     path('api/pa/', views.pa_list),
     path('api/pa/<str:catalog>/', views.pa_detail),

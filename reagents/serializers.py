@@ -8,13 +8,13 @@ from .models import Reagent, AutoStainerStation, PA
 class ReagentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reagent
-        fields = ['id', 'reag_name', 'catalog', 'type', 'size', 'sn', 'log', 'vol', 'mfg_date', 
-            'exp_date', 'factory', 'vol_cur', 'sequence', 'edit_date', 'reserved', 'owned_by']
+        fields = ('autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 'r_type', 'size', 'log', 'vol', 
+            'vol_cur', 'sequence', 'reserved', 'mfg_date', 'exp_date', 'edit_date', 'factory')
         
 class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
-        fields = ['id', 'autostainer_sn', 'name']
+        fields = ('autostainer_sn', 'name')
         
 class PASerializer(serializers.ModelSerializer):
     class Meta:

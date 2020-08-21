@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reagents',         # our reagents app we created
     'rest_framework',   # needed for our rest_framework
+    'django_extensions',# extra manange.py goodies, especially reset_db for development
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': 'reagentsDB',
         'USER' : 'admin',
         'PASSWORD' : 'admin',
         'HOST': 'localhost',
