@@ -12,6 +12,8 @@ class Reagent(models.Model):
     
     Info from ASHome/ReagTbl.h
     """
+    # if station is deleted, set to None. If field is none, reagent isnt
+    # registered to any autostation machine yet
     autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
     reagent_sn = models.TextField(unique=True)
     reag_name = models.TextField()

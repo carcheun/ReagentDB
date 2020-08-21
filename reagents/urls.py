@@ -25,6 +25,7 @@ urlpatterns  = [
 
     path('api/autostainer/', views.autostainerstation_list),
     path('api/autostainer/<str:sn>/', views.autostainerstation_detail),
+    path('api/autostainer/<str:sn>/reagents/', views.autostainer_get_reagents),
 
     path('test/', views.hello_world, name='test'),
 ]

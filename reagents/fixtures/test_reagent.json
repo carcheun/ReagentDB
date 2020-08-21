@@ -61,5 +61,25 @@
             "edit_date": "2020-08-21T07:51:00Z",
             "factory": true
 		}
+      },
+      {
+		"model": "reagents.Reagent",
+		"pk": 4,
+		"fields" : {
+            "reagent_sn": "MFG2020082101",
+            "reag_name": "MAB",
+            "catalog": "RAB-0122",
+            "r_type": "r_type",
+            "size": "S",
+            "log": "reagent log",
+            "vol": 1500,
+            "vol_cur": 100,
+            "sequence": 4444,
+            "reserved": 0,
+            "mfg_date": "2020-08-21",
+            "exp_date": "2021-08-21",
+            "edit_date": "2020-08-21T07:51:00Z",
+            "factory": true
+		}
 	}
 ]

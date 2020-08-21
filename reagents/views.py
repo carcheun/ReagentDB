@@ -115,12 +115,19 @@ def reagent_detail(request, reagent_sn):
         
 @csrf_exempt
 @api_view(['GET', 'POST'])
+# TODO: maybe add some filters for expired and empty reagents
 def reagent_list(request):
     """
     GET all reagents or send POST request to add reagent
     """
     if request.method == 'GET':
-        reagent = Reagent.objects.all()
+        # check if query string exists and then search for
+        # all unregistered reagents
+        search_unregistered = request.GET.get('registered')
+        if search_unregistered and search_unregistered.lower() == 'false':
+            reagent = Reagent.objects.filter(autostainer_sn__isnull=True)
+        else:
+            reagent = Reagent.objects.all()
         serializer = ReagentSerializer(reagent, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -182,18 +189,15 @@ def autostainerstation_detail(request, sn):
 
 @csrf_exempt
 @api_view(['GET'])
-def autostainer_get_current_inventory(request, sn):
-    # When I click get inventory, i expect to get
-    # whatever I have on hand
-    # we are given the auto stainer SN, check reagents database
-    # for reagents with auto stainer sn
-
-    # by using django filters __exact we can look for autostainer with sn
-    autostainer = AutoStainerStation.objects.filter(autostainer_sn__exact=sn)
-    reagents = Reagent.objects.filter()
-
-
-    return
+def autostainer_get_reagents(request, sn):
+    """
+    search for reagents currently registered to specified autostainer
+    """
+    reagents = Reagent.objects.filter(autostainer_sn__exact=sn)
+    if reagents is not None:
+        serializer = ReagentSerializer(reagents, many=True)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_404_NOT_FOUND)
     
 class ReagentViewSet(viewsets.ModelViewSet):
     """
