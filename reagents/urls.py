@@ -26,6 +26,9 @@ urlpatterns  = [
     path('api/autostainer/', views.autostainerstation_list),
     path('api/autostainer/<str:sn>/', views.autostainerstation_detail),
     path('api/autostainer/<str:sn>/reagents/', views.autostainer_get_reagents),
+    # TODO: a path to call to sync what the autostainer registered and
+    # then update (?)
+    path('api/autostainer/<str:sn>/reagents/sync/', views.autostainer_get_reagents),
 
     path('test/', views.hello_world, name='test'),
 ]
