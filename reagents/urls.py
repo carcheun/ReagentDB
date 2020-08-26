@@ -22,6 +22,7 @@ urlpatterns  = [
     
     path('api/pa/', views.pa_list),
     path('api/pa/<str:catalog>/', views.pa_detail),
+    path('api/pa/sync/', views.hello_world),
 
     path('api/autostainer/', views.autostainerstation_list),
     path('api/autostainer/<str:sn>/', views.autostainerstation_detail),

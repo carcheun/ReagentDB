@@ -81,10 +81,26 @@ def pa_detail(request, catalog):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+    
     elif request.method == 'DELETE':
         pa.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@csrf_exempt
+@api_view(['POST'])
+def pa_sync(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        # add date and time if letting database handle it
+        if 'date' not in data or 'time' not in data:
+            time = datetime.now()
+            data['date'] = time.strftime('%Y-%m-%d')
+            data['time'] = time
+        serializer = PASerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])

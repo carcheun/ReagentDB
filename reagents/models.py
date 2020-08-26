@@ -62,6 +62,7 @@ class PA(models.Model):
     description = models.TextField()
     factory = models.IntegerField(default=1)
     date = models.DateField()
+    # last updated time for PA
     time = models.DateTimeField()
     
     # is this reagent from factory or from customer

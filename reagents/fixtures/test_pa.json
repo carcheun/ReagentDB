@@ -52,5 +52,23 @@
 			"time": "2020-08-14T15:09:29Z", 
 			"is_factory": true
 		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 4,
+		"fields" : {
+			"fullname": "Not from factory", 
+			"alias": "NOTFACT", 
+			"source": "pa_fixture.json", 
+			"catalog": "NAF-0122", 
+			"volume": 5000, 
+			"incub": 20, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"factory": 1, 
+			"date": "2020-08-16", 
+			"time": "2020-08-14T15:09:29Z", 
+			"is_factory": false
+		}
 	}
 ]

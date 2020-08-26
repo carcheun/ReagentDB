@@ -5,11 +5,11 @@
 		"fields" : {
 			"fullname" : "AACT",
 			"alias" : "AACT",
-			"catagory" : "RAB-0011",
+			"catalog" : "RAB-0011",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160321",
-			"factory" : 0
+			"factory" : 0,
 			"volume" : 150,
 			"description" : "RAB0011",
 			"source" : "RAB",
@@ -22,11 +22,11 @@
 		"fields" : {
 			"fullname" : "AAT",
 			"alias" : "AAT",
-			"catagory" : "RAB-0012",
+			"catalog" : "RAB-0012",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 1
+			"factory" : 1,
 			"volume" : 150,
 			"description" : "RAB0012",
 			"source" : "RAB",
@@ -39,11 +39,11 @@
 		"fields" : {
 			"fullname" : "Adrenocorticotropin",
 			"alias" : "ACTH",
-			"catagory" : "RAB-0010",
+			"catalog" : "RAB-0010",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 2
+			"factory" : 2,
 			"volume" : 150,
 			"description" : "RAB0010",
 			"source" : "RAB",
@@ -56,11 +56,11 @@
 		"fields" : {
 			"fullname" : "Actin",
 			"alias" : "Actin",
-			"catagory" : "Kit-0032",
+			"catalog" : "Kit-0032",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 3
+			"factory" : 3,
 			"volume" : 150,
 			"description" : "MAB0001",
 			"source" : "MAB",
@@ -73,11 +73,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Actin(SM)",
-			"catagory" : "Kit-0006",
+			"catalog" : "Kit-0006",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 4
+			"factory" : 4,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -90,11 +90,11 @@
 		"fields" : {
 			"fullname" : "AFP",
 			"alias" : "AFP",
-			"catagory" : "RAB-0087",
+			"catalog" : "RAB-0087",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 5
+			"factory" : 5,
 			"volume" : 150,
 			"description" : "RAB0087",
 			"source" : "RAB",
@@ -107,11 +107,11 @@
 		"fields" : {
 			"fullname" : "Anaplastic Lymphoma Kinase",
 			"alias" : "ALK p80",
-			"catagory" : "MAB-0281",
+			"catalog" : "MAB-0281",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 6
+			"factory" : 6,
 			"volume" : 150,
 			"description" : "MAB0281",
 			"source" : "MAB",
@@ -124,11 +124,11 @@
 		"fields" : {
 			"fullname" : "Androgen Receptor",
 			"alias" : "AR",
-			"catagory" : "MAB-0073",
+			"catalog" : "MAB-0073",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 7
+			"factory" : 7,
 			"volume" : 150,
 			"description" : "MAB0073",
 			"source" : "MAB",
@@ -141,11 +141,11 @@
 		"fields" : {
 			"fullname" : "Bax",
 			"alias" : "Bax",
-			"catagory" : "MAB-0254",
+			"catalog" : "MAB-0254",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 8
+			"factory" : 8,
 			"volume" : 150,
 			"description" : "MAB0254",
 			"source" : "MAB",
@@ -158,11 +158,11 @@
 		"fields" : {
 			"fullname" : "Bcl-10",
 			"alias" : "Bcl-10",
-			"catagory" : "MAB-0550",
+			"catalog" : "MAB-0550",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 9
+			"factory" : 9,
 			"volume" : 150,
 			"description" : "MAB0550",
 			"source" : "MAB",
@@ -175,11 +175,11 @@
 		"fields" : {
 			"fullname" : "Bcl-2",
 			"alias" : "Bcl-2",
-			"catagory" : "RMA-0660",
+			"catalog" : "RMA-0660",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 10
+			"factory" : 10,
 			"volume" : 150,
 			"description" : "MAB0014",
 			"source" : "MAB",
@@ -192,11 +192,11 @@
 		"fields" : {
 			"fullname" : "Bcl-6",
 			"alias" : "Bcl-6",
-			"catagory" : "MAB-0598",
+			"catalog" : "MAB-0598",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 11
+			"factory" : 11,
 			"volume" : 150,
 			"description" : "MAB0333",
 			"source" : "MAB",
@@ -209,11 +209,11 @@
 		"fields" : {
 			"fullname" : "BRCA1",
 			"alias" : "BRCA1",
-			"catagory" : "MAB-0300",
+			"catalog" : "MAB-0300",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 12
+			"factory" : 12,
 			"volume" : 150,
 			"description" : "MAB0300",
 			"source" : "MAB",
@@ -226,11 +226,11 @@
 		"fields" : {
 			"fullname" : "C-erbB-2",
 			"alias" : "C-erbB-2",
-			"catagory" : "RMA-0701",
+			"catalog" : "RMA-0701",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 13
+			"factory" : 13,
 			"volume" : 150,
 			"description" : "MAB0198",
 			"source" : "MAB",
@@ -243,11 +243,11 @@
 		"fields" : {
 			"fullname" : "C-myc",
 			"alias" : "C-myc",
-			"catagory" : "RMA-0664",
+			"catalog" : "RMA-0664",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 14
+			"factory" : 14,
 			"volume" : 150,
 			"description" : "MAB0185",
 			"source" : "MAB",
@@ -260,11 +260,11 @@
 		"fields" : {
 			"fullname" : "CA125",
 			"alias" : "CA125",
-			"catagory" : "MAB-0007",
+			"catalog" : "MAB-0007",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 15
+			"factory" : 15,
 			"volume" : 150,
 			"description" : "MAB0007",
 			"source" : "MAB",
@@ -277,11 +277,11 @@
 		"fields" : {
 			"fullname" : "CA15-3",
 			"alias" : "CA15-3",
-			"catagory" : "MAB-0241",
+			"catalog" : "MAB-0241",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 16
+			"factory" : 16,
 			"volume" : 150,
 			"description" : "MAB0241",
 			"source" : "MAB",
@@ -294,11 +294,11 @@
 		"fields" : {
 			"fullname" : "CA19-9",
 			"alias" : "CA19-9",
-			"catagory" : "MAB-0005",
+			"catalog" : "MAB-0005",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 17
+			"factory" : 17,
 			"volume" : 150,
 			"description" : "MAB0005",
 			"source" : "MAB",
@@ -311,11 +311,11 @@
 		"fields" : {
 			"fullname" : "Calponin",
 			"alias" : "Calponin",
-			"catagory" : "MAB-0335",
+			"catalog" : "MAB-0335",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 18
+			"factory" : 18,
 			"volume" : 150,
 			"description" : "MAB0335",
 			"source" : "MAB",
@@ -328,11 +328,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Catenin-B",
-			"catagory" : "MAB-0259",
+			"catalog" : "MAB-0259",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 19
+			"factory" : 19,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -345,11 +345,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD10",
-			"catagory" : "Kit-0027",
+			"catalog" : "Kit-0027",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 20
+			"factory" : 20,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -362,11 +362,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD117",
-			"catagory" : "Kit-0029",
+			"catalog" : "Kit-0029",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 21
+			"factory" : 21,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -379,11 +379,11 @@
 		"fields" : {
 			"fullname" : "CD138",
 			"alias" : "CD138",
-			"catagory" : "MAB-0200",
+			"catalog" : "MAB-0200",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 22
+			"factory" : 22,
 			"volume" : 150,
 			"description" : "MAB0200",
 			"source" : "MAB",
@@ -396,11 +396,11 @@
 		"fields" : {
 			"fullname" : "CD15",
 			"alias" : "CD15",
-			"catagory" : "MAB-0015",
+			"catalog" : "MAB-0015",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 23
+			"factory" : 23,
 			"volume" : 150,
 			"description" : "MAB0015",
 			"source" : "MAB",
@@ -413,11 +413,11 @@
 		"fields" : {
 			"fullname" : "CD163",
 			"alias" : "CD163",
-			"catagory" : "MAB-0206",
+			"catalog" : "MAB-0206",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 24
+			"factory" : 24,
 			"volume" : 150,
 			"description" : "MAB0206",
 			"source" : "MAB",
@@ -430,11 +430,11 @@
 		"fields" : {
 			"fullname" : "CD19",
 			"alias" : "CD19",
-			"catagory" : "MAB-0646",
+			"catalog" : "MAB-0646",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 25
+			"factory" : 25,
 			"volume" : 150,
 			"description" : "MAB0646",
 			"source" : "MAB",
@@ -447,11 +447,11 @@
 		"fields" : {
 			"fullname" : "CD1a",
 			"alias" : "CD1a",
-			"catagory" : "MAB-0336",
+			"catalog" : "MAB-0336",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 26
+			"factory" : 26,
 			"volume" : 150,
 			"description" : "MAB0336",
 			"source" : "MAB",
@@ -464,11 +464,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD2",
-			"catagory" : "MAB-0207",
+			"catalog" : "MAB-0207",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 27
+			"factory" : 27,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -481,11 +481,11 @@
 		"fields" : {
 			"fullname" : "CD20",
 			"alias" : "CD20",
-			"catagory" : "Kit-0001",
+			"catalog" : "Kit-0001",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 28
+			"factory" : 28,
 			"volume" : 150,
 			"description" : "MAB0020",
 			"source" : "MAB",
@@ -498,11 +498,11 @@
 		"fields" : {
 			"fullname" : "CD21",
 			"alias" : "CD21",
-			"catagory" : "RMA-0647",
+			"catalog" : "RMA-0647",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 29
+			"factory" : 29,
 			"volume" : 150,
 			"description" : "MAB0339",
 			"source" : "MAB",
@@ -515,11 +515,11 @@
 		"fields" : {
 			"fullname" : "CD23",
 			"alias" : "CD23",
-			"catagory" : "RMA-0504",
+			"catalog" : "RMA-0504",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160612",
-			"factory" : 30
+			"factory" : 30,
 			"volume" : 150,
 			"description" : "MAB0316",
 			"source" : "MAB",
@@ -532,11 +532,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD235a",
-			"catagory" : "MAB-0603",
+			"catalog" : "MAB-0603",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 31
+			"factory" : 31,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -549,11 +549,11 @@
 		"fields" : {
 			"fullname" : "CD3",
 			"alias" : "CD3",
-			"catagory" : "Kit-0003",
+			"catalog" : "Kit-0003",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 32
+			"factory" : 32,
 			"volume" : 150,
 			"description" : "RAB0164",
 			"source" : "RAB",
@@ -566,11 +566,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD30",
-			"catagory" : "MAB-0023",
+			"catalog" : "MAB-0023",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 33
+			"factory" : 33,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -583,11 +583,11 @@
 		"fields" : {
 			"fullname" : "CD31",
 			"alias" : "CD31",
-			"catagory" : "MAB-0031",
+			"catalog" : "MAB-0031",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 34
+			"factory" : 34,
 			"volume" : 150,
 			"description" : "MAB0031",
 			"source" : "MAB",
@@ -600,11 +600,11 @@
 		"fields" : {
 			"fullname" : "CD34",
 			"alias" : "CD34",
-			"catagory" : "Kit-0004",
+			"catalog" : "Kit-0004",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 35
+			"factory" : 35,
 			"volume" : 150,
 			"description" : "MAB0034",
 			"source" : "MAB",
@@ -617,11 +617,11 @@
 		"fields" : {
 			"fullname" : "CD38",
 			"alias" : "CD38",
-			"catagory" : "MAB-0341",
+			"catalog" : "MAB-0341",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 36
+			"factory" : 36,
 			"volume" : 150,
 			"description" : "MAB0341",
 			"source" : "MAB",
@@ -634,11 +634,11 @@
 		"fields" : {
 			"fullname" : "CD4",
 			"alias" : "CD4",
-			"catagory" : "RMA-0620",
+			"catalog" : "RMA-0620",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 37
+			"factory" : 37,
 			"volume" : 150,
 			"description" : "RMA0620",
 			"source" : "RMA",
@@ -651,11 +651,11 @@
 		"fields" : {
 			"fullname" : "CD43",
 			"alias" : "CD43",
-			"catagory" : "MAB-0032",
+			"catalog" : "MAB-0032",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 38
+			"factory" : 38,
 			"volume" : 150,
 			"description" : "MAB0032",
 			"source" : "MAB",
@@ -668,11 +668,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD44v6",
-			"catagory" : "MAB-0038",
+			"catalog" : "MAB-0038",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 39
+			"factory" : 39,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -685,11 +685,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD45",
-			"catagory" : "Kit-0024",
+			"catalog" : "Kit-0024",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 40
+			"factory" : 40,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -702,11 +702,11 @@
 		"fields" : {
 			"fullname" : "CD45RA",
 			"alias" : "CD45RA",
-			"catagory" : "MAB-0009",
+			"catalog" : "MAB-0009",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "150615",
-			"factory" : 41
+			"factory" : 41,
 			"volume" : 150,
 			"description" : "MAB0009",
 			"source" : "MAB",
@@ -719,11 +719,11 @@
 		"fields" : {
 			"fullname" : "CD45RO",
 			"alias" : "CD45RO",
-			"catagory" : "MAB-0039",
+			"catalog" : "MAB-0039",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 42
+			"factory" : 42,
 			"volume" : 150,
 			"description" : "MAB0039",
 			"source" : "MAB",
@@ -736,11 +736,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD5",
-			"catagory" : "Kit-0033",
+			"catalog" : "Kit-0033",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 43
+			"factory" : 43,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -753,11 +753,11 @@
 		"fields" : {
 			"fullname" : "CD56",
 			"alias" : "CD56",
-			"catagory" : "Kit-0028",
+			"catalog" : "Kit-0028",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 44
+			"factory" : 44,
 			"volume" : 150,
 			"description" : "MAB0256",
 			"source" : "MAB",
@@ -770,11 +770,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD57",
-			"catagory" : "MAB-0257",
+			"catalog" : "MAB-0257",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 45
+			"factory" : 45,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -787,11 +787,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD61",
-			"catagory" : "MAB-0604",
+			"catalog" : "MAB-0604",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 46
+			"factory" : 46,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -804,11 +804,11 @@
 		"fields" : {
 			"fullname" : "CD68",
 			"alias" : "CD68",
-			"catagory" : "Kit-0026",
+			"catalog" : "Kit-0026",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 47
+			"factory" : 47,
 			"volume" : 150,
 			"description" : "MAB0041",
 			"source" : "MAB",
@@ -821,11 +821,11 @@
 		"fields" : {
 			"fullname" : "CD7",
 			"alias" : "CD7",
-			"catagory" : "MAB-0215",
+			"catalog" : "MAB-0215",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 48
+			"factory" : 48,
 			"volume" : 150,
 			"description" : "MAB0215",
 			"source" : "MAB",
@@ -838,11 +838,11 @@
 		"fields" : {
 			"fullname" : "CD79a",
 			"alias" : "CD79a",
-			"catagory" : "RMA-0552",
+			"catalog" : "RMA-0552",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 49
+			"factory" : 49,
 			"volume" : 150,
 			"description" : "RMA0552",
 			"source" : "RMA",
@@ -855,11 +855,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD8",
-			"catagory" : "RMA-0514",
+			"catalog" : "RMA-0514",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 50
+			"factory" : 50,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -872,11 +872,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CD99",
-			"catagory" : "MAB-0059",
+			"catalog" : "MAB-0059",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 51
+			"factory" : 51,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -889,11 +889,11 @@
 		"fields" : {
 			"fullname" : "CDX-2",
 			"alias" : "CDX-2",
-			"catagory" : "RMA-0631",
+			"catalog" : "RMA-0631",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 52
+			"factory" : 52,
 			"volume" : 150,
 			"description" : "RMA0631",
 			"source" : "RMA",
@@ -906,11 +906,11 @@
 		"fields" : {
 			"fullname" : "CEA",
 			"alias" : "CEA",
-			"catagory" : "Kit-0008",
+			"catalog" : "Kit-0008",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 53
+			"factory" : 53,
 			"volume" : 150,
 			"description" : "MAB0043",
 			"source" : "MAB",
@@ -923,11 +923,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CgA",
-			"catagory" : "MAB-0202",
+			"catalog" : "MAB-0202",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 54
+			"factory" : 54,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -940,11 +940,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK(CAM5.2)",
-			"catagory" : "MAB-0687",
+			"catalog" : "MAB-0687",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 55
+			"factory" : 55,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -957,11 +957,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK(HMW)",
-			"catagory" : "Kit-0020",
+			"catalog" : "Kit-0020",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 56
+			"factory" : 56,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -974,11 +974,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK(LMW)",
-			"catagory" : "MAB-0051",
+			"catalog" : "MAB-0051",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 57
+			"factory" : 57,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -991,11 +991,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK(pan)",
-			"catagory" : "Kit-0009",
+			"catalog" : "Kit-0009",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 58
+			"factory" : 58,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1008,11 +1008,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK14",
-			"catagory" : "MAB-0169",
+			"catalog" : "MAB-0169",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 59
+			"factory" : 59,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1025,11 +1025,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK18",
-			"catagory" : "MAB-0182",
+			"catalog" : "MAB-0182",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 60
+			"factory" : 60,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1042,11 +1042,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK19",
-			"catagory" : "Kit-0030",
+			"catalog" : "Kit-0030",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 61
+			"factory" : 61,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1059,11 +1059,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK20",
-			"catagory" : "Kit-0025",
+			"catalog" : "Kit-0025",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 62
+			"factory" : 62,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1076,11 +1076,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK5",
-			"catagory" : "RMA-0612",
+			"catalog" : "RMA-0612",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 63
+			"factory" : 63,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1093,11 +1093,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK5/6",
-			"catagory" : "Kit-0018",
+			"catalog" : "Kit-0018",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 64
+			"factory" : 64,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1110,11 +1110,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK7",
-			"catagory" : "Kit-0021",
+			"catalog" : "Kit-0021",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 65
+			"factory" : 65,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1127,11 +1127,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CK8",
-			"catagory" : "Kit-0034",
+			"catalog" : "Kit-0034",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 66
+			"factory" : 66,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1144,11 +1144,11 @@
 		"fields" : {
 			"fullname" : "Ck8/18",
 			"alias" : "CK8/18",
-			"catagory" : "MAB-0650",
+			"catalog" : "MAB-0650",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 67
+			"factory" : 67,
 			"volume" : 150,
 			"description" : "MAB0650",
 			"source" : "MAB",
@@ -1161,11 +1161,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Collagen 4",
-			"catagory" : "MAB-0025",
+			"catalog" : "MAB-0025",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160407",
-			"factory" : 68
+			"factory" : 68,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1178,11 +1178,11 @@
 		"fields" : {
 			"fullname" : "COX2",
 			"alias" : "COX2",
-			"catagory" : "RMA-0549",
+			"catalog" : "RMA-0549",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 69
+			"factory" : 69,
 			"volume" : 150,
 			"description" : "RMA0549",
 			"source" : "RMA",
@@ -1195,11 +1195,11 @@
 		"fields" : {
 			"fullname" : "Calretinin",
 			"alias" : "CR",
-			"catagory" : "RMA-0524",
+			"catalog" : "RMA-0524",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 70
+			"factory" : 70,
 			"volume" : 150,
 			"description" : "RMA0524",
 			"source" : "RMA",
@@ -1212,11 +1212,11 @@
 		"fields" : {
 			"fullname" : "Calcitonin",
 			"alias" : "CT",
-			"catagory" : "RMA-0553",
+			"catalog" : "RMA-0553",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 71
+			"factory" : 71,
 			"volume" : 150,
 			"description" : "RMA0553",
 			"source" : "RMA",
@@ -1229,11 +1229,11 @@
 		"fields" : {
 			"fullname" : "CXCL-13",
 			"alias" : "CXCL-13",
-			"catagory" : "GAB-0616",
+			"catalog" : "GAB-0616",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 72
+			"factory" : 72,
 			"volume" : 150,
 			"description" : "GAB0616",
 			"source" : "GAB",
@@ -1246,11 +1246,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "CyclinD1",
-			"catagory" : "RMA-0541",
+			"catalog" : "RMA-0541",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 73
+			"factory" : 73,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1263,11 +1263,11 @@
 		"fields" : {
 			"fullname" : "D2-40",
 			"alias" : "D2-40",
-			"catagory" : "MAB-0567",
+			"catalog" : "MAB-0567",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 74
+			"factory" : 74,
 			"volume" : 150,
 			"description" : "MAB0567",
 			"source" : "MAB",
@@ -1280,11 +1280,11 @@
 		"fields" : {
 			"fullname" : "Desmin",
 			"alias" : "Desmin",
-			"catagory" : "Kit-0023",
+			"catalog" : "Kit-0023",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 75
+			"factory" : 75,
 			"volume" : 150,
 			"description" : "MAB0055",
 			"source" : "MAB",
@@ -1297,11 +1297,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "DOG1",
-			"catagory" : "Kit-0035",
+			"catalog" : "Kit-0035",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 76
+			"factory" : 76,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1314,11 +1314,11 @@
 		"fields" : {
 			"fullname" : "E-Cadherin",
 			"alias" : "E-Cadherin",
-			"catagory" : "MAB-0589",
+			"catalog" : "MAB-0589",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 77
+			"factory" : 77,
 			"volume" : 150,
 			"description" : "MAB0589",
 			"source" : "MAB",
@@ -1331,11 +1331,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "EBV",
-			"catagory" : "MAB-0063",
+			"catalog" : "MAB-0063",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 78
+			"factory" : 78,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1348,11 +1348,11 @@
 		"fields" : {
 			"fullname" : "Epidermal Growth Factor Receptor",
 			"alias" : "EGFR",
-			"catagory" : "RMA-0554",
+			"catalog" : "RMA-0554",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 79
+			"factory" : 79,
 			"volume" : 150,
 			"description" : "RMA0554",
 			"source" : "RMA",
@@ -1365,11 +1365,11 @@
 		"fields" : {
 			"fullname" : "Epithelial Membrane Antigen",
 			"alias" : "EMA",
-			"catagory" : "Kit-0011",
+			"catalog" : "Kit-0011",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 80
+			"factory" : 80,
 			"volume" : 150,
 			"description" : "MAB0581",
 			"source" : "MAB",
@@ -1382,11 +1382,11 @@
 		"fields" : {
 			"fullname" : "Estrogen Receptor",
 			"alias" : "ER",
-			"catagory" : "Kit-0012",
+			"catalog" : "Kit-0012",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 81
+			"factory" : 81,
 			"volume" : 150,
 			"description" : "RMA0501",
 			"source" : "RMA",
@@ -1399,11 +1399,11 @@
 		"fields" : {
 			"fullname" : "ERCC1",
 			"alias" : "ERCC1",
-			"catagory" : "MAB-0600",
+			"catalog" : "MAB-0600",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 82
+			"factory" : 82,
 			"volume" : 150,
 			"description" : "MAB0600",
 			"source" : "MAB",
@@ -1416,11 +1416,11 @@
 		"fields" : {
 			"fullname" : "Epithelial Specific Antigen",
 			"alias" : "ESA",
-			"catagory" : "MAB-0060",
+			"catalog" : "MAB-0060",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 83
+			"factory" : 83,
 			"volume" : 150,
 			"description" : "MAB0060",
 			"source" : "MAB",
@@ -1433,11 +1433,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "F8",
-			"catagory" : "RAB-0070",
+			"catalog" : "RAB-0070",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 84
+			"factory" : 84,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1450,11 +1450,11 @@
 		"fields" : {
 			"fullname" : "FLI-1",
 			"alias" : "FLI-1",
-			"catagory" : "MAB-0649",
+			"catalog" : "MAB-0649",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 85
+			"factory" : 85,
 			"volume" : 150,
 			"description" : "MAB0649",
 			"source" : "MAB",
@@ -1467,11 +1467,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "FSH",
-			"catagory" : "MAB-0204",
+			"catalog" : "MAB-0204",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 86
+			"factory" : 86,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1484,11 +1484,11 @@
 		"fields" : {
 			"fullname" : "Galectin-3",
 			"alias" : "Galectin-3",
-			"catagory" : "MAB-0572",
+			"catalog" : "MAB-0572",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 87
+			"factory" : 87,
 			"volume" : 150,
 			"description" : "MAB0572",
 			"source" : "MAB",
@@ -1501,11 +1501,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "GATA3",
-			"catagory" : "MAB-0695",
+			"catalog" : "MAB-0695",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 88
+			"factory" : 88,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1518,11 +1518,11 @@
 		"fields" : {
 			"fullname" : "GCDFP-15",
 			"alias" : "GCDFP-15",
-			"catagory" : "MAB-0230",
+			"catalog" : "MAB-0230",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 89
+			"factory" : 89,
 			"volume" : 150,
 			"description" : "MAB0230",
 			"source" : "MAB",
@@ -1535,11 +1535,11 @@
 		"fields" : {
 			"fullname" : "GFAP",
 			"alias" : "GFAP",
-			"catagory" : "Kit-0031",
+			"catalog" : "Kit-0031",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 90
+			"factory" : 90,
 			"volume" : 150,
 			"description" : "MAB0582",
 			"source" : "MAB",
@@ -1552,11 +1552,11 @@
 		"fields" : {
 			"fullname" : "Glypican-3",
 			"alias" : "Glypican-3",
-			"catagory" : "MAB-0617",
+			"catalog" : "MAB-0617",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 91
+			"factory" : 91,
 			"volume" : 150,
 			"description" : "MAB0617",
 			"source" : "MAB",
@@ -1569,11 +1569,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "GrB",
-			"catagory" : "MAB-0352",
+			"catalog" : "MAB-0352",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 92
+			"factory" : 92,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1584,13 +1584,13 @@
 		"model": "reagents.PA",
 		"pk": 94,
 		"fields" : {
-			"fullname" : "GST¦Ð",
-			"alias" : "GST¦Ð",
-			"catagory" : "MAB-0583",
+			"fullname" : "GSTï¿½ï¿½",
+			"alias" : "GSTï¿½ï¿½",
+			"catalog" : "MAB-0583",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 93
+			"factory" : 93,
 			"volume" : 150,
 			"description" : "MAB0583",
 			"source" : "MAB",
@@ -1603,11 +1603,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "H-Caldesmon",
-			"catagory" : "MAB-0634",
+			"catalog" : "MAB-0634",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 94
+			"factory" : 94,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1620,11 +1620,11 @@
 		"fields" : {
 			"fullname" : "HBcAg",
 			"alias" : "HBcAg",
-			"catagory" : "RAB-0090",
+			"catalog" : "RAB-0090",
 			"incub" : 60,
 			"ar" : "NO",
 			"date" : "160317",
-			"factory" : 95
+			"factory" : 95,
 			"volume" : 150,
 			"description" : "RAB0090",
 			"source" : "RAB",
@@ -1637,11 +1637,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "HBsAg",
-			"catagory" : "MAB-0587",
+			"catalog" : "MAB-0587",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 96
+			"factory" : 96,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1652,13 +1652,13 @@
 		"model": "reagents.PA",
 		"pk": 98,
 		"fields" : {
-			"fullname" : "HCG-¦Á",
-			"alias" : "HCG-¦Á",
-			"catagory" : "MAB-0046",
+			"fullname" : "HCG-ï¿½ï¿½",
+			"alias" : "HCG-ï¿½ï¿½",
+			"catalog" : "MAB-0046",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 97
+			"factory" : 97,
 			"volume" : 150,
 			"description" : "MAB0046",
 			"source" : "MAB",
@@ -1669,13 +1669,13 @@
 		"model": "reagents.PA",
 		"pk": 99,
 		"fields" : {
-			"fullname" : "HCG-¦Â",
-			"alias" : "HCG-¦Â",
-			"catagory" : "MAB-0205",
+			"fullname" : "HCG-ï¿½ï¿½",
+			"alias" : "HCG-ï¿½ï¿½",
+			"catalog" : "MAB-0205",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 98
+			"factory" : 98,
 			"volume" : 150,
 			"description" : "MAB0205",
 			"source" : "MAB",
@@ -1688,11 +1688,11 @@
 		"fields" : {
 			"fullname" : "Hepatocyte",
 			"alias" : "Hepatocyte",
-			"catagory" : "MAB-0249",
+			"catalog" : "MAB-0249",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 99
+			"factory" : 99,
 			"volume" : 150,
 			"description" : "MAB0249",
 			"source" : "MAB",
@@ -1705,11 +1705,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "hGH",
-			"catagory" : "RAB-0084",
+			"catalog" : "RAB-0084",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 100
+			"factory" : 100,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1722,11 +1722,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "HP",
-			"catagory" : "RAB-0064",
+			"catalog" : "RAB-0064",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 101
+			"factory" : 101,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1739,11 +1739,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "IDH1 R132H",
-			"catagory" : "MAB-0662",
+			"catalog" : "MAB-0662",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 102
+			"factory" : 102,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1756,11 +1756,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "IgG",
-			"catagory" : "RAB-0102",
+			"catalog" : "RAB-0102",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 103
+			"factory" : 103,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1773,11 +1773,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "IgG4",
-			"catagory" : "MAB-0651",
+			"catalog" : "MAB-0651",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 104
+			"factory" : 104,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1790,11 +1790,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "IgM",
-			"catagory" : "RAB-0103",
+			"catalog" : "RAB-0103",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 105
+			"factory" : 105,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1805,13 +1805,13 @@
 		"model": "reagents.PA",
 		"pk": 107,
 		"fields" : {
-			"fullname" : "Inhibin-¦Á",
-			"alias" : "Inhibin-¦Á",
-			"catagory" : "MAB-0268",
+			"fullname" : "Inhibin-ï¿½ï¿½",
+			"alias" : "Inhibin-ï¿½ï¿½",
+			"catalog" : "MAB-0268",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 106
+			"factory" : 106,
 			"volume" : 150,
 			"description" : "MAB0268",
 			"source" : "MAB",
@@ -1824,11 +1824,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Kappa",
-			"catagory" : "RAB-0111",
+			"catalog" : "RAB-0111",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 107
+			"factory" : 107,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1841,11 +1841,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Ki67",
-			"catagory" : "Kit-0005",
+			"catalog" : "Kit-0005",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 108
+			"factory" : 108,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1858,11 +1858,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Lambda",
-			"catagory" : "MAB-0357",
+			"catalog" : "MAB-0357",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 109
+			"factory" : 109,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1875,11 +1875,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "LH",
-			"catagory" : "MAB-0114",
+			"catalog" : "MAB-0114",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 110
+			"factory" : 110,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1892,11 +1892,11 @@
 		"fields" : {
 			"fullname" : "Lung-resistance related protein",
 			"alias" : "LRP",
-			"catagory" : "MAB-0319",
+			"catalog" : "MAB-0319",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 111
+			"factory" : 111,
 			"volume" : 150,
 			"description" : "MAB0319",
 			"source" : "MAB",
@@ -1909,11 +1909,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Lysozyme",
-			"catagory" : "RAB-0115",
+			"catalog" : "RAB-0115",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 112
+			"factory" : 112,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1926,11 +1926,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Mammaglobin",
-			"catagory" : "MAB-0561",
+			"catalog" : "MAB-0561",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 113
+			"factory" : 113,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -1943,11 +1943,11 @@
 		"fields" : {
 			"fullname" : "Myelin Basic Protein",
 			"alias" : "MBP",
-			"catagory" : "RAB-0127",
+			"catalog" : "RAB-0127",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 114
+			"factory" : 114,
 			"volume" : 150,
 			"description" : "RAB0127",
 			"source" : "RAB",
@@ -1960,11 +1960,11 @@
 		"fields" : {
 			"fullname" : "Mesothelial Cell",
 			"alias" : "MC",
-			"catagory" : "MAB-0130",
+			"catalog" : "MAB-0130",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 115
+			"factory" : 115,
 			"volume" : 150,
 			"description" : "MAB0130",
 			"source" : "MAB",
@@ -1977,11 +1977,11 @@
 		"fields" : {
 			"fullname" : "MART-1",
 			"alias" : "Melan-A",
-			"catagory" : "MAB-0275",
+			"catalog" : "MAB-0275",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 116
+			"factory" : 116,
 			"volume" : 150,
 			"description" : "MAB0275",
 			"source" : "MAB",
@@ -1994,11 +1994,11 @@
 		"fields" : {
 			"fullname" : "Melanoma",
 			"alias" : "Melanoma",
-			"catagory" : "MAB-0098",
+			"catalog" : "MAB-0098",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 117
+			"factory" : 117,
 			"volume" : 150,
 			"description" : "MAB0098",
 			"source" : "MAB",
@@ -2011,11 +2011,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Melanoma(Pan)",
-			"catagory" : "MAB-0360",
+			"catalog" : "MAB-0360",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 118
+			"factory" : 118,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2028,11 +2028,11 @@
 		"fields" : {
 			"fullname" : "MGMT",
 			"alias" : "MGMT",
-			"catagory" : "MAB-0361",
+			"catalog" : "MAB-0361",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 119
+			"factory" : 119,
 			"volume" : 150,
 			"description" : "MAB0361",
 			"source" : "MAB",
@@ -2045,11 +2045,11 @@
 		"fields" : {
 			"fullname" : "MLH-1",
 			"alias" : "MLH-1",
-			"catagory" : "MAB-0642",
+			"catalog" : "MAB-0642",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 120
+			"factory" : 120,
 			"volume" : 150,
 			"description" : "MAB0642",
 			"source" : "MAB",
@@ -2062,11 +2062,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "MMP-9",
-			"catagory" : "MAB-0245",
+			"catalog" : "MAB-0245",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 121
+			"factory" : 121,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2079,11 +2079,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "MOC31",
-			"catagory" : "MAB-0280",
+			"catalog" : "MAB-0280",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 122
+			"factory" : 122,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2096,11 +2096,11 @@
 		"fields" : {
 			"fullname" : "Myeloperoxidase",
 			"alias" : "MPO",
-			"catagory" : "RAB-0379",
+			"catalog" : "RAB-0379",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 123
+			"factory" : 123,
 			"volume" : 150,
 			"description" : "RAB0379",
 			"source" : "RAB",
@@ -2113,11 +2113,11 @@
 		"fields" : {
 			"fullname" : "Multidrug Resistance-Associated Protein 1",
 			"alias" : "MRP1",
-			"catagory" : "MAB-0390",
+			"catalog" : "MAB-0390",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 124
+			"factory" : 124,
 			"volume" : 150,
 			"description" : "MAB0390",
 			"source" : "MAB",
@@ -2130,11 +2130,11 @@
 		"fields" : {
 			"fullname" : "Multidrug Resistance-Associated Protein 3",
 			"alias" : "MRP3",
-			"catagory" : "MAB-0530",
+			"catalog" : "MAB-0530",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 125
+			"factory" : 125,
 			"volume" : 150,
 			"description" : "MAB0530",
 			"source" : "MAB",
@@ -2147,11 +2147,11 @@
 		"fields" : {
 			"fullname" : "MSH2",
 			"alias" : "MSH2",
-			"catagory" : "MAB-0291",
+			"catalog" : "MAB-0291",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 126
+			"factory" : 126,
 			"volume" : 150,
 			"description" : "MAB0291",
 			"source" : "MAB",
@@ -2164,11 +2164,11 @@
 		"fields" : {
 			"fullname" : "MSH6",
 			"alias" : "MSH6",
-			"catagory" : "MAB-0643",
+			"catalog" : "MAB-0643",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 127
+			"factory" : 127,
 			"volume" : 150,
 			"description" : "MAB0643",
 			"source" : "MAB",
@@ -2181,11 +2181,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "MUM1",
-			"catagory" : "MAB-0573",
+			"catalog" : "MAB-0573",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 128
+			"factory" : 128,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2198,11 +2198,11 @@
 		"fields" : {
 			"fullname" : "MyoD1",
 			"alias" : "MyoD1",
-			"catagory" : "MAB-0119",
+			"catalog" : "MAB-0119",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 129
+			"factory" : 129,
 			"volume" : 150,
 			"description" : "MAB0119",
 			"source" : "MAB",
@@ -2215,11 +2215,11 @@
 		"fields" : {
 			"fullname" : "Myogenin",
 			"alias" : "Myogenin",
-			"catagory" : "MAB-0362",
+			"catalog" : "MAB-0362",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 130
+			"factory" : 130,
 			"volume" : 150,
 			"description" : "MAB0362",
 			"source" : "MAB",
@@ -2232,11 +2232,11 @@
 		"fields" : {
 			"fullname" : "Myoglobin",
 			"alias" : "Myoglobin",
-			"catagory" : "RAB-0122",
+			"catalog" : "RAB-0122",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 131
+			"factory" : 131,
 			"volume" : 150,
 			"description" : "MAB0123",
 			"source" : "MAB",
@@ -2249,11 +2249,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Mysoin(SM)",
-			"catagory" : "MAB-0121",
+			"catalog" : "MAB-0121",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 132
+			"factory" : 132,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2266,11 +2266,11 @@
 		"fields" : {
 			"fullname" : "Napsin A",
 			"alias" : "Napsin A",
-			"catagory" : "RAB-0639",
+			"catalog" : "RAB-0639",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 133
+			"factory" : 133,
 			"volume" : 150,
 			"description" : "RAB0639",
 			"source" : "RAB",
@@ -2283,11 +2283,11 @@
 		"fields" : {
 			"fullname" : "Nestin",
 			"alias" : "Nestin",
-			"catagory" : "MAB-0566",
+			"catalog" : "MAB-0566",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 134
+			"factory" : 134,
 			"volume" : 150,
 			"description" : "MAB0566",
 			"source" : "MAB",
@@ -2300,11 +2300,11 @@
 		"fields" : {
 			"fullname" : "Nuclear Protein",
 			"alias" : "NeuN",
-			"catagory" : "MAB-0578",
+			"catalog" : "MAB-0578",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 135
+			"factory" : 135,
 			"volume" : 150,
 			"description" : "MAB0578",
 			"source" : "MAB",
@@ -2317,11 +2317,11 @@
 		"fields" : {
 			"fullname" : "Neurofilament-68/200KDa",
 			"alias" : "NF-L+H",
-			"catagory" : "MAB-0136",
+			"catalog" : "MAB-0136",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 136
+			"factory" : 136,
 			"volume" : 150,
 			"description" : "MAB0136",
 			"source" : "MAB",
@@ -2334,11 +2334,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "nm23",
-			"catagory" : "MAB-0139",
+			"catalog" : "MAB-0139",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 137
+			"factory" : 137,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2351,11 +2351,11 @@
 		"fields" : {
 			"fullname" : "Neuron Specific Endolase",
 			"alias" : "NSE",
-			"catagory" : "MAB-0584",
+			"catalog" : "MAB-0584",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160612",
-			"factory" : 138
+			"factory" : 138,
 			"volume" : 150,
 			"description" : "RAB0131",
 			"source" : "RAB",
@@ -2368,11 +2368,11 @@
 		"fields" : {
 			"fullname" : "Oct-3/4",
 			"alias" : "Oct-3/4",
-			"catagory" : "MAB-0618",
+			"catalog" : "MAB-0618",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 139
+			"factory" : 139,
 			"volume" : 150,
 			"description" : "MAB0618",
 			"source" : "MAB",
@@ -2385,11 +2385,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "OLIG-2",
-			"catagory" : "RMA-0681",
+			"catalog" : "RMA-0681",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160623",
-			"factory" : 140
+			"factory" : 140,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2402,11 +2402,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "p120 catenin",
-			"catagory" : "MAB-0621",
+			"catalog" : "MAB-0621",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 141
+			"factory" : 141,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2419,11 +2419,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "p16",
-			"catagory" : "MAB-0223",
+			"catalog" : "MAB-0223",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 142
+			"factory" : 142,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2436,11 +2436,11 @@
 		"fields" : {
 			"fullname" : "p21WAF1",
 			"alias" : "p21WAF1",
-			"catagory" : "MAB-0235",
+			"catalog" : "MAB-0235",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 143
+			"factory" : 143,
 			"volume" : 150,
 			"description" : "MAB0235",
 			"source" : "MAB",
@@ -2453,11 +2453,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "p40",
-			"catagory" : "RAB-0666",
+			"catalog" : "RAB-0666",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 144
+			"factory" : 144,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2470,11 +2470,11 @@
 		"fields" : {
 			"fullname" : "AMACR",
 			"alias" : "p504s",
-			"catagory" : "RMA-0546",
+			"catalog" : "RMA-0546",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 145
+			"factory" : 145,
 			"volume" : 150,
 			"description" : "RMA0546",
 			"source" : "RMA",
@@ -2487,11 +2487,11 @@
 		"fields" : {
 			"fullname" : "p53",
 			"alias" : "p53",
-			"catagory" : "Kit-0010",
+			"catalog" : "Kit-0010",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 146
+			"factory" : 146,
 			"volume" : 150,
 			"description" : "MAB0226",
 			"source" : "MAB",
@@ -2504,11 +2504,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "P57Kip2",
-			"catagory" : "MAB-0317",
+			"catalog" : "MAB-0317",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 147
+			"factory" : 147,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2521,11 +2521,11 @@
 		"fields" : {
 			"fullname" : "p63",
 			"alias" : "p63",
-			"catagory" : "MAB-0365",
+			"catalog" : "MAB-0365",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 148
+			"factory" : 148,
 			"volume" : 150,
 			"description" : "MAB0365",
 			"source" : "MAB",
@@ -2538,11 +2538,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Pax-2",
-			"catagory" : "RAB-0648",
+			"catalog" : "RAB-0648",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 149
+			"factory" : 149,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2555,11 +2555,11 @@
 		"fields" : {
 			"fullname" : "Pax-5",
 			"alias" : "Pax-5",
-			"catagory" : "RMA-0611",
+			"catalog" : "RMA-0611",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 150
+			"factory" : 150,
 			"volume" : 150,
 			"description" : "RMA0611",
 			"source" : "RMA",
@@ -2572,11 +2572,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Pax-8",
-			"catagory" : "RAB-0657",
+			"catalog" : "RAB-0657",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 151
+			"factory" : 151,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2589,11 +2589,11 @@
 		"fields" : {
 			"fullname" : "PCNA",
 			"alias" : "PCNA",
-			"catagory" : "MAB-0145",
+			"catalog" : "MAB-0145",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 152
+			"factory" : 152,
 			"volume" : 150,
 			"description" : "MAB0145",
 			"source" : "MAB",
@@ -2606,11 +2606,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "PD-1",
-			"catagory" : "MAB-0654",
+			"catalog" : "MAB-0654",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 153
+			"factory" : 153,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2623,11 +2623,11 @@
 		"fields" : {
 			"fullname" : "P-glycoprotein",
 			"alias" : "Pgp",
-			"catagory" : "MAB-0237",
+			"catalog" : "MAB-0237",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 154
+			"factory" : 154,
 			"volume" : 150,
 			"description" : "MAB0229",
 			"source" : "MAB",
@@ -2640,11 +2640,11 @@
 		"fields" : {
 			"fullname" : "Placental Alkaline Phosphatase",
 			"alias" : "PLAP",
-			"catagory" : "RMA-0534",
+			"catalog" : "RMA-0534",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 155
+			"factory" : 155,
 			"volume" : 150,
 			"description" : "MAB0141",
 			"source" : "MAB",
@@ -2657,11 +2657,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "PMS2",
-			"catagory" : "MAB-0656",
+			"catalog" : "MAB-0656",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 156
+			"factory" : 156,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2674,11 +2674,11 @@
 		"fields" : {
 			"fullname" : "Progesterone Receptor",
 			"alias" : "PR",
-			"catagory" : "Kit-0013",
+			"catalog" : "Kit-0013",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 157
+			"factory" : 157,
 			"volume" : 150,
 			"description" : "MAB0236",
 			"source" : "MAB",
@@ -2691,11 +2691,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Prolactin",
-			"catagory" : "RAB-0109",
+			"catalog" : "RAB-0109",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 158
+			"factory" : 158,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2708,11 +2708,11 @@
 		"fields" : {
 			"fullname" : "Prostate Specific Antigen",
 			"alias" : "PSA",
-			"catagory" : "MAB-0146",
+			"catalog" : "MAB-0146",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 159
+			"factory" : 159,
 			"volume" : 150,
 			"description" : "MAB0146",
 			"source" : "MAB",
@@ -2725,11 +2725,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "PSAP",
-			"catagory" : "MAB-0147",
+			"catalog" : "MAB-0147",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 160
+			"factory" : 160,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2742,11 +2742,11 @@
 		"fields" : {
 			"fullname" : "PSMA",
 			"alias" : "PSMA",
-			"catagory" : "MAB-0575",
+			"catalog" : "MAB-0575",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 161
+			"factory" : 161,
 			"volume" : 150,
 			"description" : "MAB0575",
 			"source" : "MAB",
@@ -2759,11 +2759,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "RCC",
-			"catagory" : "MAB-0309",
+			"catalog" : "MAB-0309",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 162
+			"factory" : 162,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2776,11 +2776,11 @@
 		"fields" : {
 			"fullname" : "RRM1",
 			"alias" : "RRM1",
-			"catagory" : "RAB-0637",
+			"catalog" : "RAB-0637",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 163
+			"factory" : 163,
 			"volume" : 150,
 			"description" : "RAB0637",
 			"source" : "RAB",
@@ -2793,11 +2793,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "S-100",
-			"catagory" : "Kit-0007",
+			"catalog" : "Kit-0007",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 164
+			"factory" : 164,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2810,11 +2810,11 @@
 		"fields" : {
 			"fullname" : "SCLC",
 			"alias" : "SCLC",
-			"catagory" : "MAB-0154",
+			"catalog" : "MAB-0154",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 165
+			"factory" : 165,
 			"volume" : 150,
 			"description" : "MAB0154",
 			"source" : "MAB",
@@ -2827,11 +2827,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "SP-A",
-			"catagory" : "MAB-0311",
+			"catalog" : "MAB-0311",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 166
+			"factory" : 166,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2844,11 +2844,11 @@
 		"fields" : {
 			"fullname" : "Surfactant Protein B",
 			"alias" : "SP-B",
-			"catagory" : "MAB-0371",
+			"catalog" : "MAB-0371",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 167
+			"factory" : 167,
 			"volume" : 150,
 			"description" : "MAB0371",
 			"source" : "MAB",
@@ -2861,11 +2861,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "Syn",
-			"catagory" : "Kit-0022",
+			"catalog" : "Kit-0022",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 168
+			"factory" : 168,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2878,11 +2878,11 @@
 		"fields" : {
 			"fullname" : "Terminal deoxynucleotidyl transferase",
 			"alias" : "TdT",
-			"catagory" : "MAB-0197",
+			"catalog" : "MAB-0197",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 169
+			"factory" : 169,
 			"volume" : 150,
 			"description" : "MAB0197",
 			"source" : "MAB",
@@ -2895,11 +2895,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "TFE-3",
-			"catagory" : "RMA-0663",
+			"catalog" : "RMA-0663",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 170
+			"factory" : 170,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2912,11 +2912,11 @@
 		"fields" : {
 			"fullname" : "Thyroglobulin",
 			"alias" : "Tg",
-			"catagory" : "MAB-0161",
+			"catalog" : "MAB-0161",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 171
+			"factory" : 171,
 			"volume" : 150,
 			"description" : "RAB0160",
 			"source" : "RAB",
@@ -2929,11 +2929,11 @@
 		"fields" : {
 			"fullname" : "Cytotoxic lymphocytes",
 			"alias" : "TIA-1",
-			"catagory" : "MAB-0576",
+			"catalog" : "MAB-0576",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 172
+			"factory" : 172,
 			"volume" : 150,
 			"description" : "MAB0576",
 			"source" : "MAB",
@@ -2946,11 +2946,11 @@
 		"fields" : {
 			"fullname" : "Tissue inhibitor of Metalloproteinase-1",
 			"alias" : "TIMP-1",
-			"catagory" : "RAB-0282",
+			"catalog" : "RAB-0282",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 173
+			"factory" : 173,
 			"volume" : 150,
 			"description" : "RAB0282",
 			"source" : "RAB",
@@ -2963,11 +2963,11 @@
 		"fields" : {
 			"fullname" : "Tissue inhibitor of Metalloproteinase-2",
 			"alias" : "TIMP-2",
-			"catagory" : "RAB-0283",
+			"catalog" : "RAB-0283",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 174
+			"factory" : 174,
 			"volume" : 150,
 			"description" : "RAB0283",
 			"source" : "RAB",
@@ -2980,11 +2980,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "TOPO2",
-			"catagory" : "MAB-0588",
+			"catalog" : "MAB-0588",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 175
+			"factory" : 175,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -2997,11 +2997,11 @@
 		"fields" : {
 			"fullname" : "TPO",
 			"alias" : "TPO",
-			"catagory" : "MAB-0630",
+			"catalog" : "MAB-0630",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 176
+			"factory" : 176,
 			"volume" : 150,
 			"description" : "MAB0630",
 			"source" : "MAB",
@@ -3014,11 +3014,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "TS",
-			"catagory" : "MAB-0171",
+			"catalog" : "MAB-0171",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 177
+			"factory" : 177,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -3031,11 +3031,11 @@
 		"fields" : {
 			"fullname" : "Throid Stimulating Hormone",
 			"alias" : "TSH",
-			"catagory" : "MAB-0162",
+			"catalog" : "MAB-0162",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 178
+			"factory" : 178,
 			"volume" : 150,
 			"description" : "MAB0162",
 			"source" : "MAB",
@@ -3048,11 +3048,11 @@
 		"fields" : {
 			"fullname" : "TTF-1",
 			"alias" : "TTF-1",
-			"catagory" : "MAB-0599",
+			"catalog" : "MAB-0599",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 179
+			"factory" : 179,
 			"volume" : 150,
 			"description" : "MAB0599",
 			"source" : "MAB",
@@ -3065,11 +3065,11 @@
 		"fields" : {
 			"fullname" : "",
 			"alias" : "VEGF",
-			"catagory" : "MAB-0243",
+			"catalog" : "MAB-0243",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 180
+			"factory" : 180,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
@@ -3082,11 +3082,11 @@
 		"fields" : {
 			"fullname" : "Villin",
 			"alias" : "Villin",
-			"catagory" : "MAB-0540",
+			"catalog" : "MAB-0540",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 181
+			"factory" : 181,
 			"volume" : 150,
 			"description" : "MAB0540",
 			"source" : "MAB",
@@ -3099,11 +3099,11 @@
 		"fields" : {
 			"fullname" : "Vimentin",
 			"alias" : "Vimentin",
-			"catagory" : "Kit-0019",
+			"catalog" : "Kit-0019",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 182
+			"factory" : 182,
 			"volume" : 150,
 			"description" : "MAB0178",
 			"source" : "MAB",
@@ -3114,13 +3114,13 @@
 		"model": "reagents.PA",
 		"pk": 184,
 		"fields" : {
-			"fullname" : "Wilm"s tumor",
+			"fullname" : "Wilm's tumor",
 			"alias" : "WT1",
-			"catagory" : "MAB-0277",
+			"catalog" : "MAB-0277",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160317",
-			"factory" : 183
+			"factory" : 183,
 			"volume" : 150,
 			"description" : "MAB0277",
 			"source" : "MAB",
@@ -3132,12 +3132,12 @@
 		"pk": 185,
 		"fields" : {
 			"fullname" : "",
-			"alias" : "¦Â-Tubulin-¢ó",
-			"catagory" : "MAB-0636",
+			"alias" : "ï¿½ï¿½-Tubulin-ï¿½ï¿½",
+			"catalog" : "MAB-0636",
 			"incub" : 60,
 			"ar" : "High PH",
 			"date" : "160616",
-			"factory" : 184
+			"factory" : 184,
 			"volume" : 0,
 			"description" : "",
 			"source" : "",
