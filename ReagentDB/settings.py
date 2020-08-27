@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reagents',         # our reagents app we created
+    'users',            # users app so we can log in
+    'oauth2_provider',  # ouath2 as our authorization package
     'rest_framework',   # needed for our rest_framework
     'django_extensions',# extra manange.py goodies, especially reset_db for development
 ]
@@ -50,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', # This needs to be first
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
 ]
 
 ROOT_URLCONF = 'ReagentDB.urls'
@@ -72,6 +76,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 
+# Rest Franework
+# https://www.django-rest-framework.org/
+# https://django-oauth-toolkit.readthedocs.io/en/latest/rest-framework/getting_started.html
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        # TODO: Personally protect each endpoint API or allow for authenticated users
+        #'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # To keep the Browsable API
+    'oauth2_provider.backends.OAuth2Backend',
+)
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

@@ -30,6 +30,9 @@ def pa_list(request):
     """
     GET all PA or send POST request to add a new PA
     """
+    content = {
+        'status': 'request was permitted'
+    }
     if request.method == 'GET':
         pa = PA.objects.all()
         serializer = PASerializer(pa, many=True)
@@ -46,7 +49,8 @@ def pa_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+    return Response(content)
+    
 @csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def pa_detail(request, catalog):
