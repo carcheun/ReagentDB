@@ -4,7 +4,8 @@
 		"pk": 1,
 		"fields" : {
 			"autostainer_sn": "SN12345", 
-			"name": "Stainer 1"
+			"name": "Stainer 1",
+			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
 		}
 	},
 	{
@@ -12,7 +13,8 @@
 		"pk": 2,
 		"fields" : {
 			"autostainer_sn": "SN12346", 
-			"name": "Stainer 2"
+			"name": "Stainer 2",
+			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
 		}
 	},
 	{
@@ -20,7 +22,8 @@
 		"pk": 3,
 		"fields" : {
 			"autostainer_sn": "SN12347", 
-			"name": "Stainer 3"
+			"name": "Stainer 3",
+			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
 		}
 	}
 ]

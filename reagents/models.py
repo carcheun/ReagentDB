@@ -42,6 +42,7 @@ class AutoStainerStation(models.Model):
     """
     autostainer_sn = models.TextField(primary_key=True)
     name = models.TextField()
+    latest_sync_time_PA = models.DateTimeField()
 
 class PA(models.Model):
     """
@@ -55,12 +56,11 @@ class PA(models.Model):
     fullname = models.TextField()
     alias = models.TextField()
     source = models.TextField()
-    catalog = models.TextField(unique=True, blank=True)
+    catalog = models.TextField(primary_key=True)
     volume = models.IntegerField(default=0)
     incub = models.IntegerField()
     ar = models.TextField()
     description = models.TextField()
-    factory = models.IntegerField(default=1)
     date = models.DateField()
     # last updated time for PA
     time = models.DateTimeField()
@@ -68,6 +68,30 @@ class PA(models.Model):
     # is this reagent from factory or from customer
     # PA_fact8 vs PA_user8
     is_factory = models.BooleanField(default=False)
+
+class PADelta(models.Model):
+    """
+    A PA change log for the server.
+    Changes to the server (from webpage or other clients) are
+    listed here and sent to clients when clients request
+    updates
+    """
+    fullname = models.TextField()
+    alias = models.TextField()
+    source = models.TextField()
+    catalog = models.TextField(primary_key=True)
+    volume = models.IntegerField(default=0)
+    incub = models.IntegerField()
+    ar = models.TextField()
+    description = models.TextField()
+    is_factory = models.BooleanField(default=False)
+    
+    # CREATE/UPDATE/DELETE
+    operation = models.TextField()
+    update_at = models.DateField()
+    # if this field is blank, then update was provided by someone
+    # interacting with the server directly
+    update_from = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
 
 class QP(models.Model):
     """

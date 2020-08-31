@@ -1,0 +1,58 @@
+[
+	{
+		"model": "reagents.PA",
+		"pk": 1,
+		"fields" : {
+			"alias": "IDH1 R132H", 
+			"catalog": "MAB-0662", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+            "updated_at": "2020-08-14T15:09:29Z", 
+            "operation" : "DELETE",
+			"is_factory": false
+		}
+    },
+	{
+		"model": "reagents.PA",
+		"pk": 2,
+		"fields" : {
+			"alias": "SYNC Update", 
+			"catalog": "MAB-0162", 
+			"volume": 2000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+            "updated_at": "2020-08-31T14:22:29Z", 
+            "operation" : "UPDATE",
+			"is_factory": false
+		}
+    },
+    {
+		"model": "reagents.PA",
+		"pk": 3,
+		"fields" : {
+			"alias": "SYNC Create", 
+			"catalog": "CYN-1234", 
+			"volume": 2000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+            "updated_at": "2020-08-31T14:23:29Z", 
+            "operation" : "CREATE",
+			"is_factory": false
+		}
+    },
+    {
+		"model": "reagents.PA",
+		"pk": 4,
+		"fields" : {
+			"alias": "FAILURE TO UPDATE", 
+			"catalog": "MAB-0662", 
+			"volume": 2000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+            "updated_at": "2020-08-11T15:09:29Z", 
+            "operation" : "UPDATE",
+			"is_factory": false
+		}
+    }
+]

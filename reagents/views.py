@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser
@@ -23,6 +24,57 @@ def index(request):
     }
     
     return render(request, 'reagents/index.html', context)
+
+def pa_return_sync(request):
+    """
+    Client asks server if it needs any updates
+    Server determines it's latest changes and
+    returns latest changelog to Client
+    """
+    return
+
+@csrf_exempt
+@api_view(['POST'])
+def pa_recieve_sync(request):
+    """
+    Client provides the server with a change action
+    Server determines what changes it requires via
+    time stamp
+    """
+    if request.method == 'POST':
+        ret_status = status.HTTP_204_NO_CONTENT
+        delta = JSONParser().parse(request)
+        # get changes based on catalog, the latest timestamp
+        serializer = None
+        delta['date'] = delta['updated_at'][:10]
+        delta['time'] = delta['updated_at']
+        if delta['operation'] == 'CREATE':
+            # create an object and save
+            serializer = PASerializer(data=delta)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif delta['operation'] == 'UPDATE':
+            try:
+                pa = PA.objects.get(catalog=delta['catalog'])
+            except PA.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            dt_updated_at = make_aware(datetime.strptime(delta['updated_at'], '%Y-%m-%dT%H:%M:%SZ'))
+            if pa.time < dt_updated_at:
+                serializer = PASerializer(pa, data=delta)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        elif delta['operation'] == 'DELETE':
+            try:
+                pa = PA.objects.get(catalog=delta['catalog'])
+            except PA.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            pa.delete()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+    return JsonResponse({"status" : "I didnt do anything"})
 
 @csrf_exempt
 @api_view(['GET', 'POST'])

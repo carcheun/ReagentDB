@@ -11,7 +11,6 @@
 			"incub": 60, 
 			"ar": "Low PH", 
 			"description": "Dummy Data", 
-			"factory": 1, 
 			"date": "2020-08-14", 
 			"time": "2020-08-14T15:09:29Z", 
 			"is_factory": true
@@ -29,7 +28,6 @@
 			"incub": 60, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"factory": 1, 
 			"date": "2020-08-14", 
 			"time": "2020-08-14T15:09:29Z", 
 			"is_factory": true
@@ -47,7 +45,6 @@
 			"incub": 60, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"factory": 1, 
 			"date": "2020-08-14", 
 			"time": "2020-08-14T15:09:29Z", 
 			"is_factory": true
@@ -65,7 +62,6 @@
 			"incub": 20, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"factory": 1, 
 			"date": "2020-08-16", 
 			"time": "2020-08-14T15:09:29Z", 
 			"is_factory": false
