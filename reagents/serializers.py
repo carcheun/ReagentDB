@@ -19,8 +19,8 @@ class AutoStainerStationSerializer(serializers.ModelSerializer):
 class PASerializer(serializers.ModelSerializer):
     class Meta:
         model = PA
-        fields = ('fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
-            'date', 'time', 'is_factory',)
+        fields = ['fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
+            'date', 'is_factory']
         extra_kwargs = {'fullname' : {'required': False},
             'source' : {'required': False},
             'volume' : {'required': False},
@@ -37,5 +37,13 @@ class PADeltaSerializer(serializers.ModelSerializer):
             'source' : {'required': False},
             'volume' : {'required': False},
             'description': {'required': False},
-            'is_factory' : {'required': False}
+            'is_factory' : {'required': False},
         }
+
+    def __init__(self, *args, **kwargs):
+        operation = kwargs.pop('operation', None)
+        update_at = kwargs.pop('update_at', None)
+        kwargs['data']['operation'] = operation
+        if update_at:
+            kwargs['data']['update_at'] = update_at
+        super(PADeltaSerializer, self).__init__(*args, **kwargs)

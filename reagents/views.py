@@ -6,7 +6,7 @@ from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
 
@@ -292,10 +292,41 @@ class AutoStainerStationViewSet(viewsets.ModelViewSet):
     """
     queryset = AutoStainerStation.objects.all()
     serializer_class = AutoStainerStationSerializer
-    
+
 class PAViewSet(viewsets.ModelViewSet):
     """
-    ModelViewSet for PA, quick easy way to view data
+    ModelViewSet for PA
     """
     queryset = PA.objects.all()
     serializer_class = PASerializer
+
+    # custom definitions
+    @action(detail=True, methods=['post'])
+    def do_something(self, request):
+        return
+
+    def create(self, request):
+        """
+        Capture create action and place into the PA
+        delta table
+        """
+        data = request.data.copy()
+        deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
+        if deltaSerializer.is_valid():
+            ret = super().create(request)
+            if ret.status_code == status.HTTP_201_CREATED:
+                deltaSerializer.save()
+            return ret
+        else:
+            return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request):
+        """
+        Capture update action and place into the PA
+        delta table
+        """
+        data = request.data.copy()
+        data['operation'] = 'UPDATE'
+        
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)

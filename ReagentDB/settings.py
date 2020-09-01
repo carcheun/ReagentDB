@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'reagentsDB',
+        'NAME': 'reagentsdb',
         'USER' : 'admin',
         'PASSWORD' : 'admin',
         'HOST': 'localhost',

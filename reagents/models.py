@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -44,7 +45,24 @@ class AutoStainerStation(models.Model):
     name = models.TextField()
     latest_sync_time_PA = models.DateTimeField()
 
-class PA(models.Model):
+
+class CommonInfoPA(models.Model):
+    """
+    Common values between PA and PADelta
+    """
+    fullname = models.TextField()
+    alias = models.TextField()
+    source = models.TextField()
+    volume = models.IntegerField(default=0)
+    incub = models.IntegerField(default=15)
+    ar = models.TextField(default='NO')
+    description = models.TextField()
+    is_factory = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+class PA(CommonInfoPA):
     """
     PA_fact8 and PA_user8
     Reagent catalog, not the current reagents on hand
@@ -53,44 +71,26 @@ class PA(models.Model):
     
     Info from ASHome/PaTbl.h
     """
-    fullname = models.TextField()
-    alias = models.TextField()
-    source = models.TextField()
+    # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True)
-    volume = models.IntegerField(default=0)
-    incub = models.IntegerField()
-    ar = models.TextField()
-    description = models.TextField()
-    date = models.DateField()
-    # last updated time for PA
-    time = models.DateTimeField()
-    
-    # is this reagent from factory or from customer
-    # PA_fact8 vs PA_user8
-    is_factory = models.BooleanField(default=False)
+    date = models.DateTimeField(default=now)
 
-class PADelta(models.Model):
+    class Meta:
+        ordering = ['catalog']
+
+class PADelta(CommonInfoPA):
     """
     A PA change log for the server.
     Changes to the server (from webpage or other clients) are
     listed here and sent to clients when clients request
     updates
     """
-    fullname = models.TextField()
-    alias = models.TextField()
-    source = models.TextField()
     catalog = models.TextField()
-    volume = models.IntegerField(default=0)
-    incub = models.IntegerField()
-    ar = models.TextField()
-    description = models.TextField()
-    is_factory = models.BooleanField(default=False)
     
     # CREATE/UPDATE/DELETE
     operation = models.TextField()
-    update_at = models.DateTimeField()
-    # if this field is blank, then update was provided by someone
-    # interacting with the server directly
+    update_at = models.DateTimeField(default=now)
+    # if field is blank, update was provided to the server directly
     autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
 
 class QP(models.Model):
