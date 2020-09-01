@@ -7,7 +7,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'reagent_view', views.ReagentViewSet)
 router.register(r'autostainer_view', views.AutoStainerStationViewSet)
-router.register(r'pa_view', views.PAViewSet)
+router.register(r'pa', views.PAViewSet)
 
 # actual URL's users should use for POST/GET/PUT
 urlpatterns  = [
@@ -20,8 +20,6 @@ urlpatterns  = [
     path('api/reagent/', views.reagent_list),
     path('api/reagent/<str:reagent_sn>/', views.reagent_detail),
     
-    path('api/pa/', views.pa_list),
-    path('api/pa/<str:catalog>/', views.pa_detail),
     path('api/sync/pa/', views.pa_recieve_sync),
 
     path('api/autostainer/', views.autostainerstation_list),

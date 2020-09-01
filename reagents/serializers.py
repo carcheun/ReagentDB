@@ -34,8 +34,11 @@ class PADeltaSerializer(serializers.ModelSerializer):
         fields = ('fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
             'is_factory', 'operation', 'update_at', 'autostainer_sn',)
         extra_kwargs = {'fullname' : {'required': False},
+            'alias' : {'required': False},
             'source' : {'required': False},
             'volume' : {'required': False},
+            'incub' : {'required': False},
+            'ar' : {'required': False},
             'description': {'required': False},
             'is_factory' : {'required': False},
         }
