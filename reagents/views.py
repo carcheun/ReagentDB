@@ -7,8 +7,8 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.decorators import api_view
-from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer
-from .models import Reagent, AutoStainerStation, PA
+from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer, PADeltaSerializer
+from .models import Reagent, AutoStainerStation, PA, PADelta
 
 from django.shortcuts import render
 
@@ -25,24 +25,15 @@ def index(request):
     
     return render(request, 'reagents/index.html', context)
 
-def pa_return_sync(request):
-    """
-    Client asks server if it needs any updates
-    Server determines it's latest changes and
-    returns latest changelog to Client
-    """
-    return
-
 @csrf_exempt
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def pa_recieve_sync(request):
     """
     Client provides the server with a change action
     Server determines what changes it requires via
-    time stamp
+    latest time stamp
     """
     if request.method == 'POST':
-        ret_status = status.HTTP_204_NO_CONTENT
         delta = JSONParser().parse(request)
         # get changes based on catalog, the latest timestamp
         serializer = None
@@ -74,7 +65,14 @@ def pa_recieve_sync(request):
                 return Response(status=status.HTTP_404_NOT_FOUND)
             pa.delete()
             return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-    return JsonResponse({"status" : "I didnt do anything"})
+    elif request.method == 'GET':
+        data = JSONParser().parse(request)
+        missing_changes = PADelta.objects.filter(update_at__gt=data['last_update'])\
+            .exclude(autostainer_sn=data['autostainer_sn'])
+        # list of all changes and send it back to the client
+        serializer = PADeltaSerializer(missing_changes, many=True)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -93,9 +91,16 @@ def pa_list(request):
             time = datetime.now()
             data['date'] = time.strftime('%Y-%m-%d')
             data['time'] = time
+            data['update_at'] = time
+        else:
+            data['update_at'] = data['time']
+        data['operation'] = 'POST'
+        deltaSerializer = PADeltaSerializer(data=data)
         serializer = PASerializer(data=data)
-        if serializer.is_valid():
+        # save both changelog and change to data base
+        if serializer.is_valid() and deltaSerializer.is_valid():
             serializer.save()
+            deltaSerializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -105,6 +110,7 @@ def pa_detail(request, catalog):
     """
     Retrieve, update or delete a single PA entry via
     product number
+    place changes into change log as well
     """
     many_copies = False
     try:
@@ -128,10 +134,16 @@ def pa_detail(request, catalog):
             time = datetime.now()
             data['date'] = time.strftime('%Y-%m-%d')
             data['time'] = time
+        else:
+            data['update_at'] = data['time']
+        data['operation'] = 'UPDATE'
+        deltaSerializer = PADeltaSerializer(data=data)
         serializer = PASerializer(pa, data=data)
-        if serializer.is_valid():
+        if serializer.is_valid() and deltaSerializer.is_valid():
             serializer.save()
+            deltaSerializer.save()
             return Response(serializer.data)
+        print(deltaSerializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':

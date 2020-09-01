@@ -79,7 +79,7 @@ class PADelta(models.Model):
     fullname = models.TextField()
     alias = models.TextField()
     source = models.TextField()
-    catalog = models.TextField(primary_key=True)
+    catalog = models.TextField()
     volume = models.IntegerField(default=0)
     incub = models.IntegerField()
     ar = models.TextField()
@@ -88,10 +88,10 @@ class PADelta(models.Model):
     
     # CREATE/UPDATE/DELETE
     operation = models.TextField()
-    update_at = models.DateField()
+    update_at = models.DateTimeField()
     # if this field is blank, then update was provided by someone
     # interacting with the server directly
-    update_from = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
+    autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
 
 class QP(models.Model):
     """

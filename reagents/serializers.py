@@ -2,7 +2,7 @@
 # convert django model data over to JSON or XML format (serialization)
 from rest_framework import serializers
 
-from .models import Reagent, AutoStainerStation, PA
+from .models import Reagent, AutoStainerStation, PA, PADelta
 
 # information based of of models.py
 class ReagentSerializer(serializers.ModelSerializer):
@@ -21,6 +21,18 @@ class PASerializer(serializers.ModelSerializer):
         model = PA
         fields = ('fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
             'date', 'time', 'is_factory',)
+        extra_kwargs = {'fullname' : {'required': False},
+            'source' : {'required': False},
+            'volume' : {'required': False},
+            'description': {'required': False},
+            'is_factory' : {'required': False}
+        }
+
+class PADeltaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PADelta
+        fields = ('fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 'ar', 'description',
+            'is_factory', 'operation', 'update_at', 'autostainer_sn',)
         extra_kwargs = {'fullname' : {'required': False},
             'source' : {'required': False},
             'volume' : {'required': False},
