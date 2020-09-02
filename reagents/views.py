@@ -26,55 +26,6 @@ def index(request):
     return render(request, 'reagents/index.html', context)
 
 @csrf_exempt
-@api_view(['POST', 'GET'])
-def pa_recieve_sync(request):
-    """
-    Client provides the server with a change action
-    Server determines what changes it requires via
-    latest time stamp
-    """
-    if request.method == 'POST':
-        delta = JSONParser().parse(request)
-        # get changes based on catalog, the latest timestamp
-        serializer = None
-        delta['date'] = delta['updated_at'][:10]
-        delta['time'] = delta['updated_at']
-        if delta['operation'] == 'CREATE':
-            # create an object and save
-            serializer = PASerializer(data=delta)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        elif delta['operation'] == 'UPDATE':
-            try:
-                pa = PA.objects.get(catalog=delta['catalog'])
-            except PA.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            dt_updated_at = make_aware(datetime.strptime(delta['updated_at'], '%Y-%m-%dT%H:%M:%SZ'))
-            if pa.time < dt_updated_at:
-                serializer = PASerializer(pa, data=delta)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        elif delta['operation'] == 'DELETE':
-            try:
-                pa = PA.objects.get(catalog=delta['catalog'])
-            except PA.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            pa.delete()
-            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-    elif request.method == 'GET':
-        data = JSONParser().parse(request)
-        missing_changes = PADelta.objects.filter(update_at__gt=data['last_update'])\
-            .exclude(autostainer_sn=data['autostainer_sn'])
-        # list of all changes and send it back to the client
-        serializer = PADeltaSerializer(missing_changes, many=True)
-        return Response(serializer.data)
-    return Response(status=status.HTTP_404_NOT_FOUND)
-
-@csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def reagent_detail(request, reagent_sn):
     """
@@ -126,54 +77,6 @@ def reagent_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
-@api_view(['GET', 'POST'])
-def autostainerstation_list(request):
-    """
-    Get a list of the autostation stations currently registered
-    """
-    if request.method == 'GET':
-        autostainer = AutoStainerStation.objects.all()
-        serializer = AutoStainerStationSerializer(autostainer, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AutoStainerStationSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@csrf_exempt
-@api_view(['GET', 'PUT', 'DELETE'])
-def autostainerstation_detail(request, sn):
-    """
-    Get single autostainerstation or update/delete station details
-    """
-    many_copies = False
-    try:
-        autostainer = AutoStainerStation.objects.get(autostainer_sn=sn)
-    except AutoStainerStation.DoesNotExist:
-        content = {'message' : 'autostainer does not exist'}
-        return Response(content, status=status.HTTP_404_NOT_FOUND)
-    except AutoStainerStation.MultipleObjectsReturned:
-        # handle duplicates, return first one
-        autostainer = AutoStainerStation.objects.filter(autostainer_sn=sn)
-        many_copies = True
-        
-    if request.method == 'GET':
-        serializer = AutoStainerStationSerializer(autostainer, many=many_copies)
-        return Response(serializer.data)
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = AutoStainerStationSerializer(autostainer, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        autostainer.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @csrf_exempt
 @api_view(['GET'])
@@ -209,8 +112,57 @@ class PAViewSet(viewsets.ModelViewSet):
     queryset = PA.objects.all()
     serializer_class = PASerializer
 
-    @action(detail=False, methods=['get'])
-    def return_sync_response(self, request):
+    @action(detail=False, methods=['post'])
+    def initial_sync(self, request):
+        """
+        Initial sync request. Client sends their database to server
+        and server determines if any model instances need to be updated
+        or created. 
+        """
+        data = JSONParser().parse(request)
+        missing = self.queryset.all()
+        ret = list()
+
+        # for each item we recieve
+        for d in data:
+            obj, created = self.queryset.get_or_create(
+                catalog=d['catalog'],
+                defaults={
+                    'fullname': d['fullname'], 
+                    'alias': d['alias'],
+                    'source': d['source'],
+                    'volume': d['volume'],
+                    'incub': d['incub'], 
+                    'ar': d['ar'], 
+                    'description': d['description'],
+                    'is_factory': d['factory'],
+                    'date': d['date']
+                }
+            )
+            if not created:
+                # this item exists, remove from missing list
+                missing = missing.exclude(catalog=obj.catalog)
+                if obj.is_older(d['date']):
+                    # older, update object
+                    obj.fullname = d['fullname']
+                    obj.alias = d['alias']
+                    obj.source = d['source']
+                    obj.volume = d['volume']
+                    obj.incub = d['incub']
+                    obj.ar = d['ar']
+                    obj.description = d['description']
+                    obj.is_factory = d['factory']
+                    obj.date = d['date']
+                    obj.save()
+                else:
+                    ret.append(obj)
+
+        ret += list(missing)
+        serializer = PASerializer(ret, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def recieve_sync(self, request):
         """
         Client provides sn and last_sync time, returns change log
         of what the server has done since
@@ -223,14 +175,15 @@ class PAViewSet(viewsets.ModelViewSet):
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        dt_last_update = make_aware(datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%SZ'))
+        dt_last_update = make_aware(datetime.strptime(last_sync,\
+            '%Y-%m-%dT%H:%M:%SZ'))
         missing_changes = PADelta.objects.filter(update_at__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
-    def recieve_sync_request(self, request):
+    def sync_request(self, request):
         """
         Client provides the server with a change action
         Server determines what changes it requires via
@@ -253,7 +206,8 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            dt_updated_at = make_aware(datetime.strptime(data['update_at'], '%Y-%m-%dT%H:%M:%SZ'))
+            dt_updated_at = make_aware(datetime.strptime(data['update_at'],\
+                '%Y-%m-%dT%H:%M:%SZ'))
             if pa.date < dt_updated_at:
                 deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
                 serializer = PASerializer(pa, data=data)
@@ -305,9 +259,7 @@ class PAViewSet(viewsets.ModelViewSet):
         deltaSerializer = PADeltaSerializer(data=data, operation='DELETE')
         if deltaSerializer.is_valid():
             ret = super().destroy(request, pk)
-            print(ret)
             if ret.status_code == status.HTTP_204_NO_CONTENT:
-                print("it is valid!")
                 deltaSerializer.save()
             return ret
         else:

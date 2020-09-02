@@ -1,5 +1,7 @@
+from datetime import datetime
 from django.db import models
 from django.utils.timezone import now
+from django.utils.timezone import make_aware
 
 # Create your models here.
 
@@ -75,9 +77,18 @@ class PA(CommonInfoPA):
     # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True)
     date = models.DateTimeField(default=now)
+    
+    def is_older(self, date):
+        """
+        Returns True if object is older than given date
+        """
+        if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
+            return True
+        return False
 
-    class Meta:
-        ordering = ['catalog']
+
+    #class Meta:
+    #    ordering = ['catalog']
 
 class PADelta(CommonInfoPA):
     """
