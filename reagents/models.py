@@ -8,8 +8,7 @@ from django.utils.timezone import make_aware
 # TODO: Add field requirements
 # TODO: Add self def for other models
 class Reagent(models.Model):
-    """
-    Reag8 and ReagPA8
+    """Reag8 and ReagPA8
     Reagents currently on hand. Reag8 is the inventory of a single
     autostainer, ReagPA8 is the inventory of all autostainers.
     
@@ -38,10 +37,8 @@ class Reagent(models.Model):
         return self.reag_name
     
 class AutoStainerStation(models.Model):
-    """
-    Autostainers identified by S/N, can be given custom name
-    SN can be the machine name, read from the INI file
-    name can be human readable, or just remove it
+    """Autostainers identified by S/N, can be given custom name, SN read from 
+    INI file on client.
     """
     autostainer_sn = models.TextField(primary_key=True)
     name = models.TextField()
@@ -50,8 +47,7 @@ class AutoStainerStation(models.Model):
 
 
 class CommonInfoPA(models.Model):
-    """
-    Common values between PA and PADelta
+    """PA base class
     """
     fullname = models.TextField()
     alias = models.TextField()
@@ -66,11 +62,10 @@ class CommonInfoPA(models.Model):
         abstract = True
 
 class PA(CommonInfoPA):
-    """
-    PA_fact8 and PA_user8
-    Reagent catalog, not the current reagents on hand
-    PA_fact8.d contains reagents sold by factory, PA_user8.d
-    are reagents added to catalog by customers
+    """PA_fact8 and PA_user8
+    Reagent catalog, not the current reagents on hand. PA_fact8.d contains 
+    reagents sold by factory, PA_user8.d are reagents added to catalog by 
+    customers
     
     Info from ASHome/PaTbl.h
     """
@@ -79,8 +74,10 @@ class PA(CommonInfoPA):
     date = models.DateTimeField(default=now)
     
     def is_older(self, date):
-        """
-        Returns True if object is older than given date
+        """Returns True if object is older provided given date
+
+        Arguments:
+            date: a string representation of datetime
         """
         if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
             return True
@@ -91,10 +88,8 @@ class PA(CommonInfoPA):
     #    ordering = ['catalog']
 
 class PADelta(CommonInfoPA):
-    """
-    A PA change log for the server.
-    Changes to the server (from webpage or other clients) are
-    listed here and sent to clients when clients request
+    """A PA change log for the server. Changes to the server (from webpage or 
+    other clients) are listed here and sent to clients when clients request
     updates
     """
     catalog = models.TextField()
@@ -106,7 +101,5 @@ class PADelta(CommonInfoPA):
     autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
 
 class QP(models.Model):
-    """
-    Quick pick, a fine selection of PA's
-    """
+    #Quick pick, menu selection for PA's
     name = models.TextField()

@@ -1,11 +1,11 @@
 from datetime import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser, FormParser
+from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, action
 from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
@@ -91,39 +91,46 @@ def autostainer_get_reagents(request, sn):
     return Response(status=status.HTTP_404_NOT_FOUND)
     
 class ReagentViewSet(viewsets.ModelViewSet):
-    """
-    ModelViewSet for Reagents, quick easy way to view data
+    """ModelViewSet for Reagents, quick easy way to view data
     """
     queryset = Reagent.objects.all()
     serializer_class = ReagentSerializer
     
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
-    """
-    ModelViewSet for AutoStainerStation, quick easy way to view data
+    """ModelViewSet for AutoStainerStation
     """
     queryset = AutoStainerStation.objects.all()
     serializer_class = AutoStainerStationSerializer
 
 class PAViewSet(viewsets.ModelViewSet):
-    """
-    ModelViewSet for PA, custom create/update/destroy
-    in order to log changes into PADelta table
+    """ModelViewSet for PA
+
+    A timestamped entry is added to PADelta detailing each CUD action, 
+    including from whom the entry came from
+
+    TODO: refactor into serialzier?
+    TODO: Mostly just refactor
     """
     queryset = PA.objects.all()
     serializer_class = PASerializer
 
     @action(detail=False, methods=['post'])
     def initial_sync(self, request):
-        """
-        Initial sync request. Client sends their database to server
-        and server determines if any model instances need to be updated
-        or created. 
+        """Initial sync request. 
+        
+        Client sends their database to server and server determines if any
+        PA's need to be updated or created. PAs are NEVER deleted.
+
+        Args:
+            request: empty array, or array containing client database
+        
+        Returns:
+            array containing PA's for client to update or create
         """
         data = JSONParser().parse(request)
         missing = self.queryset.all()
         ret = list()
 
-        # for each item we recieve
         for d in data:
             obj, created = self.queryset.get_or_create(
                 catalog=d['catalog'],
@@ -140,10 +147,10 @@ class PAViewSet(viewsets.ModelViewSet):
                 }
             )
             if not created:
-                # this item exists, remove from missing list
+                # PA already exists, remove from queryset
                 missing = missing.exclude(catalog=obj.catalog)
                 if obj.is_older(d['date']):
-                    # older, update object
+                    # database will update entry if it's older
                     obj.fullname = d['fullname']
                     obj.alias = d['alias']
                     obj.source = d['source']
@@ -155,6 +162,7 @@ class PAViewSet(viewsets.ModelViewSet):
                     obj.date = d['date']
                     obj.save()
                 else:
+                    # database will send the newer entry back to client
                     ret.append(obj)
 
         ret += list(missing)
@@ -163,9 +171,15 @@ class PAViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def recieve_sync(self, request):
-        """
-        Client provides sn and last_sync time, returns change log
-        of what the server has done since
+        """Client provides sn and last_sync time, returns change log of what 
+        the server has done since
+        
+        Arguments (request):
+            autostainer_sn: autostainer serial number provided in settings.ini (?)
+            last_sync: timestamp of last time the client sync
+        
+        Returns:
+            PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
         last_sync = data.pop('last_sync', None)
@@ -184,10 +198,14 @@ class PAViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def sync_request(self, request):
-        """
-        Client provides the server with a change action
-        Server determines what changes it requires via
-        latest time stamp
+        """Client provides the server with a change action. Server determines 
+        what changes it requires via latest time stamp
+
+        Arguments (request):
+            PA_Delta.db: Except in JSON format
+        
+        Returns:
+            Created or updated entry, or No content if delete
         """
         data = JSONParser().parse(request)
         data['date'] = data['update_at']
@@ -230,6 +248,7 @@ class PAViewSet(viewsets.ModelViewSet):
 
 
     def create(self, request, update_at=None):
+        # Override base create method to create PAdelta entry
         data = request.data.copy()
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
         if deltaSerializer.is_valid():
@@ -242,6 +261,7 @@ class PAViewSet(viewsets.ModelViewSet):
 
 
     def update(self, request, pk=None):
+        # Override base create method to create PAdelta entry
         data = request.data.copy()
         deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
         if deltaSerializer.is_valid():
@@ -254,6 +274,7 @@ class PAViewSet(viewsets.ModelViewSet):
 
 
     def destroy(self, request, pk=None):
+        # Override base create method to create PAdelta entry
         data = {}
         data['catalog'] = pk
         deltaSerializer = PADeltaSerializer(data=data, operation='DELETE')
