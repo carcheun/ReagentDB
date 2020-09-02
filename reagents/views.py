@@ -209,28 +209,73 @@ class PAViewSet(viewsets.ModelViewSet):
     queryset = PA.objects.all()
     serializer_class = PASerializer
 
-    # custom definitions
-    @action(detail=True, methods=['post', 'get'])
+    @action(detail=False, methods=['get'])
+    def return_sync_response(self, request):
+        """
+        Client provides sn and last_sync time, returns change log
+        of what the server has done since
+        """
+        data = JSONParser().parse(request)
+        last_sync = data.pop('last_sync', None)
+        autostainer_sn = data.pop('autostainer_sn', None)
+
+        if not last_sync:
+            # we've never sync'd before,
+            # TODO: decide what to do if we've never synced before
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        dt_last_update = make_aware(datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%SZ'))
+        missing_changes = PADelta.objects.filter(update_at__gt=dt_last_update)\
+            .exclude(autostainer_sn=autostainer_sn)
+        serializer = PADeltaSerializer(missing_changes, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
     def recieve_sync_request(self, request):
         """
         Client provides the server with a change action
         Server determines what changes it requires via
         latest time stamp
         """
-        # giant change lof of things todo
-        if request.method == 'POST':
-            delta = JSONParser().parse(request)
-            # get changes based on catalog, the latest timestamp
-            serializer = None
-            delta['date'] = delta['updated_at'][:10]
-            delta['time'] = delta['updated_at']
-            if delta['operation'] == 'CREATE':
-                # create an object and save
-                return self.create(request)
+        data = JSONParser().parse(request)
+        data['date'] = data['update_at']
+        if data['operation'] == 'CREATE':
+            serializer = PASerializer(data=data)
+            deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
+            if serializer.is_valid() and deltaSerializer.is_valid():
+                serializer.save()
+                deltaSerializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif data['operation'] == 'UPDATE':
+            # check the timestamp before updating, latest timestamp wins, with server
+            # coming as priority
+            try:
+                pa = PA.objects.get(catalog=data['catalog'])
+            except PA.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            dt_updated_at = make_aware(datetime.strptime(data['update_at'], '%Y-%m-%dT%H:%M:%SZ'))
+            if pa.date < dt_updated_at:
+                deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
+                serializer = PASerializer(pa, data=data)
+                if serializer.is_valid() and deltaSerializer.is_valid():
+                    serializer.save()
+                    deltaSerializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        elif data['operation'] == 'DELETE':
+            try:
+                pa = PA.objects.get(catalog=data['catalog'])
+            except PA.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            deltaSerializer = PADeltaSerializer(data=data, operation='DELETE')
+            if deltaSerializer.is_valid():
+                pa.delete()
+                deltaSerializer.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return
 
-    def create(self, request):
+    def create(self, request, update_at=None):
         data = request.data.copy()
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
         if deltaSerializer.is_valid():
@@ -240,6 +285,7 @@ class PAViewSet(viewsets.ModelViewSet):
             return ret
         else:
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def update(self, request, pk=None):
         data = request.data.copy()
@@ -252,8 +298,8 @@ class PAViewSet(viewsets.ModelViewSet):
         else:
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     def destroy(self, request, pk=None):
-        # find thing, create change log
         data = {}
         data['catalog'] = pk
         deltaSerializer = PADeltaSerializer(data=data, operation='DELETE')
