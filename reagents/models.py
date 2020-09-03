@@ -57,6 +57,7 @@ class CommonInfoPA(models.Model):
     ar = models.TextField(default='NO')
     description = models.TextField()
     is_factory = models.BooleanField(default=False)
+    date = models.DateTimeField(default=now)
 
     class Meta:
         abstract = True
@@ -71,7 +72,6 @@ class PA(CommonInfoPA):
     """
     # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True)
-    date = models.DateTimeField(default=now)
     
     def is_older(self, date):
         """Returns True if object is older provided given date
@@ -79,7 +79,8 @@ class PA(CommonInfoPA):
         Arguments:
             date: a string representation of datetime
         """
-        if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
+        #if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
+        if self.date < date:
             return True
         return False
 
@@ -96,8 +97,6 @@ class PADelta(CommonInfoPA):
     
     # CREATE/UPDATE/DELETE
     operation = models.TextField()
-    update_at = models.DateTimeField(default=now)
-    # if field is blank, update was provided to the server directly
     autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
 
 class QP(models.Model):

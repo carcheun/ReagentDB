@@ -9,6 +9,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, action
 from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
+from .utils import convert_client_date_format
 
 from django.shortcuts import render
 
@@ -130,8 +131,8 @@ class PAViewSet(viewsets.ModelViewSet):
         data = JSONParser().parse(request)
         missing = self.queryset.all()
         ret = list()
-
         for d in data:
+            d['date'] = make_aware(convert_client_date_format(d['date']))
             obj, created = self.queryset.get_or_create(
                 catalog=d['catalog'],
                 defaults={
@@ -191,7 +192,7 @@ class PAViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = make_aware(datetime.strptime(last_sync,\
             '%Y-%m-%dT%H:%M:%SZ'))
-        missing_changes = PADelta.objects.filter(update_at__gt=dt_last_update)\
+        missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
@@ -208,7 +209,6 @@ class PAViewSet(viewsets.ModelViewSet):
             Created or updated entry, or No content if delete
         """
         data = JSONParser().parse(request)
-        data['date'] = data['update_at']
         if data['operation'] == 'CREATE':
             serializer = PASerializer(data=data)
             deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
@@ -224,7 +224,7 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            dt_updated_at = make_aware(datetime.strptime(data['update_at'],\
+            dt_updated_at = make_aware(datetime.strptime(data['date'],\
                 '%Y-%m-%dT%H:%M:%SZ'))
             if pa.date < dt_updated_at:
                 deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
@@ -247,7 +247,7 @@ class PAViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-    def create(self, request, update_at=None):
+    def create(self, request, date=None):
         # Override base create method to create PAdelta entry
         data = request.data.copy()
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')

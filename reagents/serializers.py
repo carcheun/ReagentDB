@@ -29,11 +29,13 @@ class PASerializer(serializers.ModelSerializer):
             'is_factory' : {'required': False}
         }
 
+    
+
 class PADeltaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PADelta
         fields = ['fullname', 'alias', 'source', 'catalog', 'volume', 'incub', 
-            'ar', 'description', 'is_factory', 'operation', 'update_at', 
+            'ar', 'description', 'is_factory', 'operation', 'date', 
             'autostainer_sn',]
         extra_kwargs = {'fullname' : {'required': False},
             'alias' : {'required': False},
@@ -50,9 +52,6 @@ class PADeltaSerializer(serializers.ModelSerializer):
         and generate a timestamp
         """
         operation = kwargs.pop('operation', None)
-        update_at = kwargs.pop('update_at', None)
         if operation:
             kwargs['data']['operation'] = operation
-        if update_at:
-            kwargs['data']['update_at'] = update_at
         super(PADeltaSerializer, self).__init__(*args, **kwargs)

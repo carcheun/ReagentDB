@@ -55,6 +55,38 @@
 			"alias": "NOTFACT", 
 			"source": "pa_fixture.json", 
 			"catalog": "NAF-0122", 
+			"volume": 2500, 
+			"incub": 15, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29Z", 
+			"is_factory": false
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 5,
+		"fields" : {
+			"fullname": "Data only server has", 
+			"alias": "SERDAT1", 
+			"source": "pa_fixture.json", 
+			"catalog": "SER-0001", 
+			"volume": 1000, 
+			"incub": 20, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29Z", 
+			"is_factory": false
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 6,
+		"fields" : {
+			"fullname": "Data only server has", 
+			"alias": "SERDAT2", 
+			"source": "pa_fixture.json", 
+			"catalog": "SER-0002", 
 			"volume": 5000, 
 			"incub": 20, 
 			"ar": "High PH", 
