@@ -3,18 +3,21 @@ version: '3.8'
 
 services:
   web:
+    restart: always
     build: ./web
-    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    links:
+      - postgres:postgres
     volumes:
       - web-reagentdb:/usr/src/app
       - web-static:/usr/src/app/static
-    ports:
-      - 8000:8000
     env_file:
       - .env
     environment:
       DEBUG: 'true'
-    command: /usr/local/bin/gunicorn reagentdb.wsgi:application -w 2 -b :8000
+    #command: /usr/local/bin/gunicorn ReagentDB.wsgi:application -w 2 -b :8000
+    command: /usr/local/bin/gunicorn --workers=2 --bind 0.0.0.0:8000 ReagentDB.wsgi:application
 
   nginx:
     restart: always
@@ -25,7 +28,20 @@ services:
       - web-static:/www/static
     links:
       - web:web
+    depends_on:
+      - web
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust" # new
 
 volumes:
   web-reagentdb:
   web-static:
+  pgdata:
