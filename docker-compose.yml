@@ -1,47 +1,30 @@
 # guide from https://realpython.com/django-development-with-docker-compose-and-machine/
+# and also https://github.com/testdrivenio/django-on-docker
 version: '3.8'
 
 services:
   web:
     restart: always
-    build: ./web
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
-    links:
-      - postgres:postgres
     volumes:
-      - web-reagentdb:/usr/src/app
-      - web-static:/usr/src/app/static
+      - ./app/:/usr/src/app/
     env_file:
-      - .env
-    environment:
-      DEBUG: 'true'
-    #command: /usr/local/bin/gunicorn ReagentDB.wsgi:application -w 2 -b :8000
-    command: /usr/local/bin/gunicorn --workers=2 --bind 0.0.0.0:8000 ReagentDB.wsgi:application
-
-  nginx:
-    restart: always
-    build: ./nginx/
-    ports:
-      - "80:80"
-    volumes:
-      - web-static:/www/static
-    links:
-      - web:web
+      - ./.env.dev
     depends_on:
-      - web
+      - postgres
 
   postgres:
-    restart: always
-    image: postgres:latest
-    ports:
-      - "5432:5432"
+    image: postgres:12.4-alpine
     volumes:
       - pgdata:/var/lib/postgresql/data/
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust" # new
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_dev
 
 volumes:
-  web-reagentdb:
-  web-static:
   pgdata:

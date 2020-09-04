@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -25,11 +24,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 #SECRET_KEY = '_1fl$e!6#+&(brk8&qsi8&9itgglq=ti7*yhswk0od^zmg(sc9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'NO').lower() in ('on', 'true', 'y', 'yes')
+DEBUG = int(os.environ.get("DEBUG", default=0))
 #DEBUG = True
 
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -42,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'ReagentDB.apps.reagents',          # our reagents app we created
+    'reagents',                         # our reagents app we created
     'rest_framework',                   # needed for our rest_framework
     'django_extensions',                # extra manange.py goodies
 ]
@@ -94,12 +93,12 @@ WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASS'],
-        'HOST': os.environ['DB_SERVICE'],
-        'PORT': os.environ['DB_PORT']
+        'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        'NAME': os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        'USER': os.environ.get("SQL_USER", "user"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", "password"),
+        'HOST': os.environ.get("SQL_HOST", "localhost"),
+        'PORT': os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -140,4 +139,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

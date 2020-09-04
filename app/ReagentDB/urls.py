@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('reagents/', include('ReagentDB.apps.reagents.urls')),
+    path('reagents/', include('reagents.urls')),
 ]
