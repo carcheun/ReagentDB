@@ -1,7 +1,7 @@
 FROM nginx:1.19.2-alpine
 
 RUN \
-  if [-d /etc/nginx/sites-enabled/default ]; \
+  if [ -d /etc/nginx/sites-enabled/default ]; \
   then rm /etc/nginx/sites-enabled/default; \
   fi
 

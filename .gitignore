@@ -142,3 +142,4 @@ Scripts/
 
 # Ignore .vscode folder
 .vscode
+pyvenv.cfg
