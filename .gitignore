@@ -143,4 +143,4 @@ Scripts/
 # Ignore .vscode folder
 .vscode
 pyvenv.cfg
-.app/static/*
+app/static/*
