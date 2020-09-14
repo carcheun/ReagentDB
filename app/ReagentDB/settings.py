@@ -30,6 +30,18 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+# TODO: Remove and change this to env files
+# copied from https://github.com/dkarchmer/aws-eb-docker-django
+# used for creating superuser as a manage.py command
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+    ('admin', 'admin@mysite.com'),
+)
+ADMIN_USERNAME = 'admin'
+ADMIN_EMAIL = 'admin@mysite.com'
+ADMIN_INITIAL_PASSWORD = 'admin' # To be changed after first login by admin
+
+
 
 # Application definition
 

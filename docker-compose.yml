@@ -6,7 +6,13 @@ services:
   web:
     restart: always
     build: ./app
-    command: python manage.py runserver 0.0.0.0:8000
+    #command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py initadmin &&
+      python manage.py testserver --addrport 0.0.0.0:8000
+      ./reagents/fixtures/test_pa.json
+      ./reagents/fixtures/test_autostainerstation.json
+      --noinput"
     ports:
       - "8000:8000"
     volumes:
@@ -19,12 +25,13 @@ services:
   postgres:
     image: postgres:12.4-alpine
     volumes:
-      - pgdata:/var/lib/postgresql/data/
+      - pgdata:/var/lib/postgresql_test/data/
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust" # new
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust # new
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=postgres_dev
+      - POSTGRES_HOST=postgres
 
 volumes:
   pgdata:

@@ -43,7 +43,7 @@ class AutoStainerStation(models.Model):
     autostainer_sn = models.TextField(primary_key=True)
     name = models.TextField()
     # for our own record, so we can delete older change logs
-    latest_sync_time_PA = models.DateTimeField()
+    latest_sync_time_PA = models.DateTimeField(null=True)
 
 
 class CommonInfoPA(models.Model):

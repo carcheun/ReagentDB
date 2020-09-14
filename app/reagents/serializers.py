@@ -15,7 +15,9 @@ class ReagentSerializer(serializers.ModelSerializer):
 class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
-        fields = ('autostainer_sn', 'name')
+        fields = ['autostainer_sn', 'name', 'latest_sync_time_PA']
+        extra_kwargs = {'latest_sync_time_PA' : {'required' : False}
+        }
         
 class PASerializer(serializers.ModelSerializer):
     class Meta:
