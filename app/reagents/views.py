@@ -196,6 +196,7 @@ class PAViewSet(viewsets.ModelViewSet):
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
+        print(missing_changes)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -234,7 +235,7 @@ class PAViewSet(viewsets.ModelViewSet):
                     serializer.save()
                     deltaSerializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         elif data['operation'] == 'DELETE':
             try:
                 pa = PA.objects.get(catalog=data['catalog'])

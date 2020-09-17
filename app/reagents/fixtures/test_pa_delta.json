@@ -1,6 +1,6 @@
 [
 	{
-		"model": "reagents.PA",
+		"model": "reagents.PADelta",
 		"pk": 1,
 		"fields" : {
 			"alias": "IDH1 R132H", 
@@ -8,13 +8,13 @@
 			"volume": 5000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "update_at": "2020-08-14T15:09:29Z", 
+            "date": "2020-08-14T15:09:29Z", 
             "operation" : "DELETE",
 			"is_factory": false
 		}
     },
 	{
-		"model": "reagents.PA",
+		"model": "reagents.PADelta",
 		"pk": 2,
 		"fields" : {
 			"alias": "SYNC Update", 
@@ -22,13 +22,13 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "update_at": "2020-08-31T14:22:29Z", 
+            "date": "2020-08-31T14:22:29Z", 
             "operation" : "UPDATE",
 			"is_factory": false
 		}
     },
     {
-		"model": "reagents.PA",
+		"model": "reagents.PADelta",
 		"pk": 3,
 		"fields" : {
 			"alias": "SYNC Create", 
@@ -36,13 +36,13 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "update_at": "2020-08-31T14:23:29Z", 
+            "date": "2020-08-31T14:23:29Z", 
             "operation" : "CREATE",
 			"is_factory": false
 		}
     },
     {
-		"model": "reagents.PA",
+		"model": "reagents.PADelta",
 		"pk": 4,
 		"fields" : {
 			"alias": "FAILURE TO UPDATE", 
@@ -50,7 +50,7 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "update_at": "2020-08-11T15:09:29Z", 
+            "date": "2020-08-11T15:09:29Z", 
             "operation" : "UPDATE",
 			"is_factory": false
 		}

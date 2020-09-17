@@ -12,6 +12,7 @@ services:
       python manage.py testserver --addrport 0.0.0.0:8000
       ./reagents/fixtures/test_pa.json
       ./reagents/fixtures/test_autostainerstation.json
+      ./reagents/fixtures/test_pa_delta.json
       --noinput"
     ports:
       - "8000:8000"
