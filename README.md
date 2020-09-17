@@ -21,3 +21,8 @@ python manage.py runserver
 python manage.py testserver mydata.json
 
 python manage.py test
+
+
+Docker
+------------
+docker-compose -f docker-compose.yml up --build -d

@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register(r'reagent_view', views.ReagentViewSet)
 router.register(r'autostainer', views.AutoStainerStationViewSet)
 router.register(r'pa', views.PAViewSet)
+router.register(r'padelta', views.PADeltaViewSet)
 
 # actual URL's users should use for POST/GET/PUT
 urlpatterns  = [

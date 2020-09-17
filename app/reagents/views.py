@@ -171,9 +171,9 @@ class PAViewSet(viewsets.ModelViewSet):
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
-    def recieve_sync(self, request):
+    def database_to_client_sync(self, request):
         """Client provides sn and last_sync time, returns change log of what 
-        the server has done since
+        the server has done since. Good to call on application startup
         
         Arguments (request):
             autostainer_sn: autostainer serial number provided in settings.ini (?)
@@ -190,15 +190,16 @@ class PAViewSet(viewsets.ModelViewSet):
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        dt_last_update = make_aware(datetime.strptime(last_sync,\
-            '%Y-%m-%dT%H:%M:%SZ'))
+        dt_last_update = make_aware(convert_client_date_format(last_sync))
+        #dt_last_update = make_aware(datetime.strptime(last_sync,\
+        #    '%Y-%m-%dT%H:%M:%SZ'))
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
-    def sync_request(self, request):
+    def client_to_database_sync(self, request):
         """Client provides the server with a change action. Server determines 
         what changes it requires via latest time stamp
 
@@ -224,7 +225,7 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            dt_updated_at = make_aware(datetime.strptime(data['date'],\
+            dt_updated_at = make_aware(datetime.strptime(data['update_at'],\
                 '%Y-%m-%dT%H:%M:%SZ'))
             if pa.date < dt_updated_at:
                 deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
@@ -246,6 +247,15 @@ class PAViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
+    @action(detail=False, methods=['delete'])
+    def delete(self, request):
+        # delete multiple PA's, use this method instead
+        data = JSONParser().parse(request)
+        print(data)
+        objects_to_delete = self.queryset.filter(catalog__in=[c for c in data['catalog']])
+        objects_to_delete.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, date=None):
         # Override base create method to create PAdelta entry
@@ -285,3 +295,9 @@ class PAViewSet(viewsets.ModelViewSet):
             return ret
         else:
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PADeltaViewSet(viewsets.ModelViewSet):
+    queryset = PADelta.objects.all()
+    serializer_class = PADeltaSerializer

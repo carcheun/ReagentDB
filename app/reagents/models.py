@@ -42,7 +42,9 @@ class AutoStainerStation(models.Model):
     """
     autostainer_sn = models.TextField(primary_key=True)
     name = models.TextField()
-    # for our own record, so we can delete older change logs
+    # Client sends in last sync time registered on their settings.ini, database
+    # then determines what needs to to be synced
+    # this is for our own records to determine when to tidy up delta database
     latest_sync_time_PA = models.DateTimeField(null=True)
 
 
