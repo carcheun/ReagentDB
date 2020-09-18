@@ -40,12 +40,12 @@ class PADeltaSerializer(serializers.ModelSerializer):
             'ar', 'description', 'is_factory', 'operation', 'date', 
             'autostainer_sn',]
         extra_kwargs = {'fullname' : {'required': False},
-            'alias' : {'required': False},
-            'source' : {'required': False},
+            'alias' : {'required': False, 'allow_blank': True},
+            'source' : {'required': False, 'allow_blank': True},
             'volume' : {'required': False},
             'incub' : {'required': False},
-            'ar' : {'required': False},
-            'description': {'required': False},
+            'ar' : {'required': False, 'allow_blank': True},
+            'description': {'required': False, 'allow_blank': True},
             'is_factory' : {'required': False},
         }
 

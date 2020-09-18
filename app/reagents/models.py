@@ -16,7 +16,8 @@ class Reagent(models.Model):
     """
     # if station is deleted, set to None. If field is none, reagent isnt
     # registered to any autostation machine yet
-    autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
+    autostainer_sn = models.ForeignKey('AutoStainerStation', \
+        on_delete=models.SET_NULL, blank=True, null=True)
     reagent_sn = models.TextField(unique=True)
     reag_name = models.TextField()
     # TODO: potential foreign key right here
@@ -99,7 +100,8 @@ class PADelta(CommonInfoPA):
     
     # CREATE/UPDATE/DELETE
     operation = models.TextField()
-    autostainer_sn = models.ForeignKey('AutoStainerStation', on_delete=models.SET_NULL, blank=True, null=True)
+    autostainer_sn = models.ForeignKey('AutoStainerStation', \
+        on_delete=models.SET_NULL, blank=True, null=True, db_constraint=False)
 
 class QP(models.Model):
     #Quick pick, menu selection for PA's

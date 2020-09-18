@@ -191,8 +191,6 @@ class PAViewSet(viewsets.ModelViewSet):
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = make_aware(convert_client_date_format(last_sync))
-        #dt_last_update = make_aware(datetime.strptime(last_sync,\
-        #    '%Y-%m-%dT%H:%M:%SZ'))
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
@@ -211,6 +209,9 @@ class PAViewSet(viewsets.ModelViewSet):
             Created or updated entry, or No content if delete
         """
         data = JSONParser().parse(request)
+        # validate data
+        
+
         if data['operation'] == 'CREATE':
             serializer = PASerializer(data=data)
             deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
@@ -226,8 +227,8 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            dt_updated_at = make_aware(datetime.strptime(data['update_at'],\
-                '%Y-%m-%dT%H:%M:%SZ'))
+            dt_updated_at = datetime.strptime(data['date'],\
+                '%Y-%m-%dT%H:%M:%S%z')
             if pa.date < dt_updated_at:
                 deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
                 serializer = PASerializer(pa, data=data)
@@ -246,6 +247,7 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa.delete()
                 deltaSerializer.save()
                 return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
