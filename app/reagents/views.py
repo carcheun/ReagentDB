@@ -183,14 +183,15 @@ class PAViewSet(viewsets.ModelViewSet):
             PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
+        print(data)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
-
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        dt_last_update = make_aware(convert_client_date_format(last_sync))
+        #dt_last_update = make_aware(convert_client_date_format(last_sync))
+        dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
@@ -206,23 +207,35 @@ class PAViewSet(viewsets.ModelViewSet):
             PA_Delta.db: Except in JSON format
         
         Returns:
-            Created or updated entry, or No content if delete
+            http resonse. Details if the request was sucessful or not.
+            status codes:
+                201/204: It is safe for client to delete thier change entry
+                400: Change did not happen, error is sent back to client
+                404: Change did not happen, error sent back to client.
+                409: Change did not happen, server copy is sent back to client
         """
         data = JSONParser().parse(request)
+        print(data)
         # validate data
-        
+        deltaSerializer = PADeltaSerializer(data=data, operation=data['operation'])
+        if not deltaSerializer.is_valid():
+            print(deltaSerializer.errors)
+            return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if data['operation'] == 'CREATE':
             serializer = PASerializer(data=data)
-            deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
-            if serializer.is_valid() and deltaSerializer.is_valid():
+            if serializer.is_valid():
                 serializer.save()
                 deltaSerializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # this item already exists, whatever is on the server is the right copy
+            if (serializer.errors['catalog'] and data['catalog']):
+                pa = PA.objects.get(catalog=data['catalog'])
+                return Response(serializer.data, status=status.HTTP_409_CONFLICT)
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'UPDATE':
-            # check the timestamp before updating, latest timestamp wins, with server
-            # coming as priority
+            # check the timestamp before updating, latest timestamp wins
             try:
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
@@ -230,24 +243,26 @@ class PAViewSet(viewsets.ModelViewSet):
             dt_updated_at = datetime.strptime(data['date'],\
                 '%Y-%m-%dT%H:%M:%S%z')
             if pa.date < dt_updated_at:
-                deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
                 serializer = PASerializer(pa, data=data)
-                if serializer.is_valid() and deltaSerializer.is_valid():
+                if serializer.is_valid():
                     serializer.save()
                     deltaSerializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                # return current entry, and 409 to let client know there was a conflict,
+                # but that we've returned the 'correct' entry
+                serializer = PASerializer(pa)
+                return Response(serializer.data, status=status.HTTP_409_CONFLICT)
             return Response(status=status.HTTP_204_NO_CONTENT)
         elif data['operation'] == 'DELETE':
             try:
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            deltaSerializer = PADeltaSerializer(data=data, operation='DELETE')
-            if deltaSerializer.is_valid():
-                pa.delete()
-                deltaSerializer.save()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            pa.delete()
+            deltaSerializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
