@@ -5,6 +5,7 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
+    #image: caxcheun/reagentsdb:v0.1
     command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/reagentdb/static

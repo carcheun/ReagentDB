@@ -273,6 +273,14 @@ class PAViewSet(viewsets.ModelViewSet):
         print(data)
         objects_to_delete = self.queryset.filter(catalog__in=[c for c in data['catalog']])
         objects_to_delete.delete()
+        
+        for c in data['catalog']:
+            cata = {}
+            cata['catalog'] = c
+            deltaSerializer = PADeltaSerializer(data=cata, operation='DELETE')
+            if deltaSerializer.is_valid():
+                deltaSerializer.save()
+        
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, date=None):
