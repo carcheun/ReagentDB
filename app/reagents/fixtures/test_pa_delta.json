@@ -8,7 +8,7 @@
 			"volume": 5000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "date": "2020-08-14T15:09:29Z", 
+            "date": "2020-08-14T15:58:19.335044-07:00", 
             "operation" : "DELETE",
 			"is_factory": false
 		}
@@ -22,7 +22,7 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "date": "2020-08-31T14:22:29Z", 
+            "date": "2020-08-31T14:22:09.097451-07:00", 
             "operation" : "UPDATE",
 			"is_factory": false
 		}
@@ -36,7 +36,7 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "date": "2020-08-31T14:23:29Z", 
+            "date": "2020-08-31T14:23:09.127008-07:00", 
             "operation" : "CREATE",
 			"is_factory": false
 		}
@@ -50,7 +50,7 @@
 			"volume": 2000, 
 			"incub": 60, 
 			"ar": "Low PH", 
-            "date": "2020-08-11T15:09:29Z", 
+            "date": "2020-08-11T15:09:35.574754-07:00", 
             "operation" : "UPDATE",
 			"is_factory": false
 		}

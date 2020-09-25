@@ -1,10 +1,206 @@
 import json
+from datetime import datetime
+from django.db import models
 from django.test import TestCase, Client
 from django.forms.models import model_to_dict
 
-from .models import PA, AutoStainerStation
+from .models import PA, AutoStainerStation, PADelta
 
 # Create your tests here.
+
+class PASyncTests(TestCase):
+    fixtures = ['test_pa.json', 'test_autostainerstation.json']
+    
+    def test_recieve_sync(self):
+        # recieve sync from autostainer sn12345
+        # recieve sync from autostainer sn12346
+        # sn12345
+        # update MAB-0662, create 1, delete 1, update MAB-0162
+        # sn12346
+        # update MAB-0162, create 1, delete 1
+        client = Client()
+        SN12345_delta_log = [
+            {
+                "alias": "IDH1 R132H", 
+                "catalog": "MAB-0662", 
+                "volume": 5000, 
+                "incub": 25, # update from 60
+                "ar": "NO", # update from Low PH
+                "date": "2020-09-25T14:27:19-07:00", # 9/25 2:27 PM 
+                "operation" : "UPDATE",
+                'autostainer_sn' : 'SN12345',
+                "is_factory": False
+		    },
+            {
+                "catalog": "RAB-0122", 
+                "date": "2020-09-25T15:58:19-07:00", # 9/25 3:58 PM
+                "operation" : "DELETE",
+                'autostainer_sn' : 'SN12345',
+		    },
+            {
+                "alias": "SYNC Create", 
+                "catalog": "CYN-1234", 
+                "volume": 2000, 
+                "incub": 60, 
+                "ar": "Low PH", 
+                "date": "2020-09-25T16:01:09-07:00", # 9/25 4:91 PM
+                "operation" : "CREATE",
+                'autostainer_sn' : 'SN12345',
+                "is_factory": False
+		    }
+        ]
+        # will try to edit BEFORE SN12345
+        SN12346_delta_log = [
+            {
+                "alias": "IDH1 R132H", 
+                "catalog": "MAB-0662", 
+                "volume": 500, 
+                "incub": 25, # update from 60
+                "ar": "Trypsin", # update from Low PH
+                "date": "2020-09-25T14:25:23-07:00", # 9/25 2:25 PM 
+                "operation" : "UPDATE",
+                'autostainer_sn' : 'SN12346',
+                "is_factory": False
+		    },
+            {
+                "alias": "IDH1 R132H", 
+                "catalog": "CYN-1234", 
+                "volume": 500, 
+                "incub": 25, # update from 60
+                "ar": "Trypsin", # update from Low PH
+                "date": "2020-09-25T20:25:41-07:00", # 9/25 6:25 PM 
+                "operation" : "UPDATE",
+                'autostainer_sn' : 'SN12346',
+                "is_factory": False
+		    }
+        ]
+
+        # send in SN12345 delta first
+        #client_to_database_sync
+        for entry in SN12345_delta_log:
+            response = client.post('/reagents/api/pa/client_to_database_sync/',\
+                json.dumps(entry), content_type='application/json')
+        # expect the changes to have happened
+        mab0662 = model_to_dict(PA.objects.get(catalog='MAB-0662'))
+        self.assertEqual(mab0662['incub'], 25)
+        self.assertEqual(mab0662['ar'], 'NO')
+        self.assertEqual(mab0662['incub'], 25)
+
+        rab0122 = PA.objects.filter(catalog='RAB-0122')
+        self.assertEqual(len(rab0122), 0)
+
+        cyn1234 = PA.objects.filter(catalog='CYN-1234')
+        self.assertEqual(len(cyn1234), 1)
+
+        for entry in SN12346_delta_log:
+            response = client.post('/reagents/api/pa/client_to_database_sync/',\
+                json.dumps(entry), content_type='application/json')
+
+        # expect first edit did not work
+        mab0662 = model_to_dict(PA.objects.get(catalog='MAB-0662'))
+        self.assertEqual(mab0662['incub'], 25)
+        self.assertEqual(mab0662['ar'], 'NO')
+        self.assertEqual(mab0662['incub'], 25)
+
+        cyn1235 = model_to_dict(PA.objects.get(catalog='CYN-1234'))
+        self.assertEqual(cyn1235['volume'], 500)
+        self.assertEqual(cyn1235['ar'], 'Trypsin')
+        self.assertEqual(cyn1235['incub'], 25)
+
+        
+
+class PADeltaTests(TestCase):
+    fixtures = ['test_autostainerstation.json', 'test_pa.json']
+
+    def test_record_create(self):
+        """
+        record a create action when a registered autostainer creates PA
+        """
+        client = Client()
+        test_post = {
+            'fullname': 'PADeltaTests test_record_create', 
+            'alias': 'test_record_create', 
+            'source': 'tests.py', 
+            'catalog': 'CREATE0001', 
+            'volume': 5000, 
+            'incub': 60, 
+            'ar': 'High PH', 
+            'description': 'Dummy Data', 
+            'autostainer_sn' : 'SN12345',
+            'is_factory': False
+        }
+        
+        # send the request
+        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
+            content_type='application/json')
+        delta = model_to_dict(PADelta.objects.latest('date'))
+        self.assertEqual(test_post['fullname'], delta['fullname'])
+        self.assertEqual(test_post['alias'], delta['alias'])
+        self.assertEqual(test_post['source'], delta['source'])
+        self.assertEqual(test_post['catalog'], delta['catalog'])
+        self.assertEqual(test_post['volume'], delta['volume'])
+        self.assertEqual(test_post['incub'], delta['incub'])
+        self.assertEqual(test_post['ar'], delta['ar'])
+        self.assertEqual(test_post['description'], delta['description'])
+        self.assertEqual(test_post['autostainer_sn'], delta['autostainer_sn'])
+        self.assertEqual(test_post['is_factory'], delta['is_factory'])
+        self.assertEqual(delta['operation'], 'CREATE')
+        self.assertEqual(response.status_code, 201)
+
+    def test_record_update(self):
+        """
+        record an update action when registered autostainer edits PA
+        """
+        client = Client()
+        test_post = {
+            'alias': 'test_record_create', 
+            'incub': 25,
+            'ar': 'Low PH',
+            'catalog' : 'NAF-0122',
+            'autostainer_sn' : 'SN12346'
+        }
+        
+        original = model_to_dict(PA.objects.filter(catalog=test_post['catalog'])[0])
+        response = client.put('/reagents/api/pa/NAF-0122/', json.dumps(test_post), \
+            content_type='application/json')
+        delta = model_to_dict(PADelta.objects.latest('date'))
+        updated = model_to_dict(PA.objects.filter(catalog=test_post['catalog'])[0])
+
+        self.assertEqual(original['fullname'], updated['fullname'])
+        self.assertNotEqual(original['alias'], updated['alias'])
+        self.assertEqual(original['source'], updated['source'])
+        self.assertEqual(test_post['catalog'], delta['catalog'])
+        self.assertEqual(original['volume'], updated['volume'])
+        self.assertNotEqual(original['incub'], updated['incub'])
+        self.assertNotEqual(original['ar'], updated['ar'])
+        self.assertEqual(original['description'], updated['description'])
+        self.assertEqual(test_post['autostainer_sn'], delta['autostainer_sn'])
+        self.assertEqual(original['is_factory'], updated['is_factory'])
+        self.assertEqual(delta['operation'], 'UPDATE')
+        self.assertEqual(delta['incub'], test_post['incub'])
+        self.assertEqual(delta['ar'], test_post['ar'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_record_delete(self):
+        """
+        test delete entry gets recorded
+        """
+        client = Client()
+        test_post = {
+            'catalog': ['MAB-0662', 'MAB-0162', 'RAB-0122', 'NAF-0122']
+        }
+
+        response = client.delete('/reagents/api/pa/delete/', json.dumps(test_post), \
+            content_type='application/json')
+        # expect to delete 4 items
+        for c in test_post['catalog']:
+            obj = PA.objects.filter(catalog=c)
+            self.assertEqual(len(obj), 0)
+            delta = model_to_dict(PADelta.objects.filter(catalog=c)\
+                .filter(operation='DELETE')[0])
+            # make sure our entry was actually logged
+            self.assertIsNotNone(delta)
+
 
 class PAViewsTests(TestCase):
     fixtures = ['test_pa.json']
@@ -17,7 +213,7 @@ class PAViewsTests(TestCase):
         response = client.get('/reagents/api/pa/')
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(len(response.json()), 6)
     
     def test_get_single_OK(self):
         """
@@ -37,9 +233,7 @@ class PAViewsTests(TestCase):
         self.assertEqual(r_json['incub'], 60)
         self.assertEqual(r_json['ar'], 'Low PH')
         self.assertEqual(r_json['description'], 'Dummy Data')
-        self.assertEqual(r_json['factory'], 1)
-        self.assertEqual(r_json['date'], '2020-08-14')
-        self.assertEqual(r_json['time'], '2020-08-14T15:09:29Z')
+        self.assertEqual(r_json['date'], '2020-08-14T15:09:29-07:00')
         self.assertEqual(r_json['is_factory'], True)
         
     def test_get_single_fail(self):
@@ -66,10 +260,8 @@ class PAViewsTests(TestCase):
             'incub': 60, 
             'ar': 'Low PH', 
             'description': 'Dummy Data', 
-            'factory': 1, 
-            'date': '2020-08-14', 
-            'time': '2020-08-14T15:09:29Z', 
-            'is_factory': False
+            'is_factory': True,
+            'date': '2020-08-14T15:09:29-07:00'
         }
         
         response = client.post('/reagents/api/pa/', json.dumps(test_post), 
@@ -91,9 +283,7 @@ class PAViewsTests(TestCase):
             'incub': 60, 
             'ar': 'Low PH', 
             'description': 'Dummy Data', 
-            'factory': 1, 
-            'date': '2020-08-14', 
-            'time': '2020-08-14T15:09:29Z', 
+            'date': '2020-08-14T15:09:29-07:00', 
             'is_factory': False
         }
         
@@ -115,9 +305,7 @@ class PAViewsTests(TestCase):
             'incub': 60, 
             'ar': 'High PH', 
             'description': 'Dummy Data', 
-            'factory': 1, 
-            'date': '2020-08-14', 
-            'time': '2020-08-14T15:09:29Z', 
+            'date': '2020-08-14T15:09:29-07:00', 
             'is_factory': False
         }
         catalog = test_post['catalog']
@@ -151,9 +339,7 @@ class PAViewsTests(TestCase):
 			'incub': 20,
 			'ar': 'Low PH',
 			'description': 'Dummy Data updated',
-			'factory': 1,
-			'date': '2020-08-18',
-			'time': '2020-08-18T15:09:29Z',
+			'date': '2020-08-18T15:09:29-0:700',
 			'is_factory': False
 		}
         
@@ -166,12 +352,12 @@ class ReagentsViewsTests(TestCase):
     fixtures = ['test_autostainerstation.json']
 
     def test_get_all(self):
-        print('OK')
+        return
         
 class AutoStainerStationViewsTests(TestCase):
     fixtures = ['test_autostainerstation.json']
-    fields = [field.name for field in AutoStainerStation._meta.get_fields()]
-    fields.pop(0)
+    fields = [field.name for field in AutoStainerStation._meta.fields \
+        if not isinstance(field, models.ForeignKey)]
 
     def test_get_all(self):
         """
@@ -186,6 +372,8 @@ class AutoStainerStationViewsTests(TestCase):
 
         for a_fixture, r in zip(autostainer, response.json()):
             d = model_to_dict(a_fixture)
+            r['latest_sync_time_PA'] = datetime.strptime(r['latest_sync_time_PA'],\
+                '%Y-%m-%dT%H:%M:%S%z')
             for f in self.fields:
                 self.assertEqual(d[f], r[f])
 
@@ -194,10 +382,12 @@ class AutoStainerStationViewsTests(TestCase):
         Test get one works
         """
         client = Client()
-        response = client.get('/reagents/api/autostainer/SN12347/')
         autostainer = AutoStainerStation.objects.get(autostainer_sn='SN12347')
-
+        response = client.get('/reagents/api/autostainer/SN12347/')
         d = model_to_dict(autostainer)
+        r = response.json()
+        r['latest_sync_time_PA'] = datetime.strptime(r['latest_sync_time_PA'],\
+            '%Y-%m-%dT%H:%M:%S%z')
         for f in self.fields:
             self.assertEqual(d[f], response.json()[f])
 

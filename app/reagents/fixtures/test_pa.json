@@ -11,7 +11,7 @@
 			"incub": 60, 
 			"ar": "Low PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": true
 		}
 	},
@@ -27,7 +27,7 @@
 			"incub": 60, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": true
 		}
 	},
@@ -43,7 +43,7 @@
 			"incub": 60, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": true
 		}
 	},
@@ -59,7 +59,7 @@
 			"incub": 15, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": false
 		}
 	},
@@ -75,7 +75,7 @@
 			"incub": 20, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": false
 		}
 	},
@@ -91,7 +91,7 @@
 			"incub": 20, 
 			"ar": "High PH", 
 			"description": "Dummy Data", 
-			"date": "2020-08-14T15:09:29Z", 
+			"date": "2020-08-14T15:09:29-07:00", 
 			"is_factory": false
 		}
 	}

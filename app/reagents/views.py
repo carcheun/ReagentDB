@@ -183,7 +183,6 @@ class PAViewSet(viewsets.ModelViewSet):
             PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
-        print(data)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
         if not last_sync:
@@ -195,7 +194,6 @@ class PAViewSet(viewsets.ModelViewSet):
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
-        print(missing_changes)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -215,11 +213,9 @@ class PAViewSet(viewsets.ModelViewSet):
                 409: Change did not happen, server copy is sent back to client
         """
         data = JSONParser().parse(request)
-        print(data)
         # validate data
         deltaSerializer = PADeltaSerializer(data=data, operation=data['operation'])
         if not deltaSerializer.is_valid():
-            print(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if data['operation'] == 'CREATE':
@@ -232,7 +228,6 @@ class PAViewSet(viewsets.ModelViewSet):
             if (serializer.errors['catalog'] and data['catalog']):
                 pa = PA.objects.get(catalog=data['catalog'])
                 return Response(serializer.data, status=status.HTTP_409_CONFLICT)
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'UPDATE':
             # check the timestamp before updating, latest timestamp wins
@@ -270,7 +265,6 @@ class PAViewSet(viewsets.ModelViewSet):
     def delete(self, request):
         # delete multiple PA's, use this method instead
         data = JSONParser().parse(request)
-        print(data)
         objects_to_delete = self.queryset.filter(catalog__in=[c for c in data['catalog']])
         objects_to_delete.delete()
         

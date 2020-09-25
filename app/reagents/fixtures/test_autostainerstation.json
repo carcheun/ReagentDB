@@ -5,7 +5,7 @@
 		"fields" : {
 			"autostainer_sn": "SN12345", 
 			"name": "Stainer 1",
-			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
+			"latest_sync_time_PA": "2020-08-31T14:23:29-07:00"
 		}
 	},
 	{
@@ -14,7 +14,7 @@
 		"fields" : {
 			"autostainer_sn": "SN12346", 
 			"name": "Stainer 2",
-			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
+			"latest_sync_time_PA": "2020-08-31T14:23:29-07:00"
 		}
 	},
 	{
@@ -23,7 +23,7 @@
 		"fields" : {
 			"autostainer_sn": "SN12347", 
 			"name": "Stainer 3",
-			"latest_sync_time_PA": "2020-08-31T14:23:29Z"
+			"latest_sync_time_PA": "2020-08-31T14:23:29-07:00"
 		}
 	}
 ]
