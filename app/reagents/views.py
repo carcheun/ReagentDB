@@ -1,13 +1,12 @@
 from datetime import datetime
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.utils.timezone import make_aware
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, action
-from .serializers import ReagentSerializer, AutoStainerStationSerializer, PASerializer, PADeltaSerializer
+from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
 
@@ -26,72 +25,6 @@ def index(request):
     
     return render(request, 'reagents/index.html', context)
 
-@csrf_exempt
-@api_view(['GET', 'PUT', 'DELETE'])
-def reagent_detail(request, reagent_sn):
-    """
-    Retrieve, update or delete a single reagent
-    """
-    try:
-        reagent = Reagent.objects.get(reagent_sn=reagent_sn)
-    except Reagent.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = ReagentSerializer(reagent)
-        return Response(serializer.data)
-    
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ReagentSerializer(reagent, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    elif request.method == 'DELETE':
-        reagent.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-        
-@csrf_exempt
-@api_view(['GET', 'POST'])
-# TODO: maybe add some filters for expired and empty reagents
-def reagent_list(request):
-    """
-    GET all reagents or send POST request to add reagent
-    """
-    if request.method == 'GET':
-        # check if query string exists and then search for
-        # all unregistered reagents
-        search_unregistered = request.GET.get('registered')
-        if search_unregistered and search_unregistered.lower() == 'false':
-            reagent = Reagent.objects.filter(autostainer_sn__isnull=True)
-        else:
-            reagent = Reagent.objects.all()
-        serializer = ReagentSerializer(reagent, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ReagentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@csrf_exempt
-@api_view(['GET'])
-def autostainer_get_reagents(request, sn):
-    """
-    search for reagents currently registered to specified autostainer
-    """
-    reagents = Reagent.objects.filter(autostainer_sn__exact=sn)
-    if reagents is not None:
-        serializer = ReagentSerializer(reagents, many=True)
-        return Response(serializer.data)
-    return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
     """ModelViewSet for AutoStainerStation
     """

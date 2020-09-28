@@ -38,6 +38,17 @@ class Reagent(CommonReagent):
     # stored in
     reagent_sn = models.TextField(primary_key=True)
 
+    def is_older(self, date):
+        """Returns True if object is older provided given date
+
+        Arguments:
+            date: a string representation of datetime
+        """
+        #if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
+        if self.date < date:
+            return True
+        return False
+
     def __str__(self):
         return self.reag_name
 

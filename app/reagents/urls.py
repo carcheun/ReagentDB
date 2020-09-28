@@ -18,9 +18,5 @@ urlpatterns  = [
     path('api/', include(router.urls)),
     # TODO: authorization to modify 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    path('api/reagent/', views.reagent_list),
-    path('api/reagent/<str:reagent_sn>/', views.reagent_detail),
-
     path('test/', views.hello_world, name='test'),
 ]
