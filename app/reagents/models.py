@@ -5,9 +5,27 @@ from django.utils.timezone import make_aware
 
 # Create your models here.
 
+class CommonReagent(models.Model):
+    """Reagent Base class
+    """
+    reag_name = models.TextField(blank=True)
+    size = models.TextField(default="S")
+    log = models.TextField(blank=True)
+    vol = models.IntegerField(default=3000)
+    vol_cur = models.IntegerField(default=3000)
+    sequence = models.IntegerField(default=0)
+    mfg_date = models.DateField(default=datetime.now)
+    exp_date = models.DateField(default=datetime.now)
+    date = models.DateTimeField(default=now)
+    r_type = models.TextField(blank=True)
+    factory = models.BooleanField(default=False)
+    catalog = models.ForeignKey('PA', on_delete=models.SET_NULL, null=True)
+    autostainer_sn = models.ForeignKey('AutoStainerStation', \
+        on_delete=models.SET_NULL, blank=True, null=True)
+
 # TODO: Add field requirements
 # TODO: Add self def for other models
-class Reagent(models.Model):
+class Reagent(CommonReagent):
     """Reag8 and ReagPA8
     Reagents currently on hand. Reag8 is the inventory of a single
     autostainer, ReagPA8 is the inventory of all autostainers.
@@ -16,37 +34,30 @@ class Reagent(models.Model):
     """
     # if station is deleted, set to None. If field is none, reagent isnt
     # registered to any autostation machine yet
-    autostainer_sn = models.ForeignKey('AutoStainerStation', \
-        on_delete=models.SET_NULL, blank=True, null=True)
-    reagent_sn = models.TextField(unique=True)
-    reag_name = models.TextField()
-    # TODO: potential foreign key right here
-    catalog = models.TextField()
-    r_type = models.TextField()
-    size = models.TextField()
-    log = models.TextField()
-    vol = models.IntegerField()
-    vol_cur = models.IntegerField()
-    sequence = models.IntegerField()
-    reserved = models.IntegerField()
-    mfg_date = models.DateField()
-    exp_date = models.DateField()
-    edit_date = models.DateTimeField()
-    factory = models.BooleanField(default=False)
+    # updates the autostainer_sn to indicate which stainer the reagent is
+    # stored in
+    reagent_sn = models.TextField(primary_key=True)
 
     def __str__(self):
         return self.reag_name
-    
+
+class ReagentDelta(CommonReagent):
+    """Reagent changelog for server
+    """
+    reagent_sn = models.TextField()
+    operation = models.TextField(blank=False)
+
+
 class AutoStainerStation(models.Model):
     """Autostainers identified by S/N, can be given custom name, SN read from 
     INI file on client.
     """
     autostainer_sn = models.TextField(primary_key=True)
-    name = models.TextField()
+    name = models.TextField(null=True, blank=True)
     # Client sends in last sync time registered on their settings.ini, database
     # then determines what needs to to be synced
     # this is for our own records to determine when to tidy up delta database
-    latest_sync_time_PA = models.DateTimeField(null=True)
+    latest_sync_time_PA = models.DateTimeField(null=True, blank=True)
 
 
 class CommonInfoPA(models.Model):

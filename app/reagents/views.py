@@ -91,11 +91,6 @@ def autostainer_get_reagents(request, sn):
         return Response(serializer.data)
     return Response(status=status.HTTP_404_NOT_FOUND)
     
-class ReagentViewSet(viewsets.ModelViewSet):
-    """ModelViewSet for Reagents, quick easy way to view data
-    """
-    queryset = Reagent.objects.all()
-    serializer_class = ReagentSerializer
     
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
     """ModelViewSet for AutoStainerStation

@@ -1,14 +1,15 @@
 from django.urls import path, include
 from rest_framework import routers
-from . import views
+from . import views, views_reagents
 
 # define router and register viewsets
 # routed to server/reagents/api
 router = routers.DefaultRouter()
-router.register(r'reagent_view', views.ReagentViewSet)
+router.register(r'reagent', views_reagents.ReagentViewSet)
 router.register(r'autostainer', views.AutoStainerStationViewSet)
 router.register(r'pa', views.PAViewSet)
 router.register(r'padelta', views.PADeltaViewSet)
+router.register(r'reagentdelta', views_reagents.ReagentDeltaViewSet)
 
 # actual URL's users should use for POST/GET/PUT
 urlpatterns  = [

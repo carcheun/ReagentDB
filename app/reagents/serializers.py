@@ -2,16 +2,49 @@
 # convert django model data over to JSON or XML format (serialization)
 from rest_framework import serializers
 
-from .models import Reagent, AutoStainerStation, PA, PADelta
+from .models import Reagent, ReagentDelta, AutoStainerStation, PA, PADelta
 
 # information based off of models.py
 class ReagentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reagent
-        fields = ('autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 
-            'r_type', 'size', 'log', 'vol', 'vol_cur', 'sequence', 'reserved', 
-            'mfg_date', 'exp_date', 'edit_date', 'factory')
-        
+        fields = ['autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 
+            'size', 'log', 'vol', 'vol_cur', 'sequence', 'mfg_date', 
+            'exp_date', 'date', 'factory', 'r_type']
+        extra_kwargs = {'reag_name' : {'required' : False, 'allow_blank': True},
+            'size' : {'required' : False},
+            'log' : {'required' : False},
+            'vol' : {'required' : False},
+            'vol_cur' : {'required' : False},
+            'sequence' : {'required' : False},
+            'mfg_date' : {'required' : False},
+            'exp_date' : {'required' : False},
+            'date' : {'required' : False},
+            'factory' : {'required' : False},
+            'r_type' : {'required' : False, 'allow_blank': True},
+            'autostainer_sn' : {'required' : False}
+        }
+
+class ReagentDeltaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReagentDelta
+        fields = ['autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 
+            'size', 'log', 'vol', 'vol_cur', 'sequence', 'mfg_date', 
+            'exp_date', 'date', 'factory', 'r_type', 'operation']
+        extra_kwargs = {'reag_name' : {'required' : False},
+            'size' : {'required' : False},
+            'log' : {'required' : False},
+            'vol' : {'required' : False},
+            'vol_cur' : {'required' : False},
+            'sequence' : {'required' : False},
+            'mfg_date' : {'required' : False},
+            'exp_date' : {'required' : False},
+            'date' : {'required' : False},
+            'factory' : {'required' : False},
+            'r_type' : {'required' : False},
+            'autostainer_sn' : {'required' : False}
+        }
+
 class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
@@ -30,8 +63,6 @@ class PASerializer(serializers.ModelSerializer):
             'description': {'required': False},
             'is_factory' : {'required': False}
         }
-
-    
 
 class PADeltaSerializer(serializers.ModelSerializer):
     class Meta:

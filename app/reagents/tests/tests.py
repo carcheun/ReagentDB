@@ -7,17 +7,35 @@ from django.forms.models import model_to_dict
 from .models import PA, AutoStainerStation, PADelta
 
 # Create your tests here.
+class PASyncClientSyncTests(TestCase):
+    fixtures = ['test_pa.json', 'test_autostainerstation.json', \
+        'test_pa_delta.json']
+    
+    def test_database_to_client_sync(self):
+        """
+        Send changes that a client is missing, posting to database_to_client_sync
+        endpoint
+        """
+        client = Client()
+        # autostainer SN12345 requests what happened while it was gone
+        test_post = {
+            'autostainer_sn': 'SN12345',
+            'last_sync': '2020-08-30T11:54:36-0700'
+        }
+        # should get 2 back
+        response = client.post('/reagents/api/pa/database_to_client_sync/',\
+            json.dumps(test_post), content_type='application/json')
+        print(response.json())
+
 
 class PASyncTests(TestCase):
     fixtures = ['test_pa.json', 'test_autostainerstation.json']
-    
-    def test_recieve_sync(self):
-        # recieve sync from autostainer sn12345
-        # recieve sync from autostainer sn12346
-        # sn12345
-        # update MAB-0662, create 1, delete 1, update MAB-0162
-        # sn12346
-        # update MAB-0162, create 1, delete 1
+
+    def test_client_to_database_sync(self):
+        """
+        Send change logs from 2 different autostainers, make sure older changes
+        do not happen. Posting to client_to_database_sync endpoint
+        """
         client = Client()
         SN12345_delta_log = [
             {
@@ -107,7 +125,7 @@ class PASyncTests(TestCase):
         self.assertEqual(cyn1235['ar'], 'Trypsin')
         self.assertEqual(cyn1235['incub'], 25)
 
-        
+
 
 class PADeltaTests(TestCase):
     fixtures = ['test_autostainerstation.json', 'test_pa.json']
