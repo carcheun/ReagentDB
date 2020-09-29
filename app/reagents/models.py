@@ -52,12 +52,35 @@ class Reagent(CommonReagent):
     def __str__(self):
         return self.reag_name
 
+    def create_delta(self, operation, autostainer_sn):
+        """Create a delta entry, given operation and autostainer_sn, entry is
+        not yet saved.
+        """
+        autostainer, created = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=autostainer_sn)
+        delta = ReagentDelta(
+            reagent_sn = self.reagent_sn,
+            reag_name = self.reag_name,
+            size = self.size,
+            log = self.log,
+            vol = self.vol,
+            vol_cur = self.vol_cur,
+            sequence = self.sequence,
+            mfg_date = self.mfg_date,
+            exp_date = self.exp_date,
+            r_type = self.r_type,
+            factory = self.factory,
+            catalog = self.catalog,
+            autostainer_sn = autostainer,
+            operation = operation
+        )
+        return delta
+
 class ReagentDelta(CommonReagent):
     """Reagent changelog for server
     """
     reagent_sn = models.TextField()
     operation = models.TextField(blank=False)
-
 
 class AutoStainerStation(models.Model):
     """Autostainers identified by S/N, can be given custom name, SN read from 
@@ -108,10 +131,6 @@ class PA(CommonInfoPA):
         if self.date < date:
             return True
         return False
-
-
-    #class Meta:
-    #    ordering = ['catalog']
 
 class PADelta(CommonInfoPA):
     """A PA change log for the server. Changes to the server (from webpage or 

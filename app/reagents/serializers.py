@@ -82,9 +82,13 @@ class PADeltaSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         """Override init for PADeltaSerializer to accept the operation argument
-        and generate a timestamp
+        and generate a timestamp. Create Autostainer if does not exist
         """
         operation = kwargs.pop('operation', None)
+        #autostainer_sn = kwargs['data']['autostainer_sn']
         if operation:
             kwargs['data']['operation'] = operation
+        #if autostainer_sn:
+        #    AutoStainerStation.objects.get_or_create(autostainer_sn=autostainer_sn)
+
         super(PADeltaSerializer, self).__init__(*args, **kwargs)
