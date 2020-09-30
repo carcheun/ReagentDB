@@ -90,5 +90,5 @@ class PADeltaSerializer(serializers.ModelSerializer):
             kwargs['data']['operation'] = operation
         #if autostainer_sn:
         #    AutoStainerStation.objects.get_or_create(autostainer_sn=autostainer_sn)
-
+        print(kwargs)
         super(PADeltaSerializer, self).__init__(*args, **kwargs)

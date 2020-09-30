@@ -101,7 +101,9 @@ class PAViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def database_to_client_sync(self, request):
         """Client provides sn and last_sync time, returns change log of what 
-        the server has done since. Good to call on application startup
+        the server has done since. ASHome should call this as as soon as users
+        enter the PA dialog. An autostainer entry is created automatically if
+        it does not exist.
         
         Arguments (request):
             autostainer_sn: autostainer serial number provided in settings.ini (?)
@@ -113,15 +115,23 @@ class PAViewSet(viewsets.ModelViewSet):
         data = JSONParser().parse(request)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
+        
+        autostainer, created = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=autostainer_sn)
+
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        #dt_last_update = make_aware(convert_client_date_format(last_sync))
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
         serializer = PADeltaSerializer(missing_changes, many=True)
+
+        # keep a record of when the last time an autostainer has synced
+        autostainer.latest_sync_time_PA = datetime.now
+        autostainer.save()
+
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -188,7 +198,6 @@ class PAViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
     @action(detail=False, methods=['delete'])
     def delete(self, request):
         # delete multiple PA's, use this method instead
@@ -208,6 +217,10 @@ class PAViewSet(viewsets.ModelViewSet):
     def create(self, request, date=None):
         # Override base create method to create PAdelta entry
         data = request.data.copy()
+        if 'autostainer_sn' in data:
+            autostainer, created = AutoStainerStation.objects\
+                    .get_or_create(autostainer_sn=data['autostainer_sn'])
+        # TODO: Return message to client that you're missing autostainer_sn
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
         if deltaSerializer.is_valid():
             ret = super().create(request)
@@ -221,6 +234,10 @@ class PAViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
         # Override base create method to create PAdelta entry
         data = request.data.copy()
+        if 'autostainer_sn' in data:
+            autostainer, created = AutoStainerStation.objects\
+                    .get_or_create(autostainer_sn=data['autostainer_sn'])
+        # TODO: Return message to client that you're missing autostainer_sn
         deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
         if deltaSerializer.is_valid():
             ret = super().update(request, pk)

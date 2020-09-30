@@ -144,3 +144,5 @@ Scripts/
 .vscode
 pyvenv.cfg
 app/static/*
+postgres_data
+app/reagents/migrations

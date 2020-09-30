@@ -26,7 +26,7 @@ services:
   postgres:
     image: postgres:12.4-alpine
     volumes:
-      - pgdata:/var/lib/postgresql_test/data/
+      - ./pgdata:/var/lib/postgresql_test/data/
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust # new
       - POSTGRES_USER=admin

@@ -27,7 +27,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = int(os.environ.get("DEBUG", default=0))
 #DEBUG = True
 
-#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # TODO: Remove and change this to env files
@@ -35,10 +34,10 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 # used for creating superuser as a manage.py command
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
-    ('admin', 'admin@mysite.com'),
+    ('admin', 'carolyncheung@lumatas.com'),
 )
 ADMIN_USERNAME = 'admin'
-ADMIN_EMAIL = 'admin@mysite.com'
+ADMIN_EMAIL = 'carolyncheung@lumatas.com'
 ADMIN_INITIAL_PASSWORD = 'admin' # To be changed after first login by admin
 
 
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'reagents',                         # our reagents app we created
     'rest_framework',                   # needed for our rest_framework
     'django_extensions',                # extra manange.py goodies
+    'django_crontab',                   # perform scheduled tasks
 ]
 
 MIDDLEWARE = [
@@ -147,9 +147,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+CRONJOBS = [
+    #@('0 0 1 * *', 'reagents.cron.check_and_remove_PADeltas'),
+    ('* * * * *', 'reagents.cron.check_and_remove_PADeltas'),
+]

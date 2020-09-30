@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.db import models
 from django.utils.timezone import now
-from django.utils.timezone import make_aware
 
 # Create your models here.
 
@@ -11,8 +10,8 @@ class CommonReagent(models.Model):
     reag_name = models.TextField(blank=True)
     size = models.TextField(default="S")
     log = models.TextField(blank=True)
-    vol = models.IntegerField(default=3000)
     vol_cur = models.IntegerField(default=3000)
+    vol = models.IntegerField(default=3000)
     sequence = models.IntegerField(default=0)
     mfg_date = models.DateField(default=datetime.now)
     exp_date = models.DateField(default=datetime.now)
@@ -44,7 +43,6 @@ class Reagent(CommonReagent):
         Arguments:
             date: a string representation of datetime
         """
-        #if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
         if self.date < date:
             return True
         return False
@@ -63,8 +61,8 @@ class Reagent(CommonReagent):
             reag_name = self.reag_name,
             size = self.size,
             log = self.log,
-            vol = self.vol,
             vol_cur = self.vol_cur,
+            vol = self.vol,
             sequence = self.sequence,
             mfg_date = self.mfg_date,
             exp_date = self.exp_date,
@@ -80,6 +78,7 @@ class ReagentDelta(CommonReagent):
     """Reagent changelog for server
     """
     reagent_sn = models.TextField()
+    #CREATE/UPDATE/DELETE
     operation = models.TextField(blank=False)
 
 class AutoStainerStation(models.Model):
@@ -92,7 +91,6 @@ class AutoStainerStation(models.Model):
     # then determines what needs to to be synced
     # this is for our own records to determine when to tidy up delta database
     latest_sync_time_PA = models.DateTimeField(null=True, blank=True)
-
 
 class CommonInfoPA(models.Model):
     """PA base class
@@ -127,7 +125,6 @@ class PA(CommonInfoPA):
         Arguments:
             date: a string representation of datetime
         """
-        #if self.date < make_aware(datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')):
         if self.date < date:
             return True
         return False

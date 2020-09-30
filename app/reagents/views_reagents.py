@@ -21,7 +21,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     delta_serializer_class = ReagentDeltaSerializer
 
-    # action to synchronize reagents
+    # TODO: endpoint to calculate changes that the client has done offline
 
     @action(detail=False, methods=['post'])
     def initial_sync(self, request):
@@ -87,8 +87,13 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['put'], url_path='decrease-volume')
     def decrease_volume(self, request, pk=None):
-        # url pattern: /api/reagent/reagent_sn/decrease-volume
-        # decrease the volume of specified reagent, save an entry to delta
+        """Decrease a reagent's volume
+        Args:
+            request: json with autostainer_sn and dec_vol (int)
+        
+        Returns:
+            Status code 201 if successful
+        """
         try:
             reagent = Reagent.objects.get(reagent_sn=pk)
         except Reagent.DoesNotExist:
@@ -99,7 +104,8 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
         delta.save()
         reagent.save()
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = ReagentSerializer(reagent)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def create(self, request):
         # override create to method to create reagentdelta entry
@@ -114,7 +120,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
         else:
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def update(self, request, pk=None):
         # override update to method to create reagentdelta entry
         data = request.data.copy()
@@ -127,7 +132,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return ret
         else:
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def destroy(self, request, pk=None):
         # override destroy to method to create reagentdelta entry
