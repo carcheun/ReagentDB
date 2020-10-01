@@ -20,6 +20,7 @@ COPY ./requirements.txt .
 
 # install dependencies
 RUN \
+ apk add --update busybox-suid vim && \
  apk add --no-cache postgresql-libs && \
  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
  pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
@@ -60,6 +61,7 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+RUN chmod u+s /usr/sbin/crond
 
 # change to the app user
 USER app

@@ -11,7 +11,7 @@ then
     echo "PostgreSQL started"
 fi
 
-# flush will clear your database
+# flush will clear your database, can leave option for development
 python manage.py flush --no-input
 python manage.py makemigrations
 python manage.py migrate

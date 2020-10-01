@@ -17,7 +17,7 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py initadmin
 python manage.py collectstatic --noinput
-# Is this cronjob even working? I dont know
-# python manage.py crontab add
+# TODO: cronjob not working
+python manage.py crontab add
 
 exec "$@"

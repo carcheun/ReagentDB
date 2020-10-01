@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 from django.db import models
 from django.utils.timezone import now
@@ -9,12 +10,12 @@ class CommonReagent(models.Model):
     """
     reag_name = models.TextField(blank=True)
     size = models.TextField(default="S")
-    log = models.TextField(blank=True)
+    log = models.TextField(blank=True)  # Log is actually LOT# .... 
     vol_cur = models.IntegerField(default=3000)
     vol = models.IntegerField(default=3000)
     sequence = models.IntegerField(default=0)
-    mfg_date = models.DateField(default=datetime.now)
-    exp_date = models.DateField(default=datetime.now)
+    mfg_date = models.DateField(default=date.today)
+    exp_date = models.DateField(default=date.today)
     date = models.DateTimeField(default=now)
     r_type = models.TextField(blank=True)
     factory = models.BooleanField(default=False)

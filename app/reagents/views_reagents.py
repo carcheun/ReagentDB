@@ -111,6 +111,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         # override create to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'CREATE'
+        print(data)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().create(request)
@@ -118,12 +119,14 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            print(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         # override update to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'UPDATE'
+        print(data)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().update(request, pk)
@@ -131,6 +134,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            print(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
@@ -139,10 +143,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data['reagent_sn'] = pk
         data['operation'] = 'DELETE'
         deltaSerializer = self.delta_serializer_class(data=data)
+        print(data)
         if deltaSerializer.is_valid():
             ret = super().destroy(request, pk)
             if ret.status_code == status.HTTP_204_NO_CONTENT:
                 deltaSerializer.save()
             return ret
         else:
+            print(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
