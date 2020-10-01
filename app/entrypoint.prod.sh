@@ -11,12 +11,13 @@ then
     echo "PostgreSQL started"
 fi
 
-python manage.py flush --no-input
+# flush will clear your database
+#python manage.py flush --no-input
 python manage.py makemigrations
 python manage.py migrate
 python manage.py initadmin
 python manage.py collectstatic --noinput
 # Is this cronjob even working? I dont know
-python manage.py crontab add
+# python manage.py crontab add
 
 exec "$@"
