@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view, action
 from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
+from django.utils.timezone import now
 
 from django.shortcuts import render
 
@@ -60,7 +61,8 @@ class PAViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
-            d['date'] = make_aware(convert_client_date_format(d['date']))
+            d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
+            d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(
                 catalog=d['catalog'],
                 defaults={
@@ -113,6 +115,7 @@ class PAViewSet(viewsets.ModelViewSet):
             PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
+        print(data)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
         
@@ -129,7 +132,7 @@ class PAViewSet(viewsets.ModelViewSet):
         serializer = PADeltaSerializer(missing_changes, many=True)
 
         # keep a record of when the last time an autostainer has synced
-        autostainer.latest_sync_time_PA = datetime.now
+        autostainer.latest_sync_time_PA = now()
         autostainer.save()
 
         return Response(serializer.data,status=status.HTTP_200_OK)

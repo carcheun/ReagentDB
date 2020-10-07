@@ -29,6 +29,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         # update so that all reagents match incoming data
         data = JSONParser().parse(request)
         missing = self.queryset.all()
+        print(data)
         ret = list()
         for d in data:
             # TODO: if autostainer does not exist or PA does not exist, is this
@@ -61,7 +62,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             if not created:
                 # reagent already exists, remove from queryset
                 missing = missing.exclude(reagent_sn=obj.reagent_sn)
-                if obj.is_older(d['date']):
+                if obj.vol_cur < d['vol_cur']:
                     # database will update entry if it's older
                     obj.reag_name = d['reag_name']
                     obj.catalog = pa
