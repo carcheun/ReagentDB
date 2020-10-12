@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
@@ -9,7 +9,6 @@ from rest_framework.decorators import api_view, action
 from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSerializer
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
-from django.utils.timezone import now
 
 from django.shortcuts import render
 
@@ -115,7 +114,6 @@ class PAViewSet(viewsets.ModelViewSet):
             PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
-        print(data)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
         
