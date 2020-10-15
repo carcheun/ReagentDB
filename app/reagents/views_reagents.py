@@ -6,7 +6,18 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
+
+"""
+===============================================
+TODO: List cases of how people should use this
+1. Open AShome
+2. Check if connected to server
+3. Sync PA deltas. Do full sync.
+4. Sync Reagend deltas. Do full sync.
+5. update sync times.
+===============================================
+"""
 
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
     """ModelViewSet for ReagentsDelta
@@ -37,24 +48,20 @@ class ReagentViewSet(viewsets.ModelViewSet):
             # TODO: decide what to do if we've never synced before
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
-        missing_changes = self.queryset.objects.filter(date__gt=dt_last_update)\
+        missing_changes = ReagentDelta.objects.filter(date__gt=dt_last_update)\
             .exclude(autostainer_sn=autostainer_sn)
-        serializer = self.serializer_class(missing_changes, many=True)
-
+        serializer = ReagentDeltaSerializer(missing_changes, many=True)
         # keep a record of when the last time an autostainer has synced
-        autostainer.latest_sync_time_PA = now()
+        autostainer.latest_sync_time_Reagent = now()
         autostainer.save()
-
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def client_to_database_sync(self, request):
         data = JSONParser().parse(request)
-        print(data)
         # validate data
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():
-            print(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # if CREATE, create if possible
@@ -172,6 +179,8 @@ class ReagentViewSet(viewsets.ModelViewSet):
         except Reagent.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         reagent.vol_cur -= request.data['dec_vol']
+        if reagent.vol_cur < 0:
+            reagent.vol_cur = 0
         delta = reagent.create_delta(operation='UPDATE',\
             autostainer_sn=request.data['autostainer_sn'])
 

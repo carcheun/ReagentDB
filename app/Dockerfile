@@ -9,9 +9,10 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # update apk and install upgrade pip
-RUN apk update
-RUN python -m pip install --upgrade pip
-COPY ./requirements.txt .
+RUN \
+ apk update && \
+ python -m pip install --upgrade pip
+COPY ./requirements.txt ./entrypoint.sh ./
 
 # install dependencies
 RUN \
@@ -21,7 +22,7 @@ RUN \
  apk --purge del .build-deps
 
 # copy entrypoint.sh
-COPY ./entrypoint.sh .
+#COPY ./entrypoint.sh .
 
 # copy project
 COPY . .

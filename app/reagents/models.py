@@ -92,6 +92,7 @@ class AutoStainerStation(models.Model):
     # then determines what needs to to be synced
     # this is for our own records to determine when to tidy up delta database
     latest_sync_time_PA = models.DateTimeField(null=True, blank=True)
+    latest_sync_time_Reagent = models.DateTimeField(null=True, blank=True)
 
 class CommonInfoPA(models.Model):
     """PA base class

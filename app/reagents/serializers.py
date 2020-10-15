@@ -48,8 +48,10 @@ class ReagentDeltaSerializer(serializers.ModelSerializer):
 class AutoStainerStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoStainerStation
-        fields = ['autostainer_sn', 'name', 'latest_sync_time_PA']
-        extra_kwargs = {'latest_sync_time_PA' : {'required' : False}
+        fields = ['autostainer_sn', 'name', 'latest_sync_time_PA', 
+            'latest_sync_time_Reagent']
+        extra_kwargs = {'latest_sync_time_PA' : {'required' : False},
+            'latest_sync_time_Reagent' : {'required' : False}
         }
         
 class PASerializer(serializers.ModelSerializer):
@@ -90,5 +92,4 @@ class PADeltaSerializer(serializers.ModelSerializer):
             kwargs['data']['operation'] = operation
         #if autostainer_sn:
         #    AutoStainerStation.objects.get_or_create(autostainer_sn=autostainer_sn)
-        print(kwargs)
         super(PADeltaSerializer, self).__init__(*args, **kwargs)
