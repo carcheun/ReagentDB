@@ -34,6 +34,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     delta_serializer_class = ReagentDeltaSerializer
 
+    @action(detail=False, methods=['get'])
+    def valid_reagents(self, request):
+        reag = self.queryset.filter(vol_cur__gte=150)
+        serializer = ReagentSerializer(reag, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'])
     def database_to_client_sync(self, request):
         data = JSONParser().parse(request)
@@ -60,8 +66,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
     def client_to_database_sync(self, request):
         data = JSONParser().parse(request)
         # validate data
-        print(data, flush=True)
-
         if data['mfg_date'] == '':
             data.pop('mfg_date')
         if data['exp_date'] == '':
@@ -93,7 +97,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 serializer.save()
                 deltaSerializer.save()
                 return Response(status=status.HTTP_200_OK)
-            print(serializer.errors, flush=True)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'DELETE':
             try:
@@ -194,6 +197,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         # override create to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'CREATE'
+        print(data, flush=True)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().create(request)
@@ -201,6 +205,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            print(deltaSerializer.errors, flush=True)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
