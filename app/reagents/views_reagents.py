@@ -60,10 +60,16 @@ class ReagentViewSet(viewsets.ModelViewSet):
     def client_to_database_sync(self, request):
         data = JSONParser().parse(request)
         # validate data
+        print(data, flush=True)
+
+        if data['mfg_date'] == '':
+            data.pop('mfg_date')
+        if data['exp_date'] == '':
+            data.pop('exp_date')
+
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         # if CREATE, create if possible
         if data['operation'] == 'CREATE':
             reagent, created = self.queryset.\
@@ -82,17 +88,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 reagent = self.queryset.get(reagent_sn=data['reagent_sn'])
             except Reagent.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            try:
-                pa = PA.objects.get(catalog=data['catalog'])
-            except PA.DoesNotExist:
-                # TODO: if PA does not exist, should we set as None? Or...?
-                pa = None
-                return Response(status=status.HTTP_404_NOT_FOUND)
             serializer = self.serializer_class(reagent, data=data)
             if serializer.is_valid():
                 serializer.save()
                 deltaSerializer.save()
                 return Response(status=status.HTTP_200_OK)
+            print(serializer.errors, flush=True)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'DELETE':
             try:

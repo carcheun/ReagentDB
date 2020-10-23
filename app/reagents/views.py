@@ -94,7 +94,6 @@ class PAViewSet(viewsets.ModelViewSet):
                 else:
                     # database will send the newer entry back to client
                     ret.append(obj)
-
         ret += list(missing)
         serializer = PASerializer(ret, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)

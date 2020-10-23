@@ -9,7 +9,7 @@ class CommonReagent(models.Model):
     """Reagent Base class
     """
     reag_name = models.TextField(blank=True)
-    size = models.TextField(default="S")
+    size = models.TextField(default="S",blank=True)
     log = models.TextField(blank=True)  # Log is actually LOT# .... 
     vol_cur = models.IntegerField(default=3000)
     vol = models.IntegerField(default=3000)
