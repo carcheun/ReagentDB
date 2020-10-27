@@ -20,6 +20,6 @@ python manage.py collectstatic --noinput
 
 
 # TODO: cronjob not working
-python manage.py crontab add
+#python manage.py crontab add
 
 exec "$@"
