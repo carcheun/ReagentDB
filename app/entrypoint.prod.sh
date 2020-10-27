@@ -17,6 +17,8 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py initadmin
 python manage.py collectstatic --noinput
+
+
 # TODO: cronjob not working
 python manage.py crontab add
 

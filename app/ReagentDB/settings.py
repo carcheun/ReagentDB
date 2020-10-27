@@ -155,5 +155,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 CRONJOBS = [
     #@('0 0 1 * *', 'reagents.cron.check_and_remove_PADeltas'),
-    ('* * * * *', 'reagents.cron.check_and_remove_PADeltas', '>> /tmp/scheduled_job.log'),
+    ('* * * * *', 'reagents.cron.check_and_remove_PADeltas', '>> /tmp/scheduled_job.log')
 ]

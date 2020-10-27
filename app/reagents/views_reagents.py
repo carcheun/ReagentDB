@@ -123,7 +123,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 pa = None
             autostainer, created = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
-            d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(
                 reagent_sn=d['reagent_sn'],
