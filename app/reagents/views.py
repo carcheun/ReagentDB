@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -10,10 +12,13 @@ from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSeri
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
 
-from django.shortcuts import render
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def hello_world(request):
+    logger.warning("This is a warning!")
+    logger.info("This is some info")
+    logger.exception("OMG EXCEPTION")
     return JsonResponse({"HELLO WORLD" : "HI"})
         
 # ugly basic render of some data

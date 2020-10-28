@@ -157,3 +157,24 @@ CRONJOBS = [
     #@('0 0 1 * *', 'reagents.cron.check_and_remove_PADeltas'),
     ('* * * * *', 'reagents.cron.check_and_remove_PADeltas', '>> /tmp/scheduled_job.log')
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': 1,
+    'formatters': {
+        'timestamp': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timestamp'
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    }
+}
