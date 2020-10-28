@@ -8,17 +8,6 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.utils.timezone import make_aware, now
 
-"""
-===============================================
-TODO: List cases of how people should use this
-1. Open AShome
-2. Check if connected to server
-3. Sync PA deltas. Do full sync.
-4. Sync Reagend deltas. Do full sync.
-5. update sync times.
-===============================================
-"""
-
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
     """ModelViewSet for ReagentsDelta
     """
@@ -36,12 +25,30 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def valid_reagents(self, request):
+        """Valid reagents are those whose current volume is greater than or 
+        equal to 150
+
+        Returns:
+            Valid reagents returned as a list
+        """
         reag = self.queryset.filter(vol_cur__gte=150)
         serializer = ReagentSerializer(reag, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def database_to_client_sync(self, request):
+        """Client provides sn and last_sync_reagent time, and server returns
+        change log of what the server has done since. An autostainer entry is 
+        created automatically if it does not exist.
+
+        Args:
+            autostainer_sn: autostainer serial number provided in settings.ini,
+            corresponding to MACHINE parameter
+            last_sync_reagent: timestamp of previous client reagent sync 
+        
+        Returns:
+            ReagentDelta model of all changes client is missing
+        """
         data = JSONParser().parse(request)
         last_sync = data.pop('last_sync_reagent', None)
         autostainer_sn = data.pop('autostainer_sn', None)
@@ -64,8 +71,22 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def client_to_database_sync(self, request):
+        """Client provides the server with a change action. Server determines 
+        what changes it requires via latest time stamp
+        
+        Arguments (request):
+            delta.db: Reagent Table, except in JSON format
+                
+        Returns:
+            http resonse. Details if the request was sucessful or not.
+            status codes:
+                200/201/204: It is safe for client to delete thier change entry
+                400/404: Change did not happen, error sent back to client
+        """
         data = JSONParser().parse(request)
-        # validate data
+
+        # sorta validate data, database will generate it's own timestamps for
+        # mfg/exp_date if it does not exist
         if data['mfg_date'] == '':
             data.pop('mfg_date')
         if data['exp_date'] == '':
@@ -74,10 +95,8 @@ class ReagentViewSet(viewsets.ModelViewSet):
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # if CREATE, create if possible
         if data['operation'] == 'CREATE':
-            reagent, created = self.queryset.\
-                get_or_create(reagent_sn=data['reagent_sn'])
+            reagent, created = self.queryset.get_or_create(reagent_sn=data['reagent_sn'])
             serializer = self.serializer_class(reagent)
             if created:
                 deltaSerializer.save()
@@ -110,8 +129,17 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def initial_sync(self, request):
-        # recieve a list of all reagents that the autostainer has
-        # update so that all reagents match incoming data
+        """Initial sync request. 
+        
+        Client sends their database to server and server determines if any
+        reagents's need to be updated or created. Reagents are NEVER deleted.
+
+        Args:
+            request: empty array, or array containing client database
+        
+        Returns:
+            array containing reagents's for client to update or create
+        """
         data = JSONParser().parse(request)
         missing = self.queryset.all()
         ret = list()

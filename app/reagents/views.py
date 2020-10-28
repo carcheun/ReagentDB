@@ -38,10 +38,20 @@ class PAViewSet(viewsets.ModelViewSet):
     including from whom the entry came from
 
     TODO: refactor into serialzier?
-    TODO: Mostly just refactor
     """
     queryset = PA.objects.all()
     serializer_class = PASerializer
+
+    # TODO: how can we handle a forward slash in a URL GET request?
+    @action(detail=False, methods=['post'])
+    def alias(self, request):
+        data = JSONParser().parse(request)
+        try:
+            pa = self.queryset.filter(alias=data['alias'])
+        except pa.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = PASerializer(pa[0])
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def initial_sync(self, request):
@@ -106,7 +116,8 @@ class PAViewSet(viewsets.ModelViewSet):
         it does not exist.
         
         Arguments (request):
-            autostainer_sn: autostainer serial number provided in settings.ini (?)
+            autostainer_sn: autostainer serial number provided in settings.ini,
+            corresponding to MACHINE parameter
             last_sync: timestamp of last time the client sync
         
         Returns:
@@ -140,7 +151,7 @@ class PAViewSet(viewsets.ModelViewSet):
         what changes it requires via latest time stamp
 
         Arguments (request):
-            PA_Delta.db: Except in JSON format
+            delta.db: PA table, Except in JSON format
         
         Returns:
             http resonse. Details if the request was sucessful or not.
