@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 from datetime import date
 from .models import Reagent, ReagentDelta, PA, AutoStainerStation
@@ -7,6 +9,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.utils.timezone import make_aware, now
+
+logger = logging.getLogger(__name__)
 
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
     """ModelViewSet for ReagentsDelta
@@ -33,6 +37,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         """
         reag = self.queryset.filter(vol_cur__gte=150)
         serializer = ReagentSerializer(reag, many=True)
+        logger.debug(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -50,6 +55,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             ReagentDelta model of all changes client is missing
         """
         data = JSONParser().parse(request)
+        logger.debug(data)
         last_sync = data.pop('last_sync_reagent', None)
         autostainer_sn = data.pop('autostainer_sn', None)
 
@@ -59,6 +65,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
+            logger.warning('"last_sync" was None')
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = ReagentDelta.objects.filter(date__gt=dt_last_update)\
@@ -84,16 +91,22 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 400/404: Change did not happen, error sent back to client
         """
         data = JSONParser().parse(request)
+        logger.debug(data)
 
         # sorta validate data, database will generate it's own timestamps for
         # mfg/exp_date if it does not exist
         if data['mfg_date'] == '':
             data.pop('mfg_date')
+            logger.info(data)
+            logger.warning('"mfg_date" was not provided')
         if data['exp_date'] == '':
             data.pop('exp_date')
+            logger.info(data)
+            logger.warning('"exp_date" was not provided')
 
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():
+            logger.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
         if data['operation'] == 'CREATE':
             reagent, created = self.queryset.get_or_create(reagent_sn=data['reagent_sn'])
@@ -104,24 +117,28 @@ class ReagentViewSet(viewsets.ModelViewSet):
             else:
                 # TODO: Maybe update instead of create? OR check timestamps and
                 # then decide if update or not
+                logger.warning('"%s" already exists', data['reagent_sn'])
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'UPDATE':
             # if update... CREATE OR UPDATE!
             try:
                 reagent = self.queryset.get(reagent_sn=data['reagent_sn'])
             except Reagent.DoesNotExist:
+                logger.warning('"%s" does not exist', data['reagent_sn'])
                 return Response(status=status.HTTP_404_NOT_FOUND)
             serializer = self.serializer_class(reagent, data=data)
             if serializer.is_valid():
                 serializer.save()
                 deltaSerializer.save()
                 return Response(status=status.HTTP_200_OK)
+            logger.error(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'DELETE':
             try:
                 reagent = self.queryset.get(reagent_sn=data['reagent_sn'])
                 reagent.delete()
             except Reagent.DoesNotExist:
+                logger.warning('"%s" does not exist', data['reagent_sn'])
                 return Response(status=status.HTTP_404_NOT_FOUND)
             deltaSerializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -144,10 +161,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
+            logger.debug(d)
             try:
                 pa = PA.objects.get(catalog=d['catalog'])
             except PA.DoesNotExist:
                 # TODO: if PA does not exist, should we set as None? Or...?
+                logger.warning('%s does not exists, setting PA to None', d['catalog'])
                 pa = None
             autostainer, created = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
@@ -206,9 +225,11 @@ class ReagentViewSet(viewsets.ModelViewSet):
         Returns:
             Status code 201 if successful
         """
+        logger.debug(pk)
         try:
             reagent = Reagent.objects.get(reagent_sn=pk)
         except Reagent.DoesNotExist:
+            logger.error('"%s" does not exist', pk)
             return Response(status=status.HTTP_404_NOT_FOUND)
         reagent.vol_cur -= request.data['dec_vol']
         if reagent.vol_cur < 0:
@@ -225,7 +246,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         # override create to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'CREATE'
-        print(data, flush=True)
+        logger.debug(data)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().create(request)
@@ -233,13 +254,14 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
-            print(deltaSerializer.errors, flush=True)
+            logger.error(deltaSerializer.errors) 
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         # override update to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'UPDATE'
+        logger.debug(data)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().update(request, pk)
@@ -247,6 +269,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            logger.error(deltaSerializer.errors) 
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
@@ -254,6 +277,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = {}
         data['reagent_sn'] = pk
         data['operation'] = 'DELETE'
+        logger.debug(data)
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().destroy(request, pk)
@@ -261,4 +285,5 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            logger.error(deltaSerializer.errors) 
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)

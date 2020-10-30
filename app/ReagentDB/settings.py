@@ -162,15 +162,15 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': 1,
     'formatters': {
-        'timestamp': {
-            'format': '{asctime} {levelname} {message}',
+        'info_log': {
+            'format': '[{asctime}] [{levelname}] [{filename}.{funcName}:{lineno}] {message}',
             'style': '{',
         },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'timestamp'
+            'formatter': 'info_log'
         },
     },
     'root': {

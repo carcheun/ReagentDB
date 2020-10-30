@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def hello_world(request):
+    logger.debug("THIS IS A DEBUG!")
     logger.warning("This is a warning!")
     logger.info("This is some info")
     logger.exception("OMG EXCEPTION")
@@ -54,6 +55,7 @@ class PAViewSet(viewsets.ModelViewSet):
         try:
             pa = self.queryset.filter(alias=data['alias'])
         except pa.DoesNotExist:
+            logger.info('PA alias "%s" not found!', alias)
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PASerializer(pa[0])
         return Response(serializer.data,status=status.HTTP_200_OK)
@@ -75,6 +77,7 @@ class PAViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
+            logger.debug(d)
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(
@@ -129,6 +132,7 @@ class PAViewSet(viewsets.ModelViewSet):
             PADelta model of all changes greater than last_sync
         """
         data = JSONParser().parse(request)
+        logger.debug(data)
         last_sync = data.pop('last_sync', None)
         autostainer_sn = data.pop('autostainer_sn', None)
         
@@ -138,6 +142,7 @@ class PAViewSet(viewsets.ModelViewSet):
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
+            logger.warning('"last_sync" was None')
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
@@ -167,9 +172,11 @@ class PAViewSet(viewsets.ModelViewSet):
                 409: Change did not happen, server copy is sent back to client
         """
         data = JSONParser().parse(request)
+        logger.debug(data)
         # validate data
         deltaSerializer = PADeltaSerializer(data=data, operation=data['operation'])
         if not deltaSerializer.is_valid():
+            logger.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if data['operation'] == 'CREATE':
@@ -182,6 +189,7 @@ class PAViewSet(viewsets.ModelViewSet):
             if (serializer.errors['catalog'] and data['catalog']):
                 pa = PA.objects.get(catalog=data['catalog'])
                 return Response(serializer.data, status=status.HTTP_409_CONFLICT)
+            logger.error(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'UPDATE':
             # check the timestamp before updating, latest timestamp wins
@@ -244,6 +252,7 @@ class PAViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -261,6 +270,7 @@ class PAViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -275,8 +285,8 @@ class PAViewSet(viewsets.ModelViewSet):
                 deltaSerializer.save()
             return ret
         else:
+            logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class PADeltaViewSet(viewsets.ModelViewSet):

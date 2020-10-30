@@ -23,8 +23,3 @@ def convert_client_date_format(client_date):
     dt = datetime(year=year, month=month, day=day, 
         hour=hour, minute=minute, second=second)
     return dt
-
-
-
-
-#    '200814T150929'
