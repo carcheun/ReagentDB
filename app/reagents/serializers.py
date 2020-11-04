@@ -10,7 +10,7 @@ class ReagentSerializer(serializers.ModelSerializer):
         model = Reagent
         fields = ['autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 
             'size', 'log', 'vol', 'vol_cur', 'sequence', 'mfg_date', 
-            'exp_date', 'date', 'factory', 'r_type']
+            'exp_date', 'date', 'factory', 'r_type', 'in_use']
         extra_kwargs = {'reag_name' : {'required' : False, 'allow_blank': True},
             'size' : {'required' : False},
             'log' : {'required' : False},
@@ -20,6 +20,7 @@ class ReagentSerializer(serializers.ModelSerializer):
             'mfg_date' : {'required' : False},
             'exp_date' : {'required' : False},
             'date' : {'required' : False},
+            'in_use': {'required': False},
             'factory' : {'required' : False},
             'r_type' : {'required' : False, 'allow_blank': True},
             'autostainer_sn' : {'required' : False}
@@ -30,7 +31,7 @@ class ReagentDeltaSerializer(serializers.ModelSerializer):
         model = ReagentDelta
         fields = ['autostainer_sn', 'reagent_sn', 'reag_name', 'catalog', 
             'size', 'log', 'vol', 'vol_cur', 'sequence', 'mfg_date', 
-            'exp_date', 'date', 'factory', 'r_type', 'operation']
+            'exp_date', 'date', 'factory', 'r_type', 'operation', 'executor']
         extra_kwargs = {'reag_name' : {'required' : False},
             'size' : {'required' : False},
             'log' : {'required' : False},
@@ -42,7 +43,8 @@ class ReagentDeltaSerializer(serializers.ModelSerializer):
             'date' : {'required' : False},
             'factory' : {'required' : False},
             'r_type' : {'required' : False},
-            'autostainer_sn' : {'required' : False}
+            'autostainer_sn' : {'required' : False},
+            'executor' : {'required': False}
         }
 
 class AutoStainerStationSerializer(serializers.ModelSerializer):

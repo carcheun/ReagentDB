@@ -27,6 +27,55 @@ class ReagentViewSet(viewsets.ModelViewSet):
 
     delta_serializer_class = ReagentDeltaSerializer
 
+    @action(detail=False, methods=['post'])
+    def lock(self, request):
+        """Locked reagents cannot be used in other autostainers. If the reagent
+        is being used in one protocol, it will be locked in until the stainig
+        is complete
+
+        """
+        data = JSONParser().parse(request)
+        logger.info(data)
+        try:
+            reag = Reagent.objects.get(reagent_sn=data['reagent_sn'])
+            reag.in_use = data['in_use']
+            reag.save()
+            serializer = self.serializer_class(reag)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Reagent.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=False, methods=['post'])
+    def scan(self, request):
+        """During reagent scanning, add the reagent to database if it does not 
+        exist. Otherwise return reagent data. The reagent will also be 
+        registered to the requesting autostainer client.
+
+        Args:
+            JSON containing reagent information
+
+        Returns:
+            JSON containing at least cur_vol and log
+        """
+        # TODO: GET OR CREATE
+        data = JSONParser().parse(request)
+        logger.info(data)
+        # see if reagent exists
+        try:
+            reag = Reagent.objects.get(reagent_sn=data['reagent_sn'])
+            # update the autostainer associated with it
+            autostainer, created = AutoStainerStation.objects\
+                .get_or_create(autostainer_sn=data['autostainer_sn'])
+            reag.autostainer_sn = autostainer
+            reag.save()
+            serializer = self.serializer_class(reag)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Reagent.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=False, methods=['get'])
     def valid_reagents(self, request):
         """Valid reagents are those whose current volume is greater than or 
@@ -57,10 +106,10 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = JSONParser().parse(request)
         logger.debug(data)
         last_sync = data.pop('last_sync_reagent', None)
-        autostainer_sn = data.pop('autostainer_sn', None)
+        autostainer_sn = data.pop('executor', None)
 
-        autostainer, created = AutoStainerStation.objects\
-            .get_or_create(autostainer_sn=autostainer_sn)
+        executor, created = AutoStainerStation.objects\
+            .get_or_create(executor=executor)
 
         if not last_sync:
             # we've never sync'd before,
@@ -69,7 +118,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = ReagentDelta.objects.filter(date__gt=dt_last_update)\
-            .exclude(autostainer_sn=autostainer_sn)
+            .exclude(executor=executor)
         serializer = ReagentDeltaSerializer(missing_changes, many=True)
         # keep a record of when the last time an autostainer has synced
         autostainer.latest_sync_time_Reagent = now()
@@ -161,7 +210,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
-            logger.debug(d)
+            logger.info(d)
             try:
                 pa = PA.objects.get(catalog=d['catalog'])
             except PA.DoesNotExist:
@@ -235,7 +284,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if reagent.vol_cur < 0:
             reagent.vol_cur = 0
         delta = reagent.create_delta(operation='UPDATE',\
-            autostainer_sn=request.data['autostainer_sn'])
+            executor=request.data['autostainer_sn'])
 
         delta.save()
         reagent.save()

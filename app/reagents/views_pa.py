@@ -77,7 +77,7 @@ class PAViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
-            logger.debug(d)
+            logger.info(d)
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(

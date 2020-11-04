@@ -20,6 +20,7 @@ class CommonReagent(models.Model):
     r_type = models.TextField(blank=True)
     factory = models.BooleanField(default=False)
     catalog = models.ForeignKey('PA', on_delete=models.SET_NULL, null=True)
+    # which autostainer the reagent is located at
     autostainer_sn = models.ForeignKey('AutoStainerStation', \
         on_delete=models.SET_NULL, blank=True, null=True)
 
@@ -37,6 +38,7 @@ class Reagent(CommonReagent):
     # updates the autostainer_sn to indicate which stainer the reagent is
     # stored in
     reagent_sn = models.TextField(primary_key=True)
+    in_use = models.BooleanField(default=False)
 
     def is_older(self, date):
         """Returns True if object is older provided given date
@@ -81,6 +83,9 @@ class ReagentDelta(CommonReagent):
     reagent_sn = models.TextField()
     #CREATE/UPDATE/DELETE
     operation = models.TextField(blank=False)
+    #which autostainer performed the action
+    executor =  models.ForeignKey('AutoStainerStation', \
+        on_delete=models.SET_NULL, blank=True, null=True)
 
 class AutoStainerStation(models.Model):
     """Autostainers identified by S/N, can be given custom name, SN read from 
