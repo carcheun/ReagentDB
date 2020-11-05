@@ -1,0 +1,128 @@
+[
+	{
+		"model": "reagents.Reagent",
+		"pk": 1,
+		"fields" : {
+			"reagent_sn": "REAG001",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "S", 
+			"log": "LOT00001", 
+			"catalog": "CAT0001",
+			"vol": 3000, 
+			"vol_cur": 2400, 
+			"sequence": 0, 
+			"mfg_date": "2015-08-14", 
+			"exp_date": "2025-08-14", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0002",
+			"factory": true,
+			"in_use": false
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 2,
+		"fields" : {
+			"reagent_sn": "REAG002",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "L", 
+			"log": "LOT00001", 
+			"catalog": "CAT0002",
+			"vol": 6000, 
+			"vol_cur": 3140, 
+			"sequence": 0, 
+			"mfg_date": "2020-10-25", 
+			"exp_date": "2030-12-31", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0001",
+			"factory": true,
+			"in_use": false
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 3,
+		"fields" : {
+			"reagent_sn": "REAG003",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "L", 
+			"log": "LOT00001", 
+			"catalog": "CAT0003",
+			"vol": 6000, 
+			"vol_cur": 5000, 
+			"sequence": 0, 
+			"mfg_date": "2020-09-12", 
+			"exp_date": "2025-10-14", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0003",
+			"factory": true,
+			"in_use": false
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 4,
+		"fields" : {
+			"reagent_sn": "REAG004",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "S", 
+			"log": "LOT00002", 
+			"catalog": "CAT0001",
+			"vol": 3000, 
+			"vol_cur": 2400, 
+			"sequence": 0, 
+			"mfg_date": "2020-08-14", 
+			"exp_date": "2090-08-14", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0001",
+			"factory": true,
+			"in_use": false
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 5,
+		"fields" : {
+			"reagent_sn": "REAG005",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "S", 
+			"log": "LOT00008", 
+			"catalog": "CAT0004",
+			"vol": 6000, 
+			"vol_cur": 150, 
+			"sequence": 0, 
+			"mfg_date": "2010-08-14", 
+			"exp_date": "2020-08-14", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0003",
+			"factory": true,
+			"in_use": false
+		}
+	},
+	{
+		"model": "reagents.Reagent",
+		"pk": 6,
+		"fields" : {
+			"reagent_sn": "REAG006",
+			"reag_name": "TEST_SET_A_1", 
+			"size": "L", 
+			"log": "LOT00009", 
+			"catalog": "CAT0005",
+			"vol": 7000, 
+			"vol_cur": 10, 
+			"sequence": 0, 
+			"mfg_date": "2012-10-10", 
+			"exp_date": "2018-10-10", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"r_type": "",
+			"autostainer_sn": "STAINER0001",
+			"factory": true,
+			"in_use": false
+		}
+	}
+]
