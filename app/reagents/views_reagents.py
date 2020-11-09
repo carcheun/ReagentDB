@@ -84,7 +84,19 @@ class ReagentViewSet(viewsets.ModelViewSet):
         Returns:
             Valid reagents returned as a list
         """
+
+        query_params = self.request.query_params
+        date_filter = self.request.query_params.get('date', None)
         reag = self.queryset.filter(vol_cur__gte=150)
+        if date_filter:
+            if date_filter[-1] == '/':
+                date_filter.pop(-1)
+            try:
+                datetime.strptime(date_filter, '%Y-%m-%d')
+                reag = reag.filter(date__date=date_filter)
+            except ValueError:
+                logger.error('Incorrect date format, should be YYYY-MM-DD, not\
+                    %s', date_filter)
         serializer = ReagentSerializer(reag, many=True)
         logger.debug(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -194,6 +206,65 @@ class ReagentViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
+    def sync_batch(self, request):
+        ret = list()
+        data = JSONParser().parse(request)
+        for d in data:
+            logger.debug(d)
+            pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
+            if created_pa:
+                logger.warning('%s does not exists, setting PA to None', d['catalog'])
+            autostainer, created = AutoStainerStation.objects\
+                .get_or_create(autostainer_sn=d['autostainer_sn'])
+            d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
+            d['date'] = make_aware(d['date'])
+            obj, created = self.queryset.get_or_create(
+                reagent_sn=d['reagent_sn'],
+                defaults={
+                    'reag_name': d['reag_name'], 
+                    'catalog': pa,
+                    'size': d['size'],
+                    'log': d['log'],
+                    'vol': d['vol'], 
+                    'vol_cur': d['vol_cur'], 
+                    'sequence': d.pop('sequence', 0),
+                    'mfg_date': d.pop('mfg_date', date.today()),
+                    'exp_date': d.pop('exp_date', date.today()),
+                    'factory': d['factory'],
+                    'r_type': d['r_type'],
+                    'autostainer_sn': autostainer,
+                    'date': d['date']
+                }
+            )
+            if not created:
+                if obj.autostainer_sn != d['autostainer_sn'] or obj.cur_vol > d['cur_vol']:
+                    # the entry in the database contains LESS liquid, choose to
+                    # believe that this information is correct and update the
+                    # entry to match the sent data
+                    obj.reag_name = d['reag_name']
+                    obj.catalog = pa
+                    obj.size = d['size']
+                    obj.log = d['log']
+                    obj.vol = d['vol']
+                    obj.vol_cur = d['vol_cur']
+                    obj.sequence = d.pop('sequence', 0)
+                    obj.mfg_date = d.pop('mfg_date', date.today())
+                    obj.exp_date = d.pop('exp_date', date.today())
+                    obj.factory = d['factory']
+                    obj.r_type = d['r_type']
+                    obj.autostainer_sn = autostainer
+                    obj.date = d['date']
+                    obj.save()
+                    if obj.autostainer_sn != d['autostainer_sn']:
+                        ret.append(obj)
+                elif obj.cur_vol < d['cur_vol']:
+                    # same stainer, but the server volume is lower
+                    ret.append(obj)
+        serializer = ReagentSerializer(ret, many=True)
+        logger.info(ret)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
     def initial_sync(self, request):
         """Initial sync request. 
         
@@ -211,12 +282,9 @@ class ReagentViewSet(viewsets.ModelViewSet):
         ret = list()
         for d in data:
             logger.info(d)
-            try:
-                pa = PA.objects.get(catalog=d['catalog'])
-            except PA.DoesNotExist:
-                # TODO: if PA does not exist, should we set as None? Or...?
+            pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
+            if created_pa:
                 logger.warning('%s does not exists, setting PA to None', d['catalog'])
-                pa = None
             autostainer, created = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
