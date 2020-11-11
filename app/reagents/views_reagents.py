@@ -116,12 +116,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
             ReagentDelta model of all changes client is missing
         """
         data = JSONParser().parse(request)
-        logger.debug(data)
+        logger.info(data)
         last_sync = data.pop('last_sync_reagent', None)
-        autostainer_sn = data.pop('executor', None)
+        autostainer_sn = data.pop('autostainer_sn', None)
 
-        executor, created = AutoStainerStation.objects\
-            .get_or_create(executor=executor)
+        autostainer, created = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=autostainer_sn)
 
         if not last_sync:
             # we've never sync'd before,
@@ -130,11 +130,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = ReagentDelta.objects.filter(date__gt=dt_last_update)\
-            .exclude(executor=executor)
+            .exclude(executor=autostainer)
         serializer = ReagentDeltaSerializer(missing_changes, many=True)
         # keep a record of when the last time an autostainer has synced
         autostainer.latest_sync_time_Reagent = now()
         autostainer.save()
+        logger.info(serializer.data)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
