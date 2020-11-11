@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+from celery.schedules import crontab
+import ReagentDB.tasks
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,7 +58,6 @@ INSTALLED_APPS = [
     'reagents',                         # our reagents app we created
     'rest_framework',                   # needed for our rest_framework
     'django_extensions',                # extra manange.py goodies
-    'django_crontab',                   # perform scheduled tasks
 ]
 
 MIDDLEWARE = [
@@ -153,11 +155,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-CRONJOBS = [
-    #@('0 0 1 * *', 'reagents.cron.check_and_remove_PADeltas'),
-    ('* * * * *', 'reagents.cron.check_and_remove_PADeltas', '>> /tmp/scheduled_job.log')
-]
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': 1,
@@ -177,4 +174,13 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     }
+}
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_BEAT_SCHEDULE = {
+    "check_and_remove_PADeltas": {
+        "task": "reagents.tasks.check_and_remove_PADeltas",
+        "schedule": crontab(minute="*/1"),
+    },
 }

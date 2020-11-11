@@ -1,3 +1,4 @@
+# Production yml that pulls from docker hub
 version: '3.8'
 
 services:
@@ -15,14 +16,42 @@ services:
       - ./.env.prod
     depends_on:
       - postgres
-  
+      - redis
+
   postgres:
     image: postgres:12.4-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
-    
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: celery -A ReagentDB worker -l info
+    volumes_from:
+      - reagentdb
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - reagentdb
+
+  celery-beat:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: celery -A ReagentDB beat -l info
+    volumes_from:
+      - reagentdb
+    env_file:
+      - ./.env.prod
+    depends_on: 
+      - reagentdb
+
   nginx:
     build: ./nginx
     volumes:

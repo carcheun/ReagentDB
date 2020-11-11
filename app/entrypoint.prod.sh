@@ -11,13 +11,13 @@ then
     echo "PostgreSQL started"
 fi
 
+echo "Running manage.py setup commands"
 # flush will clear your database
 #python manage.py flush --no-input
 python manage.py makemigrations
 python manage.py migrate
 python manage.py initadmin
 python manage.py collectstatic --noinput
-
 
 # TODO: cronjob not working
 #python manage.py crontab add
