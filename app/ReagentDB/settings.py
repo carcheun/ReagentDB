@@ -13,7 +13,6 @@ import os
 from pathlib import Path
 
 from celery.schedules import crontab
-import ReagentDB.tasks
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -179,8 +178,8 @@ LOGGING = {
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_BEAT_SCHEDULE = {
-    "check_and_remove_PADeltas": {
-        "task": "reagents.tasks.check_and_remove_PADeltas",
+    "archive_old_reagents": {
+        "task": "reagents.tasks.archive_old_reagents",
         "schedule": crontab(minute="*/1"),
     },
 }
