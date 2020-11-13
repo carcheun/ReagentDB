@@ -40,6 +40,9 @@ class Reagent(CommonReagent):
     reagent_sn = models.TextField(primary_key=True)
     in_use = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('reag_name', 'reagent_sn')
+
     def is_older(self, date):
         """Returns True if object is older provided given date
 

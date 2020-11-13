@@ -22,27 +22,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get('SECRET_KEY')
 #SECRET_KEY = '_1fl$e!6#+&(brk8&qsi8&9itgglq=ti7*yhswk0od^zmg(sc9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = int(os.environ.get('DEBUG', default=0))
 #DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 # TODO: Remove and change this to env files
 # copied from https://github.com/dkarchmer/aws-eb-docker-django
 # used for creating superuser as a manage.py command
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', default='admin')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', default='admin@email.com')
+ADMIN_INITIAL_PASSWORD = os.environ.get('ADMIN_INITIAL_PASSWORD', default='admin')
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
-    ('admin', 'carolyncheung@lumatas.com'),
+    (ADMIN_USERNAME, ADMIN_EMAIL),
 )
-ADMIN_USERNAME = 'admin'
-ADMIN_EMAIL = 'carolyncheung@lumatas.com'
-ADMIN_INITIAL_PASSWORD = 'admin' # To be changed after first login by admin
-
-
 
 # Application definition
 
@@ -139,7 +137,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-#TIME_ZONE = 'UTC'
 TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
@@ -175,11 +172,23 @@ LOGGING = {
     }
 }
 
+# Celery and Celery-Beat depend on REDIS
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_BEAT_SCHEDULE = {
+    # everyday at midnight, clear deltas that are no longer needed
+    "check_and_remove_PADeltas": {
+        "task": "reagents.tasks.check_and_remove_PADeltas",
+        "schedule": crontab(minute=0, hour=0),
+    },
+    "check_and_remove_ReagentDeltas": {
+        "task": "reagents.tasks.check_and_remove_ReagentDeltas",
+        "schedule": crontab(minute=0, hour=0),
+    },
+    # archive or delete expired/empty reagents every
+    # first day of the month
     "archive_old_reagents": {
         "task": "reagents.tasks.archive_old_reagents",
-        "schedule": crontab(minute="*/1"),
+        "schedule": crontab(0, 0, day_of_month='1'),
     },
 }

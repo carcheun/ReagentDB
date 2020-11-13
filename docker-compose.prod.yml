@@ -12,6 +12,8 @@ services:
       - static_volume:/home/app/reagentdb/static
     expose:
       - 8000
+    environment:
+      - RDB_ONLY=1
     env_file:
       - ./.env.prod
     depends_on:

@@ -211,7 +211,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         ret = list()
         data = JSONParser().parse(request)
         for d in data:
-            logger.debug(d)
+            logger.info(d)
             pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
             if created_pa:
                 logger.warning('%s does not exists, setting PA to None', d['catalog'])
@@ -219,24 +219,28 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
-            obj, created = self.queryset.get_or_create(
-                reagent_sn=d['reagent_sn'],
-                defaults={
-                    'reag_name': d['reag_name'], 
-                    'catalog': pa,
-                    'size': d['size'],
-                    'log': d['log'],
-                    'vol': d['vol'], 
-                    'vol_cur': d['vol_cur'], 
-                    'sequence': d.pop('sequence', 0),
-                    'mfg_date': d.pop('mfg_date', date.today()),
-                    'exp_date': d.pop('exp_date', date.today()),
-                    'factory': d['factory'],
-                    'r_type': d['r_type'],
-                    'autostainer_sn': autostainer,
-                    'date': d['date']
-                }
-            )
+            try:
+                obj, created = self.queryset.get_or_create(
+                    reagent_sn=d['reagent_sn'],
+                    defaults={
+                        'reag_name': d['reag_name'], 
+                        'catalog': pa,
+                        'size': d['size'],
+                        'log': d['log'],
+                        'vol': d['vol'], 
+                        'vol_cur': d['vol_cur'], 
+                        'sequence': d.pop('sequence', 0),
+                        'mfg_date': d.pop('mfg_date', date.today()),
+                        'exp_date': d.pop('exp_date', date.today()),
+                        'factory': d['factory'],
+                        'r_type': d['r_type'],
+                        'autostainer_sn': autostainer,
+                        'date': d['date']
+                    }
+                )
+            except Exception as e:
+                logger.error(e)
+                continue
             if not created:
                 if obj.autostainer_sn != d['autostainer_sn'] or obj.cur_vol > d['cur_vol']:
                     # the entry in the database contains LESS liquid, choose to
