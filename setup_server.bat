@@ -1,5 +1,8 @@
 @echo off 
 
+Rem Server setup batch scrip, commands are 'start', 'stop', 'clean' and a hidden
+Rem option 'clean_all'. clean_all will clean containers, images, AND volumes 
+
 if "%~1"=="start" (echo Starting the server...
     GOTO docker_stop) 
 if "%~1"=="stop" (echo Stopping the server... 
@@ -16,8 +19,8 @@ goto:eof
 
 :docker_clean
     docker-compose -f .\local.docker-compose.prod.yml down
-    FOR /f "tokens=*" %%i IN ('docker ps -aq') DO docker rm %%i
-    FOR /f "tokens=*" %%i IN ('docker images --format "{{.ID}}"') DO docker rmi %%i
+    FOR /f "tokens=*" %%i IN ('docker ps -aq') DO docker rm %%i -f
+    FOR /f "tokens=*" %%i IN ('docker images --format "{{.ID}}"') DO docker rmi %%i -f
     goto:eof
 
 :docker_clean_all
@@ -35,7 +38,7 @@ goto:eof
     echo [101m[WARNING]: STARTING DATABASE VOLUME REMOVAL PROCESS...[0m
     docker-compose -f .\local.docker-compose.prod.yml down
     FOR /f "tokens=*" %%i IN ('docker ps -aq') DO docker rm %%i
-    FOR /f "tokens=*" %%i IN ('docker images --format "{{.ID}}"') DO docker rmi %%i
+    FOR /f "tokens=*" %%i IN ('docker images --format "{{.ID}}"') DO docker rmi %%i -f
     docker volume prune
     goto:eof
 
@@ -48,5 +51,6 @@ goto:eof
     Rem Build images from .tar files and then build containers
     docker load -i nginx.tar
     docker load -i postgres.tar
+	docker load -i redis.tar
     docker load -i rdb.tar
     docker-compose -f .\local.docker-compose.prod.yml up --build -d
