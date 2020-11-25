@@ -127,7 +127,7 @@ class PA(CommonInfoPA):
     Info from ASHome/PaTbl.h
     """
     # catalog # should be primary key, otherwise PK will be a GUID
-    catalog = models.TextField(primary_key=True)
+    catalog = models.TextField(primary_key=True, blank=False)
     
     def is_older(self, date):
         """Returns True if object is older provided given date
@@ -152,5 +152,6 @@ class PADelta(CommonInfoPA):
         on_delete=models.SET_NULL, blank=True, null=True, db_constraint=False)
 
 class QP(models.Model):
+    # TODO: potential QP 
     #Quick pick, menu selection for PA's
     name = models.TextField()

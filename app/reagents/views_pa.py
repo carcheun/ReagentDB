@@ -48,15 +48,22 @@ class PAViewSet(viewsets.ModelViewSet):
     queryset = PA.objects.all()
     serializer_class = PASerializer
 
-    # TODO: how can we handle a forward slash in a URL GET request?
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def alias(self, request):
-        data = JSONParser().parse(request)
+        """Get PA by alias
+
+        Request PA by alias via URL request. Works for alias' with forward slash,
+        unless it ends in an forward slash
+
+        """
+        query_params = self.request.query_params
+        alias = query_params.get('alias', None)
         try:
-            pa = self.queryset.filter(alias=data['alias'])
+            pa = self.queryset.filter(alias=alias)
         except pa.DoesNotExist:
-            logger.info('PA alias "%s" not found!', alias)
+            logger.error('PA alias "%s" not found!', alias)
             return Response(status=status.HTTP_404_NOT_FOUND)
+        # return first PA only
         serializer = PASerializer(pa[0])
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -77,7 +84,7 @@ class PAViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
-            logger.info(d)
+            logger.debug(d)
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(
@@ -142,7 +149,7 @@ class PAViewSet(viewsets.ModelViewSet):
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
-            logger.warning('"last_sync" was None')
+            logger.warning('%s "last_sync" was None', autostainer_sn)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
@@ -178,7 +185,7 @@ class PAViewSet(viewsets.ModelViewSet):
         if not deltaSerializer.is_valid():
             logger.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        logger.info("%s %s", data['operation'], data['catalog'])
         if data['operation'] == 'CREATE':
             serializer = PASerializer(data=data)
             if serializer.is_valid():
@@ -215,7 +222,9 @@ class PAViewSet(viewsets.ModelViewSet):
             try:
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                # if we are deleting we do not care if item exists
+                # or not
+                return Response(status=status.HTTP_204_NO_CONTENT)
             pa.delete()
             deltaSerializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -228,8 +237,9 @@ class PAViewSet(viewsets.ModelViewSet):
         data = JSONParser().parse(request)
         objects_to_delete = self.queryset.filter(catalog__in=[c for c in data['catalog']])
         objects_to_delete.delete()
-        
+
         for c in data['catalog']:
+            logger.info(c)
             cata = {}
             cata['catalog'] = c
             deltaSerializer = PADeltaSerializer(data=cata, operation='DELETE')
@@ -244,12 +254,12 @@ class PAViewSet(viewsets.ModelViewSet):
         if 'autostainer_sn' in data:
             autostainer, created = AutoStainerStation.objects\
                     .get_or_create(autostainer_sn=data['autostainer_sn'])
-        # TODO: Return message to client that you're missing autostainer_sn
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
         if deltaSerializer.is_valid():
             ret = super().create(request)
             if ret.status_code == status.HTTP_201_CREATED:
                 deltaSerializer.save()
+                logger.info(data)
             return ret
         else:
             logging.error(deltaSerializer.errors)
@@ -262,12 +272,12 @@ class PAViewSet(viewsets.ModelViewSet):
         if 'autostainer_sn' in data:
             autostainer, created = AutoStainerStation.objects\
                     .get_or_create(autostainer_sn=data['autostainer_sn'])
-        # TODO: Return message to client that you're missing autostainer_sn
         deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
         if deltaSerializer.is_valid():
             ret = super().update(request, pk)
             if ret.status_code == status.HTTP_200_OK:
                 deltaSerializer.save()
+                logger.info(data)
             return ret
         else:
             logging.error(deltaSerializer.errors)
@@ -283,6 +293,7 @@ class PAViewSet(viewsets.ModelViewSet):
             ret = super().destroy(request, pk)
             if ret.status_code == status.HTTP_204_NO_CONTENT:
                 deltaSerializer.save()
+                logger.info(data)
             return ret
         else:
             logging.error(deltaSerializer.errors)

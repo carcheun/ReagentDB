@@ -151,6 +151,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# Logger settings
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': 1,
@@ -172,6 +173,7 @@ LOGGING = {
     }
 }
 
+# Celery settings
 # Celery and Celery-Beat depend on REDIS
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
@@ -186,9 +188,10 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=0),
     },
     # archive or delete expired/empty reagents every
-    # first day of the month
-    "archive_old_reagents": {
-        "task": "reagents.tasks.archive_old_reagents",
-        "schedule": crontab(0, 0, day_of_month='1'),
+    # january 4th, or whatever
+    "delete_old_reagents": {
+        "task": "reagents.tasks.delete_old_reagents",
+        "schedule": crontab(0, 0, day_of_month='1',
+            month_of_year='4'),
     },
 }

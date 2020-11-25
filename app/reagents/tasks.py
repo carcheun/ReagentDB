@@ -23,8 +23,11 @@ def check_and_remove_ReagentDeltas():
     return
 
 @shared_task
-def archive_old_reagents():
-    # TODO: either delete or migrate old data to new location
-    logger.info("TODO: Archiving finished or expired reagents...")
+def delete_old_reagents():
+    # TODO: yearly reagent purge?
+    old_reagents = Reagent.objects.filter(vol_cur__lt=120)
+    logger.info('Removing empty reagents')
+    logger.info(old_reagents)
+    old_reagents.delete()
     return
 
