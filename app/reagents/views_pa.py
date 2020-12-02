@@ -223,7 +223,6 @@ class PAViewSet(viewsets.ModelViewSet):
                 pa = PA.objects.get(catalog=data['catalog'])
             except PA.DoesNotExist:
                 # if we are deleting we do not care if item exists
-                # or not
                 return Response(status=status.HTTP_204_NO_CONTENT)
             pa.delete()
             deltaSerializer.save()

@@ -175,7 +175,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
-        autostainer, created = AutoStainerStation.objects\
+        autostainer, created_autostainer = AutoStainerStation.objects\
             .get_or_create(autostainer_sn=data['autostainer_sn'])
             
         if data['operation'] == 'CREATE':
@@ -293,7 +293,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
             if created_pa:
                 logger.warning('%s does not exists, setting PA to None', d['catalog'])
-            autostainer, created = AutoStainerStation.objects\
+            autostainer, created_autostainer = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
