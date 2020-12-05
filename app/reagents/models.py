@@ -24,6 +24,12 @@ class CommonReagent(models.Model):
     autostainer_sn = models.ForeignKey('AutoStainerStation', \
         on_delete=models.SET_NULL, blank=True, null=True)
 
+
+    class Meta:
+        abstract = True
+
+
+
 # TODO: Add field requirements
 # TODO: Add self def for other models
 class Reagent(CommonReagent):
@@ -56,7 +62,7 @@ class Reagent(CommonReagent):
     def __str__(self):
         return self.reag_name
 
-    def create_delta(self, operation, autostainer_sn):
+    def create_delta(self, operation, autostainer_sn, executor=''):
         """Create a delta entry, given operation and autostainer_sn, entry is
         not yet saved.
         """
@@ -88,7 +94,8 @@ class ReagentDelta(CommonReagent):
     operation = models.TextField(blank=False)
     #which autostainer performed the action
     executor =  models.ForeignKey('AutoStainerStation', \
-        on_delete=models.SET_NULL, blank=True, null=True)
+        on_delete=models.SET_NULL, blank=True, null=True, \
+        related_name='+')
 
 class AutoStainerStation(models.Model):
     """Autostainers identified by S/N, can be given custom name, SN read from 

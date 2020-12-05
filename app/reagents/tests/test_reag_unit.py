@@ -4,11 +4,11 @@ from django.db import models
 from django.test import TestCase, Client
 from django.forms.models import model_to_dict
 
-from .models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta
+from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta
 
 # Create your tests here.
-class PASyncClientSyncTests(TestCase):
-    fixtures = ['test_set_A_autostainerstation.json', 'test_pa_set_A.json.json', \
+class ReagentEndpointTests(TestCase):
+    fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
         'test_reag_set_A.json']
     
     def test_lock_reagent(self):
@@ -30,7 +30,7 @@ class PASyncClientSyncTests(TestCase):
         reag = Reagent.objects.get(reagent_sn='REAG001')
         self.assertTrue(reag.in_use)
 
-    def test_unlock_reagent(self):''
+    def test_unlock_reagent(self):
         #Send command to unlock reagent
         reag = Reagent.objects.get(reagent_sn='REAG001')
         reag.in_use = True
@@ -59,7 +59,7 @@ class PASyncClientSyncTests(TestCase):
         client = Client()
         ret = client.get('/reagents/api/reagent/valid_reagents/')
         # should have 1 missing sample
-        reags = reagent.objects.all()
+        reags = Reagent.objects.all()
         self.assertEqual(reag.length - 1, ret.length)
 
 
@@ -70,18 +70,18 @@ class PASyncClientSyncTests(TestCase):
 
         client = Client()
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
-        cur_vol = reag.cur_vol
+        vol_cur = reag.vol_cur
 
         test_post = {
             'dec_vol': dec_vol,
             'autostainer_sn': 'STAINER0001'
         }
 
-        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease_volume/',\
+        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
             json.dumps(test_post), content_type='application/json')
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         
-        self.assertEqual(cur_vol - dec_vol, reag.cur_vol)
+        self.assertEqual(vol_cur - dec_vol, reag.vol_cur)
 
     def test_decrease_volume_past_zero(self):
         # decrease past 0 and it will be 0

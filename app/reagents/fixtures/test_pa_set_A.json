@@ -1,0 +1,82 @@
+[
+	{
+		"model": "reagents.PA",
+		"pk": 1,
+		"fields" : {
+			"fullname": "Set_A_0001", 
+			"alias": "A0001", 
+			"source": "test_pa_set_A.json", 
+			"catalog": "CAT0001", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "Low PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"is_factory": true
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 2,
+		"fields" : {
+			"fullname": "Set_A_0002", 
+			"alias": "A0002", 
+			"source": "test_pa_set_A.json", 
+			"catalog": "CAT0002", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"is_factory": true
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 3,
+		"fields" : {
+			"fullname": "Set_A_0003", 
+			"alias": "A0003", 
+			"source": "test_pa_set_A.json", 
+			"catalog": "CAT0003", 
+			"volume": 5000, 
+			"incub": 60, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"is_factory": true
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 4,
+		"fields" : {
+			"fullname": "Set_A_0004", 
+			"alias": "A0004", 
+			"source": "test_pa_set_A.json", 
+			"catalog": "CAT0004", 
+			"volume": 2500, 
+			"incub": 15, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"is_factory": false
+		}
+	},
+	{
+		"model": "reagents.PA",
+		"pk": 5,
+		"fields" : {
+			"fullname": "Set_A_0005", 
+			"alias": "A0005", 
+			"source": "test_pa_set_A.json", 
+			"catalog": "CAT0005", 
+			"volume": 1000, 
+			"incub": 20, 
+			"ar": "High PH", 
+			"description": "Dummy Data", 
+			"date": "2020-08-14T15:09:29-07:00", 
+			"is_factory": false
+		}
+	}
+]

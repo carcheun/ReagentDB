@@ -360,6 +360,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if reagent.vol_cur < 0:
             reagent.vol_cur = 0
         delta = reagent.create_delta(operation='UPDATE',\
+            autostainer_sn=request.data['autostainer_sn'],
             executor=request.data['autostainer_sn'])
         delta.save()
         reagent.save()

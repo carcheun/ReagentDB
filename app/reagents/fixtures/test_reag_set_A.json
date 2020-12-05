@@ -15,7 +15,7 @@
 			"exp_date": "2025-08-14", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0002",
+			"autostainer_sn": "SN12346",
 			"factory": true,
 			"in_use": false
 		}
@@ -36,7 +36,7 @@
 			"exp_date": "2030-12-31", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0001",
+			"autostainer_sn": "SN12345",
 			"factory": true,
 			"in_use": false
 		}
@@ -57,7 +57,7 @@
 			"exp_date": "2025-10-14", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0003",
+			"autostainer_sn": "SN12347",
 			"factory": true,
 			"in_use": false
 		}
@@ -78,7 +78,7 @@
 			"exp_date": "2090-08-14", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0001",
+			"autostainer_sn": "SN12345",
 			"factory": true,
 			"in_use": false
 		}
@@ -99,7 +99,7 @@
 			"exp_date": "2020-08-14", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0003",
+			"autostainer_sn": "SN12347",
 			"factory": true,
 			"in_use": false
 		}
@@ -120,7 +120,7 @@
 			"exp_date": "2018-10-10", 
 			"date": "2020-08-14T15:09:29-07:00", 
 			"r_type": "",
-			"autostainer_sn": "STAINER0001",
+			"autostainer_sn": "SN12345",
 			"factory": true,
 			"in_use": false
 		}
