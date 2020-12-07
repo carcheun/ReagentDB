@@ -59,9 +59,8 @@ class ReagentEndpointTests(TestCase):
         client = Client()
         ret = client.get('/reagents/api/reagent/valid_reagents/')
         # should have 1 missing sample
-        reags = Reagent.objects.all()
-        self.assertEqual(reag.length - 1, ret.length)
-
+        reags = Reagent.objects.filter(vol_cur__gte=150)
+        self.assertEqual(len(ret.json()), reags.count())
 
     def test_decrease_volume(self):
         # decrease volume and check
@@ -90,15 +89,14 @@ class ReagentEndpointTests(TestCase):
 
         client = Client()
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
-
+        
         test_post = {
             'dec_vol': dec_vol,
             'autostainer_sn': 'STAINER0001'
         }
 
-        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease_volume/',\
+        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
             json.dumps(test_post), content_type='application/json')
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
-        
-        self.assertEqual(0, reag.cur_vol)
+        self.assertEqual(0, reag.vol_cur)
 

@@ -4,7 +4,7 @@ from django.db import models
 from django.test import TestCase, Client
 from django.forms.models import model_to_dict
 
-from .models import PA, AutoStainerStation, PADelta
+from ..models import PA, AutoStainerStation, PADelta
 
 # Create your tests here.
 class PASyncClientSyncTests(TestCase):
@@ -124,8 +124,6 @@ class PASyncTests(TestCase):
         self.assertEqual(cyn1235['volume'], 500)
         self.assertEqual(cyn1235['ar'], 'Trypsin')
         self.assertEqual(cyn1235['incub'], 25)
-
-
 
 class PADeltaTests(TestCase):
     fixtures = ['test_autostainerstation.json', 'test_pa.json']
