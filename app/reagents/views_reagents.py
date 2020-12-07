@@ -63,7 +63,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
         Returns:
             JSON containing at least cur_vol and log
         """
-        # TODO: GET OR CREATE
         data = JSONParser().parse(request)
         # see if reagent exists
         try:
@@ -88,13 +87,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
         Returns:
             Valid reagents returned as a list
         """
-
         query_params = self.request.query_params
         date_filter = self.request.query_params.get('date', None)
         reag = self.queryset.filter(vol_cur__gte=120)
         if date_filter:
             if date_filter[-1] == '/':
-                date_filter.pop(-1)
+                date_filter[:-1]
             try:
                 datetime.strptime(date_filter, '%Y-%m-%d')
                 reag = reag.filter(date__date=date_filter)

@@ -45,22 +45,75 @@ class ReagentEndpointTests(TestCase):
         response = client.post('/reagents/api/reagent/lock/',\
             json.dumps(test_post), content_type='application/json')
         
-        reag = Reagent.objects.get(reagent_sn='REAG001')
+        reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
         self.assertFalse(reag.in_use)
 
     def test_scan_reagent(self):
-        #Check scanned reagent
-        #TODO: please find out scanned data from reagent scanning
+        test_post = {
+            'reagent_sn': 'REAG001',
+            'autostainer_sn': 'SN12345'
+        }
+        client = Client()
+        response = client.post('/reagents/api/reagent/scan/',\
+            json.dumps(test_post), content_type='application/json')
+        
+        # scanned data should return
+        reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
+        self.assertEqual(reag.vol_cur, response.json()['vol_cur'])
+        self.assertEqual(reag.vol, response.json()['vol'])
+        self.assertEqual(reag.reag_name, response.json()['reag_name'])
+        exp_date_str = reag.exp_date.strftime('%Y-%m-%d')
+        self.assertEqual(exp_date_str, response.json()['exp_date'])
+        self.assertEqual(reag.log, response.json()['log'])
+        self.assertEqual(reag.autostainer_sn.autostainer_sn, response.json()['autostainer_sn'])
 
-        return
+    def test_scan_reagent_missing_autostainer(self):
+        test_post = {
+            'reagent_sn': 'REAG001',
+            'autostainer_sn': 'SN_NON_EXISTANT'
+        }
+        client = Client()
+        response = client.post('/reagents/api/reagent/scan/',\
+            json.dumps(test_post), content_type='application/json')
+        # scanned data should return, but a new autostainer should
+        # also be made
+        reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
+        self.assertEqual(reag.vol_cur, response.json()['vol_cur'])
+        self.assertEqual(reag.vol, response.json()['vol'])
+        self.assertEqual(reag.reag_name, response.json()['reag_name'])
+        exp_date_str = reag.exp_date.strftime('%Y-%m-%d')
+        self.assertEqual(exp_date_str, response.json()['exp_date'])
+        self.assertEqual(reag.log, response.json()['log'])
+        self.assertEqual(reag.autostainer_sn.autostainer_sn, response.json()['autostainer_sn'])
+
+    def test_scan_missing_reagent(self):
+        test_post = {
+            'reagent_sn': 'MISSING_REAGENT',
+            'autostainer_sn': 'SN_NON_EXISTANT'
+        }
+        client = Client()
+        response = client.post('/reagents/api/reagent/scan/',\
+            json.dumps(test_post), content_type='application/json')
+        self.assertEqual(404, response.status_code)
 
     def test_valid_reagents(self):
         #Returned reagents are all above 150ul and not expired
         client = Client()
         ret = client.get('/reagents/api/reagent/valid_reagents/')
-        # should have 1 missing sample
         reags = Reagent.objects.filter(vol_cur__gte=150)
         self.assertEqual(len(ret.json()), reags.count())
+        
+    def test_valid_reagents_date_filter(self):
+        # Returned reagents are all above 150ul and not expired
+        # along with a date filter
+        client = Client()
+        ret = client.get('/reagents/api/reagent/valid_reagents/?date=2020-08-14/')
+        date_filter = '2020-08-14'
+        datetime.strptime(date_filter, '%Y-%m-%d')
+        reags = Reagent.objects.filter(vol_cur__gte=150, date__date=date_filter)
+        #self.assertEqual(len(ret.json()), reags.count())
+        print(reags)
+        print(ret)
 
     def test_decrease_volume(self):
         # decrease volume and check
