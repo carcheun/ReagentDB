@@ -92,7 +92,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         reag = self.queryset.filter(vol_cur__gte=120)
         if date_filter:
             if date_filter[-1] == '/':
-                date_filter[:-1]
+                date_filter = date_filter[:-1]
             try:
                 datetime.strptime(date_filter, '%Y-%m-%d')
                 reag = reag.filter(date__date=date_filter)

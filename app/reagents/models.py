@@ -29,7 +29,6 @@ class CommonReagent(models.Model):
         abstract = True
 
 
-
 # TODO: Add field requirements
 # TODO: Add self def for other models
 class Reagent(CommonReagent):
