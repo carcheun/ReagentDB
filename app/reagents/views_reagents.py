@@ -414,9 +414,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = {}
         data['reagent_sn'] = pk
         data['operation'] = 'DELETE'
-        
-        autostainer, created_autostainer = AutoStainerStation.objects\
-            .get_or_create(autostainer_sn=data['autostainer_sn'])
 
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():

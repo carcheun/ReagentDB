@@ -152,7 +152,24 @@ class ReagentEndpointTests(TestCase):
             json.dumps(test_post), content_type='application/json')
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         self.assertEqual(0, reag.vol_cur)
+        delta = ReagentDelta.objects.latest('date')
+        self.assertEqual("UPDATE", delta.operation)
+        self.assertEqual(0, delta.vol_cur)
 
+    def test_decrease_non_existant(self):
+        # decrease a non existant reagent should return 404
+        reagent_sn = 'NON_EXISTANT'
+        dec_vol = 100
+        test_post = {
+            'dec_vol': dec_vol,
+            'autostainer_sn': 'STAINER0001'
+        }
+
+        client = Client()
+        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
+            json.dumps(test_post), content_type='application/json')
+        self.assertEqual(404, response.status_code)
+        self.assertRaises(ReagentDelta.DoesNotExist, ReagentDelta.objects.latest, 'date')
 
 class ReagentCRUDEndpointTests(TestCase):
     fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
@@ -177,7 +194,6 @@ class ReagentCRUDEndpointTests(TestCase):
         client = Client()
         ret = client.post('/reagents/api/reagent/',\
             json.dumps(test_post), content_type='application/json')
-        print(ret)
         self.assertEqual(201, ret.status_code)
         
         reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
@@ -185,14 +201,14 @@ class ReagentCRUDEndpointTests(TestCase):
         self.assertEqual(reag.size, test_post['size'])
         self.assertEqual(reag.vol_cur, test_post['vol_cur'])
         self.assertEqual(reag.vol, test_post['vol'])
-        self.assertEqual(reag.sequence, '')
-        self.assertEqual(reag.mfg_date, test_post['mfg_date'])
-        self.assertEqual(reag.exp_date, test_post['exp_date'])
+        self.assertEqual(reag.sequence, 0)
+        self.assertEqual(reag.mfg_date.strftime('%Y-%m-%d'), test_post['mfg_date'])
+        self.assertEqual(reag.exp_date.strftime('%Y-%m-%d'), test_post['exp_date'])
         self.assertEqual(reag.r_type, test_post['r_type'])
         self.assertEqual(reag.factory, test_post['factory'])
-        self.assertEqual(reag.catalog, test_post['catalog'])
+        self.assertEqual(reag.catalog.catalog, test_post['catalog'])
 
-        delta = model_to_dict(ReagentDelta.objects.latest('date'))
+        delta = ReagentDelta.objects.latest('date')
         self.assertFalse(reag.in_use)
         self.assertEqual(reag.size, delta.size)
         self.assertEqual(reag.autostainer_sn, delta.autostainer_sn)
@@ -210,14 +226,37 @@ class ReagentCRUDEndpointTests(TestCase):
 
     def test_update_reagent(self):
         test_post = {
+            'reagent_sn': 'REAG006',
             'size': 'L',
             'vol_cur': 6000,
             'autostainer_sn': 'SN12346'
         }
 
         client = Client()
-        ret = client.put('/reagents/api/reagent/REAG007/',\
+        ret = client.put('/reagents/api/reagent/REAG006/',\
             json.dumps(test_post), content_type='application/json')
         
-        self.assertEqual(201, ret.status_code)
-        self.assertEqual(reag.reagent_sn, 'REAG007')
+        reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
+
+        self.assertEqual(200, ret.status_code)
+        self.assertEqual(reag.reagent_sn, test_post['reagent_sn'])
+        self.assertEqual(reag.size, test_post['size'])
+        self.assertEqual(reag.vol_cur, test_post['vol_cur'])
+
+        delta = ReagentDelta.objects.latest('date')
+        self.assertEqual(delta.reagent_sn, test_post['reagent_sn'])
+        self.assertEqual(delta.size, test_post['size'])
+        self.assertEqual(delta.operation, 'UPDATE')
+        self.assertEqual(delta.vol_cur, test_post['vol_cur'])
+        self.assertEqual(delta.autostainer_sn.autostainer_sn, \
+            test_post['autostainer_sn'])
+        
+    def test_delete_reagent(self):
+        reagent_sn = 'REAG006'
+        client = Client()
+        ret = client.delete('/reagents/api/reagent/' + reagent_sn + '/')
+        self.assertEqual(204, ret.status_code)
+
+        delta = ReagentDelta.objects.latest('date')
+        self.assertEqual(delta.reagent_sn, reagent_sn)
+        self.assertEqual(delta.operation, 'DELETE')
