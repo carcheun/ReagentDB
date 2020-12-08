@@ -177,15 +177,15 @@ class ReagentCRUDEndpointTests(TestCase):
         client = Client()
         ret = client.post('/reagents/api/reagent/',\
             json.dumps(test_post), content_type='application/json')
+        print(ret)
         self.assertEqual(201, ret.status_code)
         
         reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
         self.assertFalse(reag.in_use)
         self.assertEqual(reag.size, test_post['size'])
-        self.assertEqual(reag.log, test_post['log'])
         self.assertEqual(reag.vol_cur, test_post['vol_cur'])
         self.assertEqual(reag.vol, test_post['vol'])
-        self.assertEqual(reag.sequence, test_post['sequence'])
+        self.assertEqual(reag.sequence, '')
         self.assertEqual(reag.mfg_date, test_post['mfg_date'])
         self.assertEqual(reag.exp_date, test_post['exp_date'])
         self.assertEqual(reag.r_type, test_post['r_type'])

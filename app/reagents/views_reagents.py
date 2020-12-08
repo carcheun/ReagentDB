@@ -370,6 +370,10 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
         data['operation'] = 'CREATE'
         # create the PA if the PA does not exist
+
+        autostainer, created_autostainer = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=data['autostainer_sn'])
+
         pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
         deltaSerializer = self.delta_serializer_class(data=data)
 
@@ -390,6 +394,10 @@ class ReagentViewSet(viewsets.ModelViewSet):
         # override update to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'UPDATE'
+        
+        autostainer, created_autostainer = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=data['autostainer_sn'])
+
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().update(request, pk)
@@ -406,6 +414,10 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = {}
         data['reagent_sn'] = pk
         data['operation'] = 'DELETE'
+        
+        autostainer, created_autostainer = AutoStainerStation.objects\
+            .get_or_create(autostainer_sn=data['autostainer_sn'])
+
         deltaSerializer = self.delta_serializer_class(data=data)
         if deltaSerializer.is_valid():
             ret = super().destroy(request, pk)
