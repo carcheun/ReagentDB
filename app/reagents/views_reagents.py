@@ -377,8 +377,9 @@ class ReagentViewSet(viewsets.ModelViewSet):
         pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
         deltaSerializer = self.delta_serializer_class(data=data)
 
-        # if created_pa:
+        #if created_pa:
             # TODO: Create PA delta
+            #pa_delta_serializer = 
 
         if deltaSerializer.is_valid():
             ret = super().create(request)
