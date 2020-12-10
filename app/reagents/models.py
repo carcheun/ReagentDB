@@ -24,10 +24,8 @@ class CommonReagent(models.Model):
     autostainer_sn = models.ForeignKey('AutoStainerStation', \
         on_delete=models.SET_NULL, blank=True, null=True)
 
-
     class Meta:
         abstract = True
-
 
 # TODO: Add field requirements
 # TODO: Add self def for other models

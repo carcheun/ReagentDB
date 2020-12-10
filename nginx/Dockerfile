@@ -5,5 +5,9 @@ RUN \
   then rm /etc/nginx/sites-enabled/default; \
   fi
 
-RUN rm /etc/nginx/conf.d/default.conf
+RUN \
+  if [ -d /etc/nginx/conf.d/default.conf ]; \
+  then rm /etc/nginx/conf.d/default.conf; \
+  fi
+
 COPY nginx.conf /etc/nginx/conf.d
