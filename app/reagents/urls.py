@@ -13,10 +13,7 @@ router.register(r'reagentdelta', views_reagents.ReagentDeltaViewSet)
 
 # actual URL's users should use for POST/GET/PUT
 urlpatterns  = [
-    # server/reagents/
-    path('', views_pa.index, name='index'),
+    # server/reagents
     path('api/', include(router.urls)),
-    # TODO: authorization to modify 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('test/', views_pa.hello_world, name='test'),
 ]

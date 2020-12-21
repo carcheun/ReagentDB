@@ -13,24 +13,6 @@ from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
 
 logger = logging.getLogger(__name__)
-
-# Create your views here.
-def hello_world(request):
-    logger.debug("THIS IS A DEBUG!")
-    logger.warning("This is a warning!")
-    logger.info("This is some info")
-    logger.exception("OMG EXCEPTION")
-    return JsonResponse({"HELLO WORLD" : "HI"})
-        
-# ugly basic render of some data
-def index(request):
-    all_reagents = Reagent.objects.all()
-    context = {
-        'all_reagents' : all_reagents,
-    }
-    
-    return render(request, 'reagents/index.html', context)
-
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
     """ModelViewSet for AutoStainerStation
     """
