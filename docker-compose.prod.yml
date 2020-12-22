@@ -65,6 +65,8 @@ services:
     image: nginx:1.19.2-alpine
     volumes:
       - static_volume:/home/app/reagentdb/static
+    env_file:
+      - ./.env.prod.db
     ports:
       - 8000:8000
       - 80:80
