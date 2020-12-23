@@ -109,7 +109,111 @@ class PACRUDEndpointTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), test_post)
         
-    
+    def test_get_pa_by_alias(self):
+        # Get a PA via alias
+        alias = 'A0003'
+        client = Client()
+        response = client.get('/reagents/api/pa/alias/?alias=' + alias)
+
+        r_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(r_json['fullname'], 'Set_A_0003')
+        self.assertEqual(r_json['alias'], 'A0003')
+        self.assertEqual(r_json['source'], 'test_pa_set_A.json')
+        self.assertEqual(r_json['catalog'], 'CAT0003')
+        self.assertEqual(r_json['volume'], 5000)
+        self.assertEqual(r_json['incub'], 60)
+        self.assertEqual(r_json['ar'], 'High PH')
+        self.assertEqual(r_json['description'], 'Dummy Data')
+        self.assertEqual(r_json['date'], '2020-08-14T15:09:29-07:00')
+        self.assertEqual(r_json['is_factory'], True)
+
+        alias = 'Non_existant'
+        response = client.get('/reagents/api/pa/alias/?alias=' + alias)
+
+        r_json = response.json()
+        self.assertEqual(response.status_code, 404)
+
+    def test_initial_sync(self):
+        test_post = [{
+            # updated
+            'fullname': 'Set_A_0003', 
+            'alias': 'UPDATE_A0003', 
+            'source': 'test_pa_unit.py', 
+            'catalog': 'CAT0003', 
+            'volume': 5000, 
+            'incub': 60, 
+            'ar': 'High PH', 
+            'description': 'Dummy Data', 
+            'date': '2020-08-15T15:09:29-07:00', 
+            'is_factory': True
+        },
+        {
+            # failed to update
+            'fullname': 'Set_A_0004', 
+            'alias': 'A0004_does_not_update', 
+            'source': 'test_pa_unit.py', 
+            'catalog': 'CAT0004', 
+            'volume': 9000, 
+            'incub': 15, 
+            'ar': 'Low PH', 
+            'description': 'Dummy Data', 
+            'date': '2020-08-11T15:09:29-07:00', 
+            'is_factory': False
+        },
+        {
+            # newly created
+            'fullname': 'Newly added PA', 
+            'alias': 'new PA', 
+            'source': 'test_pa_unit.py', 
+            'catalog': 'UPD-01234', 
+            'volume': 5000, 
+            'incub': 60, 
+            'ar': 'High PH', 
+            'description': 'Dummy Data', 
+            'date': '2020-08-14T15:09:29-07:00', 
+            'is_factory': False
+        }]
+        
+        client = Client()
+        response = client.post('/reagents/api/pa/initial_sync/', json.dumps(test_post), 
+            content_type='application/json')
+        # TODO: except that, 1 update, 1 added, 1 no change
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/reagents/api/pa/')
+        r_json = response.json()
+        self.assertEqual(r_json.length, 6)
+        updated_pa = False
+        failed_to_update_pa = False
+        added_pa = False
+        for pa in r_json:
+            if pa['catalog'] == 'CAT0003':
+                # expect to be updated
+                self.assertEqual(pa['alias'], 'UPDATE_A0003')
+                self.assertEqual(pa['source'], 'test_pa_unit.py')
+                self.assertEqual(pa['volume'], 5000)
+                self.assertEqual(pa['incub'], 60)
+                self.assertEqual(pa['ar'], 'Low PH')
+                updated_pa = True
+            elif pa['catalog'] == 'CAT0004':
+                self.assertEqual(pa['alias'], 'A0004')
+                self.assertEqual(pa['source'], 'test_pa_set_A.json')
+                self.assertEqual(pa['volume'], 2500)
+                self.assertEqual(pa['incub'], 15)
+                self.assertEqual(pa['ar'], 'High PH')
+                failed_to_update_pa = True
+            elif pa['catalog'] == 'UPD-01234':
+                self.assertEqual(pa['alias'], 'new PA')
+                self.assertEqual(pa['source'], 'test_pa_unit.json')
+                self.assertEqual(pa['volume'], 5000)
+                self.assertEqual(pa['incub'], 60)
+                self.assertEqual(pa['ar'], 'High PH')
+                added_pa = True
+        self.assertTrue(updated_pa)
+        self.assertTrue(failed_to_update_pa)
+        self.assertTrue(added_pa)
+        
     def test_get_all(self):
         """
         test get route works and returns 3 objects from test_pa.json
