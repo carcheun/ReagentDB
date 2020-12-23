@@ -24,7 +24,8 @@ class PASyncClientSyncTests(TestCase):
         # should get 2 back
         response = client.post('/reagents/api/pa/database_to_client_sync/',\
             json.dumps(test_post), content_type='application/json')
-        print(response.json())
+
+        #TODO: get 2 back?
 
 class PASyncTests(TestCase):
     fixtures = ['test_pa.json', 'test_autostainerstation.json']
@@ -130,4 +131,5 @@ class ReagentSyncTests(TestCase):
 
     def test_batch_sync(self):
         print('hi')
+        #TODO: reagent sync stuff
         

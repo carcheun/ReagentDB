@@ -7,9 +7,6 @@ from django.forms.models import model_to_dict
 from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta
 
 class PACRUDEndpointTests(TestCase):
-    #fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
-    #    'test_reag_set_A.json']
-
     fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
         'test_reag_set_A.json']
 
@@ -130,8 +127,6 @@ class PACRUDEndpointTests(TestCase):
 
         alias = 'Non_existant'
         response = client.get('/reagents/api/pa/alias/?alias=' + alias)
-
-        r_json = response.json()
         self.assertEqual(response.status_code, 404)
 
     def test_initial_sync(self):
@@ -145,8 +140,8 @@ class PACRUDEndpointTests(TestCase):
             'incub': 60, 
             'ar': 'High PH', 
             'description': 'Dummy Data', 
-            'date': '2020-08-15T15:09:29-07:00', 
-            'is_factory': True
+            'date': '2020-08-15T15:09:29', 
+            'factory': True
         },
         {
             # failed to update
@@ -158,8 +153,8 @@ class PACRUDEndpointTests(TestCase):
             'incub': 15, 
             'ar': 'Low PH', 
             'description': 'Dummy Data', 
-            'date': '2020-08-11T15:09:29-07:00', 
-            'is_factory': False
+            'date': '2020-08-11T15:09:29', 
+            'factory': False
         },
         {
             # newly created
@@ -171,19 +166,18 @@ class PACRUDEndpointTests(TestCase):
             'incub': 60, 
             'ar': 'High PH', 
             'description': 'Dummy Data', 
-            'date': '2020-08-14T15:09:29-07:00', 
-            'is_factory': False
+            'date': '2020-08-14T15:09:29', 
+            'factory': False
         }]
         
         client = Client()
         response = client.post('/reagents/api/pa/initial_sync/', json.dumps(test_post), 
             content_type='application/json')
-        # TODO: except that, 1 update, 1 added, 1 no change
         self.assertEqual(response.status_code, 200)
 
-        response = client.post('/reagents/api/pa/')
+        response = client.get('/reagents/api/pa/')
         r_json = response.json()
-        self.assertEqual(r_json.length, 6)
+        self.assertEqual(len(r_json), 6)
         updated_pa = False
         failed_to_update_pa = False
         added_pa = False
@@ -194,7 +188,7 @@ class PACRUDEndpointTests(TestCase):
                 self.assertEqual(pa['source'], 'test_pa_unit.py')
                 self.assertEqual(pa['volume'], 5000)
                 self.assertEqual(pa['incub'], 60)
-                self.assertEqual(pa['ar'], 'Low PH')
+                self.assertEqual(pa['ar'], 'High PH')
                 updated_pa = True
             elif pa['catalog'] == 'CAT0004':
                 self.assertEqual(pa['alias'], 'A0004')
@@ -205,7 +199,7 @@ class PACRUDEndpointTests(TestCase):
                 failed_to_update_pa = True
             elif pa['catalog'] == 'UPD-01234':
                 self.assertEqual(pa['alias'], 'new PA')
-                self.assertEqual(pa['source'], 'test_pa_unit.json')
+                self.assertEqual(pa['source'], 'test_pa_unit.py')
                 self.assertEqual(pa['volume'], 5000)
                 self.assertEqual(pa['incub'], 60)
                 self.assertEqual(pa['ar'], 'High PH')

@@ -40,9 +40,8 @@ class PAViewSet(viewsets.ModelViewSet):
         """
         query_params = self.request.query_params
         alias = query_params.get('alias', None)
-        try:
-            pa = self.queryset.filter(alias=alias)
-        except pa.DoesNotExist:
+        pa = self.queryset.filter(alias=alias)
+        if len(pa) < 1:
             logger.error('PA alias "%s" not found!', alias)
             return Response(status=status.HTTP_404_NOT_FOUND)
         # return first PA only
