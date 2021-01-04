@@ -128,7 +128,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if not last_sync:
             # we've never sync'd before,
             # TODO: decide what to do if we've never synced before
-            logger.warning('"last_sync" was None')
+            logger.warning('"last_sync_reagent" was None')
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = ReagentDelta.objects.filter(date__gt=dt_last_update)\
