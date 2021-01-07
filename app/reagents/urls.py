@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework import routers
 from . import views_pa, views_reagents
 
+from rest_framework.authtoken.views import obtain_auth_token
+
 # define router and register viewsets
 # routed to server/reagents/api
 router = routers.DefaultRouter()
@@ -16,4 +18,5 @@ urlpatterns  = [
     # server/reagents
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]

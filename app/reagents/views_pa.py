@@ -12,8 +12,16 @@ from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSeri
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
 
+
+from rest_framework.permissions import IsAuthenticated  # <-- Here
+from rest_framework.authentication import TokenAuthentication  # <-- Here
+
 logger = logging.getLogger(__name__)
+
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     """ModelViewSet for AutoStainerStation
     """
     queryset = AutoStainerStation.objects.all()

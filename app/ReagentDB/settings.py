@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     'reagents',                         # our reagents app we created
     'rest_framework',                   # needed for our rest_framework
+    'rest_framework.authtoken',         # for authentication tokens
     'django_extensions',                # extra manange.py goodies
 ]
 
@@ -131,6 +132,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# django rest framework authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # <-- And here
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
