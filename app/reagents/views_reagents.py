@@ -10,6 +10,9 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.utils.timezone import make_aware, now
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+
 logger = logging.getLogger(__name__)
 
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
@@ -22,6 +25,9 @@ class ReagentDeltaViewSet(viewsets.ModelViewSet):
 class ReagentViewSet(viewsets.ModelViewSet):
     """ModelViewSet for Reagents
     """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     queryset = Reagent.objects.all()
     serializer_class = ReagentSerializer
 

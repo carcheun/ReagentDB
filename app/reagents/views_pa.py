@@ -12,9 +12,8 @@ from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSeri
 from .models import Reagent, AutoStainerStation, PA, PADelta
 from .utils import convert_client_date_format
 
-
-from rest_framework.permissions import IsAuthenticated  # <-- Here
-from rest_framework.authentication import TokenAuthentication  # <-- Here
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +27,8 @@ class AutoStainerStationViewSet(viewsets.ModelViewSet):
     serializer_class = AutoStainerStationSerializer
 
 class PAViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     """ModelViewSet for PA
 
     A timestamped entry is added to PADelta detailing each CUD action, 
@@ -289,5 +290,8 @@ class PAViewSet(viewsets.ModelViewSet):
 
 
 class PADeltaViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     queryset = PADelta.objects.all()
     serializer_class = PADeltaSerializer
