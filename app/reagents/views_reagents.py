@@ -3,31 +3,47 @@ import logging
 from datetime import datetime
 from datetime import date
 from .models import Reagent, ReagentDelta, PA, AutoStainerStation
-from .serializers import ReagentSerializer, ReagentDeltaSerializer
+from .serializers import ReagentSerializer, ReagentDeltaSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from django.utils.timezone import make_aware, now
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
+from django.contrib.auth.models import User
+
 logger = logging.getLogger(__name__)
+
+@api_view(['POST'])
+def RegisterUser(request):
+    """Register new users
+    """
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        User.objects.create_user(username=request.data['username'], password=request.data['password'])
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
     """ModelViewSet for ReagentsDelta
     """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     queryset = ReagentDelta.objects.all()
     serializer_class = ReagentDeltaSerializer
 
-    
 class ReagentViewSet(viewsets.ModelViewSet):
     """ModelViewSet for Reagents
     """
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    
+
     queryset = Reagent.objects.all()
     serializer_class = ReagentSerializer
 

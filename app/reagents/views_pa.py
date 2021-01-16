@@ -18,17 +18,15 @@ from rest_framework.authentication import TokenAuthentication
 logger = logging.getLogger(__name__)
 
 class AutoStainerStationViewSet(viewsets.ModelViewSet):
+    """ModelViewSet for AutoStainerStation
+    """
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     
-    """ModelViewSet for AutoStainerStation
-    """
     queryset = AutoStainerStation.objects.all()
     serializer_class = AutoStainerStationSerializer
 
 class PAViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
     """ModelViewSet for PA
 
     A timestamped entry is added to PADelta detailing each CUD action, 
@@ -36,6 +34,9 @@ class PAViewSet(viewsets.ModelViewSet):
 
     TODO: refactor into serialzier?
     """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     queryset = PA.objects.all()
     serializer_class = PASerializer
 
