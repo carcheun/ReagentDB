@@ -5,14 +5,15 @@ RUN \
   then rm /etc/nginx/sites-enabled/default; \
   fi
 
-RUN \
-  if [ -d /etc/nginx/conf.d/default.conf ]; \
-  then rm /etc/nginx/conf.d/default.conf; \
-  fi
+#RUN \
+#  if [ -d /etc/nginx/conf.d/default.conf ]; \
+#  then rm /etc/nginx/conf.d/default.conf; \
+#  fi
+
+RUN rm /etc/nginx/conf.d/default.conf
 
 # set timezone
 #RUN apk add tzdata
 #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-#COPY nginx.conf /etc/nginx/conf.d
-COPY nginx.conf /etc/nginx/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
