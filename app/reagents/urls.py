@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from . import views_pa, views_reagents
+from . import views_pa, views_reagents, views_users
 
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -19,6 +19,6 @@ urlpatterns  = [
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('register/', views_reagents.RegisterUser, name='register_user'),
-    path('logout/', views_reagents.Logout, name='user_logout'),
+    path('register/', views_users.RegisterUser, name='register_user'),
+    path('logout/', views_users.Logout, name='user_logout'),
 ]
