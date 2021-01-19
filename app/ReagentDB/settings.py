@@ -138,6 +138,9 @@ REST_FRAMEWORK = {
     ],
 }
 
+# Customer user model
+AUTH_USER_MODEL = 'reagents.User'
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 

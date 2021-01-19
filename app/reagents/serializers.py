@@ -2,8 +2,8 @@
 # convert django model data over to JSON or XML format (serialization)
 from rest_framework import serializers
 
-from .models import Reagent, ReagentDelta, AutoStainerStation, PA, PADelta
-from django.contrib.auth.models import User
+from .models import Reagent, ReagentDelta, AutoStainerStation, PA, PADelta, User
+#from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

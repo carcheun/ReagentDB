@@ -20,4 +20,5 @@ urlpatterns  = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('register/', views_reagents.RegisterUser, name='register_user'),
+    path('logout/', views_reagents.Logout, name='user_logout'),
 ]

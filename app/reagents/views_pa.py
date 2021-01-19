@@ -48,6 +48,8 @@ class PAViewSet(viewsets.ModelViewSet):
         unless it ends in an forward slash
 
         """
+        logger.info(request.user)
+        logger.info(request.auth)
         query_params = self.request.query_params
         alias = query_params.get('alias', None)
         pa = self.queryset.filter(alias=alias)
