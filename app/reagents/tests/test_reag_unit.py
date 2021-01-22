@@ -101,18 +101,18 @@ class ReagentEndpointTests(APITestCase):
         self.assertEqual(404, response.status_code)
 
     def test_valid_reagents(self):
-        #Returned reagents are all above 150ul and not expired
+        #Returned reagents are all above 120ul
         ret = self.client.get('/reagents/api/reagent/valid_reagents/')
-        reags = Reagent.objects.filter(vol_cur__gte=150)
+        reags = Reagent.objects.filter(vol_cur__gte=120)
         self.assertEqual(len(ret.json()), reags.count())
         
     def test_valid_reagents_date_filter(self):
-        # Returned reagents are all above 150ul and not expired
+        # Returned reagents are all above 120ul
         # along with a date filter
         ret = self.client.get('/reagents/api/reagent/valid_reagents/?date=2020-08-14/')
         date_filter = '2020-08-14'
         datetime.strptime(date_filter, '%Y-%m-%d')
-        reags = Reagent.objects.filter(vol_cur__gte=150, date__date=date_filter)
+        reags = Reagent.objects.filter(vol_cur__gte=120, date__date=date_filter)
         self.assertEqual(len(ret.json()), reags.count())
 
     def test_decrease_volume(self):
@@ -264,3 +264,18 @@ class ReagentCRUDEndpointTests(APITestCase):
         delta = ReagentDelta.objects.latest('date')
         self.assertEqual(delta.reagent_sn, reagent_sn)
         self.assertEqual(delta.operation, 'DELETE')
+
+    def test_read_reagent(self):
+        reagent_sn = 'REAG002'
+        ret = self.client.get('/reagents/api/reagent/' + reagent_sn +'/')
+        self.assertEqual(ret.json()['reag_name'], 'TEST_SET_A_1')
+        self.assertEqual(ret.json()['size'], 'L')
+        self.assertEqual(ret.json()['vol'], 6000)
+        self.assertEqual(ret.json()['vol_cur'], 3140)
+        self.assertEqual(ret.json()['catalog'], 'CAT0002')
+
+    def test_read_reagent_nonexistant(self):
+        reagent_sn = 'NON_EXISTANT'
+        ret = self.client.get('/reagents/api/reagent/' + reagent_sn +'/')
+        self.assertEqual(404, ret.status_code)
+        

@@ -109,6 +109,14 @@ class PACRUDEndpointTests(APITestCase):
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), test_post)
+
+    def test_delete_PA(self):
+        pa_catalog = 'CAT0005'
+        ret = self.client.delete('/reagents/api/pa/' + pa_catalog + '/')
+        self.assertEqual(204, ret.status_code)
+        delta = PADelta.objects.latest('date')
+        self.assertEqual(delta.catalog, pa_catalog)
+        self.assertEqual(delta.operation, 'DELETE')
         
     def test_get_pa_by_alias(self):
         # Get a PA via alias

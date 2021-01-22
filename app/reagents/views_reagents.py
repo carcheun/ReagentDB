@@ -163,7 +163,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 400/404: Change did not happen, error sent back to client
         """
         data = JSONParser().parse(request)
-        logger.debug(data)
+        logger.info(data)
 
         # sorta validate data, database will generate it's own timestamps for
         # mfg/exp_date if it does not exist
@@ -179,12 +179,12 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if not deltaSerializer.is_valid():
             logger.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
-        autostainer, created_autostainer = AutoStainerStation.objects\
-            .get_or_create(autostainer_sn=data['autostainer_sn'])
-            
+
         if data['operation'] == 'CREATE':
+            pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
+            autostainer, created_autostainer = AutoStainerStation.objects\
+                .get_or_create(autostainer_sn=data['autostainer_sn'])
+                
             reagent, created = self.queryset.get_or_create(
                 reagent_sn=data['reagent_sn'],
                 defaults={
@@ -214,17 +214,22 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'UPDATE':
             # if update... CREATE OR UPDATE!
+            #TODO: CHeck timestamps
             try:
                 reagent = self.queryset.get(reagent_sn=data['reagent_sn'])
             except Reagent.DoesNotExist:
                 logger.warning('"%s" does not exist', data['reagent_sn'])
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            serializer = self.serializer_class(reagent, data=data)
-            if serializer.is_valid():
-                serializer.save()
-                deltaSerializer.save()
-                return Response(status=status.HTTP_200_OK)
-            logger.error(serializer.errors)
+            dt_updated_at = datetime.strptime(data['date'],\
+                '%Y-%m-%dT%H:%M:%S%z')
+
+            if reagent.date < dt_updated_at:
+                serializer = self.serializer_class(reagent, data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    deltaSerializer.save()
+                    return Response(status=status.HTTP_200_OK)
+                logger.error(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         elif data['operation'] == 'DELETE':
             try:
