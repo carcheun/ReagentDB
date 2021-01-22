@@ -1,18 +1,25 @@
 import json
 from datetime import datetime
 from django.db import models
-from django.test import TestCase, Client
-from django.forms.models import model_to_dict
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient, APITestCase
 
-from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta
+from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta, User
 
-class PACRUDEndpointTests(TestCase):
+class PACRUDEndpointTests(APITestCase):
     fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
         'test_reag_set_A.json']
-
+    username = 'admin'
+    password = 'admin'
+    
+    def setUp(self):
+        self.user, created = User.objects.get_or_create(username=self.username)
+        self.token, created = Token.objects.get_or_create(user=self.user)
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
     def test_post_single_PA_OK(self):
         # test single PA POST request and add PA entry
-        client = Client()
         test_post = {
             'fullname': 'POST_PA', 
             'alias': 'post_PA', 
@@ -25,15 +32,14 @@ class PACRUDEndpointTests(TestCase):
             'is_factory': True,
             'date': '2020-08-14T15:09:29-07:00'
         }
-        
-        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
+
+        response = self.client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), test_post)
 
     def test_post_duplicate_PA_fail(self):
         # test to add duplicate catalog PA
-        client = Client()
         test_post = {
             'autostainer': 'SN12346',
             'fullname': 'Set_A_0005', 
@@ -48,13 +54,12 @@ class PACRUDEndpointTests(TestCase):
             'is_factory': False
         }
         
-        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
+        response = self.client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_post_then_put_PA_fail(self):
         # test to try and update PA entry with an already existing catalog
-        client = Client()
         test_post = {
             'autostainer': 'SN12346',
 			'fullname': 'TSH_update',
@@ -70,13 +75,12 @@ class PACRUDEndpointTests(TestCase):
 		}
         
         catalog = 'MAB-0662'
-        response = client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post),
+        response = self.client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post),
             content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_post_then_put_PA_OK(self):
         # test to post and update PA entry
-        client = Client()
         test_post = {
             'fullname': 'UPDATE_PA', 
             'alias': 'update_PA', 
@@ -91,7 +95,7 @@ class PACRUDEndpointTests(TestCase):
         }
         catalog = test_post['catalog']
         
-        response = client.post('/reagents/api/pa/', json.dumps(test_post), 
+        response = self.client.post('/reagents/api/pa/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), test_post)
@@ -101,7 +105,7 @@ class PACRUDEndpointTests(TestCase):
         test_post['catalog'] = 'UPD-01235'
         test_post['volume'] = 6000
         
-        response = client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post), 
+        response = self.client.put('/reagents/api/pa/' + catalog + '/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), test_post)
@@ -109,8 +113,7 @@ class PACRUDEndpointTests(TestCase):
     def test_get_pa_by_alias(self):
         # Get a PA via alias
         alias = 'A0003'
-        client = Client()
-        response = client.get('/reagents/api/pa/alias/?alias=' + alias)
+        response = self.client.get('/reagents/api/pa/alias/?alias=' + alias, HTTP_AUTHORIZATION='Token ' + self.token.key)
 
         r_json = response.json()
         self.assertEqual(response.status_code, 200)
@@ -126,7 +129,7 @@ class PACRUDEndpointTests(TestCase):
         self.assertEqual(r_json['is_factory'], True)
 
         alias = 'Non_existant'
-        response = client.get('/reagents/api/pa/alias/?alias=' + alias)
+        response = self.client.get('/reagents/api/pa/alias/?alias=' + alias)
         self.assertEqual(response.status_code, 404)
 
     def test_initial_sync(self):
@@ -170,12 +173,11 @@ class PACRUDEndpointTests(TestCase):
             'factory': False
         }]
         
-        client = Client()
-        response = client.post('/reagents/api/pa/initial_sync/', json.dumps(test_post), 
+        response = self.client.post('/reagents/api/pa/initial_sync/', json.dumps(test_post), 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-        response = client.get('/reagents/api/pa/')
+        response = self.client.get('/reagents/api/pa/')
         r_json = response.json()
         self.assertEqual(len(r_json), 6)
         updated_pa = False
@@ -212,8 +214,7 @@ class PACRUDEndpointTests(TestCase):
         """
         test get route works and returns 3 objects from test_pa.json
         """
-        client = Client()
-        response = client.get('/reagents/api/pa/')
+        response = self.client.get('/reagents/api/pa/')
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 5)
@@ -223,8 +224,7 @@ class PACRUDEndpointTests(TestCase):
         test get route returns single item
         """
         catalog = 'CAT0002'
-        client = Client()
-        response =  client.get('/reagents/api/pa/' + catalog + '/')
+        response = self.client.get('/reagents/api/pa/' + catalog + '/')
         
         r_json = response.json()
         self.assertEqual(response.status_code, 200)
@@ -244,7 +244,6 @@ class PACRUDEndpointTests(TestCase):
         test get route returns 404 if not available
         """
         catalog = 'MISSING_ITEM'
-        client = Client()
-        response =  client.get('/reagents/api/pa/' + catalog + '/')
+        response = self.client.get('/reagents/api/pa/' + catalog + '/')
         
         self.assertEqual(response.status_code, 404)

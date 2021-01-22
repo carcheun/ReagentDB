@@ -1,16 +1,25 @@
 import json
 from datetime import datetime
 from django.db import models
-from django.test import TestCase, Client
 from django.forms.models import model_to_dict
+from rest_framework.test import APIClient, APITestCase
+from rest_framework.authtoken.models import Token
 
-from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta
+from ..models import PA, AutoStainerStation, PADelta, Reagent, ReagentDelta, User
 
 # Create your tests here.
-class ReagentEndpointTests(TestCase):
+class ReagentEndpointTests(APITestCase):
     fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
         'test_reag_set_A.json']
+    username = 'admin'
+    password = 'admin'
     
+    def setUp(self):
+        self.user, created = User.objects.get_or_create(username=self.username)
+        self.token, created = Token.objects.get_or_create(user=self.user)
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
     def test_lock_reagent(self):
         #Send command to lock reagent
         reag = Reagent.objects.get(reagent_sn='REAG001')
@@ -18,13 +27,12 @@ class ReagentEndpointTests(TestCase):
         reag.save()
         self.assertFalse(reag.in_use)
 
-        client = Client()
         test_post = {
             'reagent_sn': 'REAG001',
             'in_use': True
         }
         # check that reagent is now locked
-        response = client.post('/reagents/api/reagent/lock/',\
+        response = self.client.post('/reagents/api/reagent/lock/',\
             json.dumps(test_post), content_type='application/json')
         
         reag = Reagent.objects.get(reagent_sn='REAG001')
@@ -36,13 +44,12 @@ class ReagentEndpointTests(TestCase):
         reag.in_use = True
         reag.save()
 
-        client = Client()
         test_post = {
             'reagent_sn': 'REAG001',
             'in_use': False
         }
         # check that reagent is now locked
-        response = client.post('/reagents/api/reagent/lock/',\
+        response = self.client.post('/reagents/api/reagent/lock/',\
             json.dumps(test_post), content_type='application/json')
         
         reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
@@ -53,8 +60,7 @@ class ReagentEndpointTests(TestCase):
             'reagent_sn': 'REAG001',
             'autostainer_sn': 'SN12345'
         }
-        client = Client()
-        response = client.post('/reagents/api/reagent/scan/',\
+        response = self.client.post('/reagents/api/reagent/scan/',\
             json.dumps(test_post), content_type='application/json')
         
         # scanned data should return
@@ -72,8 +78,7 @@ class ReagentEndpointTests(TestCase):
             'reagent_sn': 'REAG001',
             'autostainer_sn': 'SN_NON_EXISTANT'
         }
-        client = Client()
-        response = client.post('/reagents/api/reagent/scan/',\
+        response = self.client.post('/reagents/api/reagent/scan/',\
             json.dumps(test_post), content_type='application/json')
         # scanned data should return, but a new autostainer should
         # also be made
@@ -91,23 +96,20 @@ class ReagentEndpointTests(TestCase):
             'reagent_sn': 'MISSING_REAGENT',
             'autostainer_sn': 'SN_NON_EXISTANT'
         }
-        client = Client()
-        response = client.post('/reagents/api/reagent/scan/',\
+        response = self.client.post('/reagents/api/reagent/scan/',\
             json.dumps(test_post), content_type='application/json')
         self.assertEqual(404, response.status_code)
 
     def test_valid_reagents(self):
         #Returned reagents are all above 150ul and not expired
-        client = Client()
-        ret = client.get('/reagents/api/reagent/valid_reagents/')
+        ret = self.client.get('/reagents/api/reagent/valid_reagents/')
         reags = Reagent.objects.filter(vol_cur__gte=150)
         self.assertEqual(len(ret.json()), reags.count())
         
     def test_valid_reagents_date_filter(self):
         # Returned reagents are all above 150ul and not expired
         # along with a date filter
-        client = Client()
-        ret = client.get('/reagents/api/reagent/valid_reagents/?date=2020-08-14/')
+        ret = self.client.get('/reagents/api/reagent/valid_reagents/?date=2020-08-14/')
         date_filter = '2020-08-14'
         datetime.strptime(date_filter, '%Y-%m-%d')
         reags = Reagent.objects.filter(vol_cur__gte=150, date__date=date_filter)
@@ -118,7 +120,6 @@ class ReagentEndpointTests(TestCase):
         reagent_sn = 'REAG002'
         dec_vol = 250
 
-        client = Client()
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         vol_cur = reag.vol_cur
 
@@ -127,7 +128,7 @@ class ReagentEndpointTests(TestCase):
             'autostainer_sn': 'STAINER0001'
         }
 
-        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
+        response = self.client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
             json.dumps(test_post), content_type='application/json')
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         delta = ReagentDelta.objects.latest('date')
@@ -140,7 +141,6 @@ class ReagentEndpointTests(TestCase):
         reagent_sn = 'REAG006'
         dec_vol = 100
 
-        client = Client()
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         
         test_post = {
@@ -148,7 +148,7 @@ class ReagentEndpointTests(TestCase):
             'autostainer_sn': 'STAINER0001'
         }
 
-        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
+        response = self.client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
             json.dumps(test_post), content_type='application/json')
         reag = Reagent.objects.get(reagent_sn=reagent_sn)
         self.assertEqual(0, reag.vol_cur)
@@ -165,15 +165,22 @@ class ReagentEndpointTests(TestCase):
             'autostainer_sn': 'STAINER0001'
         }
 
-        client = Client()
-        response = client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
+        response = self.client.put('/reagents/api/reagent/' + reagent_sn + '/decrease-volume/',\
             json.dumps(test_post), content_type='application/json')
         self.assertEqual(404, response.status_code)
         self.assertRaises(ReagentDelta.DoesNotExist, ReagentDelta.objects.latest, 'date')
 
-class ReagentCRUDEndpointTests(TestCase):
+class ReagentCRUDEndpointTests(APITestCase):
     fixtures = ['test_autostainerstation_set_A.json', 'test_pa_set_A.json', \
         'test_reag_set_A.json']
+    username = 'admin'
+    password = 'admin'
+    
+    def setUp(self):
+        self.user, created = User.objects.get_or_create(username=self.username)
+        self.token, created = Token.objects.get_or_create(user=self.user)
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
     
     def test_create_reagent(self):
         # check that a delta is created as well
@@ -191,8 +198,7 @@ class ReagentCRUDEndpointTests(TestCase):
             'autostainer_sn': 'STAINER0001'
         }
         
-        client = Client()
-        ret = client.post('/reagents/api/reagent/',\
+        ret = self.client.post('/reagents/api/reagent/',\
             json.dumps(test_post), content_type='application/json')
         self.assertEqual(201, ret.status_code)
         
@@ -232,8 +238,7 @@ class ReagentCRUDEndpointTests(TestCase):
             'autostainer_sn': 'SN12346'
         }
 
-        client = Client()
-        ret = client.put('/reagents/api/reagent/REAG006/',\
+        ret = self.client.put('/reagents/api/reagent/REAG006/',\
             json.dumps(test_post), content_type='application/json')
         
         reag = Reagent.objects.get(reagent_sn=test_post['reagent_sn'])
@@ -253,8 +258,7 @@ class ReagentCRUDEndpointTests(TestCase):
         
     def test_delete_reagent(self):
         reagent_sn = 'REAG006'
-        client = Client()
-        ret = client.delete('/reagents/api/reagent/' + reagent_sn + '/')
+        ret = self.client.delete('/reagents/api/reagent/' + reagent_sn + '/')
         self.assertEqual(204, ret.status_code)
 
         delta = ReagentDelta.objects.latest('date')

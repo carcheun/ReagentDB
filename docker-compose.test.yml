@@ -1,0 +1,35 @@
+# guide from https://realpython.com/django-development-with-docker-compose-and-machine/
+# and also https://github.com/testdrivenio/django-on-docker
+# Compose file to test each API endpoint
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py initadmin &&
+      python manage.py test -v 2"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/:/usr/src/app/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12.4-alpine
+    volumes:
+      - ./pgdata:/var/lib/postgresql_test/data/
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust # new
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_dev
+      - POSTGRES_HOST=postgres
+
+volumes:
+  pgdata:
