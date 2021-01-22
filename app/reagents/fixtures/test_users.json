@@ -1,0 +1,24 @@
+[
+    {
+       "model":"reagents.user",
+       "pk":1,
+       "fields":{
+          "password":"pbkdf2_sha256$216000$ZgJDbfSKgKvM$0FdOTl/gLjCejNbku5nC3r6N99dDxfetdpYUF8h2zZs=",
+          "last_login":"2021-01-22T19:25:37.767Z",
+          "is_superuser":true,
+          "username":"admin",
+          "first_name":"",
+          "last_name":"",
+          "email":"carolyncheung@lumatas.com",
+          "is_staff":true,
+          "is_active":true,
+          "date_joined":"2021-01-22T19:15:20.004Z",
+          "groups":[
+             
+          ],
+          "user_permissions":[
+             
+          ]
+       }
+    }
+ ]

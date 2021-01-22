@@ -5,14 +5,16 @@ version: '3.8'
 services:
   web:
     restart: always
-    build: ./app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
     #command: python manage.py runserver 0.0.0.0:8000
     command: >
-      sh -c "python manage.py initadmin &&
-      python manage.py testserver --addrport 0.0.0.0:8000
+      sh -c "python manage.py testserver --addrport 0.0.0.0:8000
       ./reagents/fixtures/test_pa.json
       ./reagents/fixtures/test_autostainerstation.json
       ./reagents/fixtures/test_pa_delta.json
+      ./reagents/fixtures/test_users.json
       --noinput"
     ports:
       - "8000:8000"
