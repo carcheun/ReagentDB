@@ -33,6 +33,8 @@ class PAViewSet(viewsets.ModelViewSet):
     including from whom the entry came from
 
     TODO: refactor into serialzier?
+    TODO: turn on authentication again, also set as DEBUG means authentication
+            is turned off
     """
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -77,7 +79,7 @@ class PAViewSet(viewsets.ModelViewSet):
         missing = self.queryset.all()
         ret = list()
         for d in data:
-            logger.debug(d)
+            logger.info(d)
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
             obj, created = self.queryset.get_or_create(
@@ -97,13 +99,22 @@ class PAViewSet(viewsets.ModelViewSet):
             if not created:
                 # PA already exists, remove from queryset
                 missing = missing.exclude(catalog=obj.catalog)
-                if obj.is_older(d['date']):
-                    # database will update entry if it's older
+                if (obj.is_older(d['date']) or \
+                    (obj.incub[PA.AutoStainerModels.TITAN] == -1 and d['incub'][PA.AutoStainerModels.TITAN] > -1) or\
+                    (obj.incub[PA.AutoStainerModels.TITAN_S] == -1 and d['incub'][PA.AutoStainerModels.TITAN_S] > -1)):
+                    # database will update entry if it's older, or if the opposite
+                    # titan incub time is present
                     obj.fullname = d['fullname']
                     obj.alias = d['alias']
                     obj.source = d['source']
                     obj.volume = d['volume']
-                    obj.incub = d['incub']
+
+                    # check if the module provides an update
+                    if d['incub'][PA.AutoStainerModels.TITAN_S] > -1:
+                        obj.incub[PA.AutoStainerModels.TITAN_S] = d['incub'][PA.AutoStainerModels.TITAN_S]
+                    if  d['incub'][PA.AutoStainerModels.TITAN] > -1:
+                        obj.incub[PA.AutoStainerModels.TITAN] = d['incub'][PA.AutoStainerModels.TITAN]
+                    #obj.incub = d['incub']
                     obj.ar = d['ar']
                     obj.description = d['description']
                     obj.is_factory = d['factory']
@@ -159,6 +170,7 @@ class PAViewSet(viewsets.ModelViewSet):
     def client_to_database_sync(self, request):
         """Client provides the server with a change action. Server determines 
         what changes it requires via latest time stamp
+        TODO: DELETE? THIS IS UNUSED?
 
         Arguments (request):
             delta.db: PA table, Except in JSON format
@@ -200,8 +212,15 @@ class PAViewSet(viewsets.ModelViewSet):
             dt_updated_at = datetime.strptime(data['date'],\
                 '%Y-%m-%dT%H:%M:%S%z')
             if pa.date < dt_updated_at:
+                if data['incub'][PA.AutoStainerModels.TITAN] == -1:
+                    data['incub'][PA.AutoStainerModels.TITAN] = pa.incub[PA.AutoStainerModels.TITAN]
+                if data['incub'][PA.AutoStainerModels.TITAN_S] == -1:
+                    data['incub'][PA.AutoStainerModels.TITAN_S] = pa.incub[PA.AutoStainerModels.TITAN_S]
+                
                 serializer = PASerializer(pa, data=data)
-                if serializer.is_valid():
+                deltaSerializer = PADeltaSerializer(data=data, operation=data['operation'])
+
+                if serializer.is_valid() and deltaSerializer.is_valid():
                     serializer.save()
                     deltaSerializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -257,7 +276,6 @@ class PAViewSet(viewsets.ModelViewSet):
             logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def update(self, request, pk=None):
         # Override base create method to create PAdelta entry
         data = request.data.copy()
@@ -266,15 +284,25 @@ class PAViewSet(viewsets.ModelViewSet):
                     .get_or_create(autostainer_sn=data['autostainer_sn'])
         deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
         if deltaSerializer.is_valid():
+            obj = self.queryset.get(catalog=data['catalog'])
+            incub = obj.incub
             ret = super().update(request, pk)
-            if ret.status_code == status.HTTP_200_OK:
+            obj = self.queryset.get(catalog=data['catalog'])
+            if data['incub'][PA.AutoStainerModels.TITAN] == -1:
+                obj.incub[PA.AutoStainerModels.TITAN] = incub[PA.AutoStainerModels.TITAN]
+                data['incub'][PA.AutoStainerModels.TITAN] = incub[PA.AutoStainerModels.TITAN]
+            if data['incub'][PA.AutoStainerModels.TITAN_S] == -1:
+                obj.incub[PA.AutoStainerModels.TITAN_S] = incub[PA.AutoStainerModels.TITAN_S]
+                data['incub'][PA.AutoStainerModels.TITAN_S] = incub[PA.AutoStainerModels.TITAN_S]
+            obj.save()
+            deltaSerializer = PADeltaSerializer(data=data, operation='UPDATE')
+            if ret.status_code == status.HTTP_200_OK and deltaSerializer.is_valid():
                 deltaSerializer.save()
                 logger.info(data)
             return ret
         else:
             logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def destroy(self, request, pk=None):
         # Override base create method to create PAdelta entry
@@ -290,7 +318,6 @@ class PAViewSet(viewsets.ModelViewSet):
         else:
             logging.error(deltaSerializer.errors)
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class PADeltaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)

@@ -11,9 +11,7 @@ services:
     #command: python manage.py runserver 0.0.0.0:8000
     command: >
       sh -c "python manage.py testserver --addrport 0.0.0.0:8000
-      ./reagents/fixtures/test_pa.json
       ./reagents/fixtures/test_autostainerstation.json
-      ./reagents/fixtures/test_pa_delta.json
       ./reagents/fixtures/test_users.json
       --noinput"
     ports:
@@ -38,3 +36,12 @@ services:
 
 volumes:
   pgdata:
+
+
+#sh -c "python manage.py testserver --addrport 0.0.0.0:8000
+#./reagents/fixtures/test_pa.json
+#./reagents/fixtures/test_autostainerstation.json
+#./reagents/fixtures/test_pa_delta.json
+#./reagents/fixtures/test_reagent.json
+#./reagents/fixtures/test_users.json
+#--noinput"

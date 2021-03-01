@@ -3,6 +3,12 @@ from datetime import datetime
 from django.db import models
 from django.utils.timezone import now
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
+from enum import IntEnum
+
+# default value for incubation times, depending on model
+def get_incub_default():
+    return [0,0]
 
 # Create your models here.
 class User(AbstractUser):
@@ -119,11 +125,20 @@ class CommonInfoPA(models.Model):
     alias = models.TextField(blank=True)
     source = models.TextField(blank=True)
     volume = models.IntegerField(default=0)
-    incub = models.IntegerField(default=15)
+    #incub = models.IntegerField(default=15)
+    incub = ArrayField(
+        models.IntegerField(default=0),
+        default=get_incub_default
+    )
     ar = models.TextField(default='NO')
     description = models.TextField(blank=True)
     is_factory = models.BooleanField(default=False)
     date = models.DateTimeField(default=now)
+
+    # enum types for the autostainer model, corresponds to incub array
+    class AutoStainerModels(IntEnum):
+        TITAN = 0
+        TITAN_S = 1
 
     class Meta:
         abstract = True
@@ -138,7 +153,7 @@ class PA(CommonInfoPA):
     """
     # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True, blank=False)
-    
+
     def is_older(self, date):
         """Returns True if object is older provided given date
 
