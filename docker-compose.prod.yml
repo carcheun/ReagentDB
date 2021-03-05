@@ -5,11 +5,11 @@ version: '3.8'
 
 services:
   reagentdb:
-    #restart: always
+    restart: always
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    #image: reagentsdb:v0.1
+    image: reagentsdb:v0.2
     command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/reagentdb/static
@@ -21,47 +21,47 @@ services:
       - postgres
 
   postgres:
-    #restart: always
+    restart: always
     image: postgres:12.4-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
 
-#  redis:
-    #restart: always
-#    image: redis:6.0-alpine
+  redis:
+    restart: always
+    image: redis:6.0-alpine
 
-#  celery:
-    #restart: always
-#    build:
-#      context: ./app
-#      dockerfile: Dockerfile.prod
-#    command: celery -A ReagentDB worker -l info
-#    volumes_from:
-#      - reagentdb
-#    env_file:
-#      - ./.env.prod
-#    depends_on:
-#      - reagentdb
-#      - redis
+  celery:
+    restart: always
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: celery -A ReagentDB worker -l info
+    volumes_from:
+      - reagentdb
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - reagentdb
+      - redis
 
-#  celery-beat:
-    #restart: always
-#    build:
-#      context: ./app
-#      dockerfile: Dockerfile.prod
-#    command: celery -A ReagentDB beat -l info
-#    volumes_from:
-#      - reagentdb
-#    env_file:
-#      - ./.env.prod
-#    depends_on: 
-#      - reagentdb
-#      - redis
+  celery-beat:
+    restart: always
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: celery -A ReagentDB beat -l info
+    volumes_from:
+      - reagentdb
+    env_file:
+      - ./.env.prod
+    depends_on: 
+      - reagentdb
+      - redis
 
   nginx:
-    #restart: always
+    restart: always
     build: ./nginx
     image: nginx:1.19.2-alpine
     volumes:

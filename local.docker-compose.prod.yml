@@ -1,9 +1,9 @@
-# ReagentDB v0.1
+# ReagentDB v0.2
 version: '3.8'
 
 services:
   reagentdb:
-    image: reagentsdb:v0.1
+    image: reagentsdb:v0.2
     restart: always
     command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
     volumes:
@@ -30,7 +30,7 @@ services:
 
   celery:
     restart: always
-    image: reagentsdb:v0.1
+    image: reagentsdb:v0.2
     command: celery -A ReagentDB worker -l info
     volumes_from:
       - reagentdb
@@ -41,7 +41,7 @@ services:
 
   celery-beat:
     restart: always
-    image: reagentsdb:v0.1
+    image: reagentsdb:v0.2
     command: celery -A ReagentDB beat -l info
     volumes_from:
       - reagentdb
