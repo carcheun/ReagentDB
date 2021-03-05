@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',                   # needed for our rest_framework
     'rest_framework.authtoken',         # for authentication tokens
     'django_extensions',                # extra manange.py goodies
+    'channels',                         # django channels for websocket
 ]
 
 MIDDLEWARE = [
@@ -137,6 +138,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',  # <-- And here
     ],
 }
+
+# channels setting
+ASGI_APPLICATION = 'ReagentDB.asgi.application'
 
 # Customer user model
 AUTH_USER_MODEL = 'reagents.User'
