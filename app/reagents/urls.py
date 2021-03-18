@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from . import views_pa, views_reagents, views_users
+from . import views_pa, views_reagents, views_users, views_websocket
 
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -21,4 +21,5 @@ urlpatterns  = [
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('register/', views_users.RegisterUser, name='register_user'),
     path('logout/', views_users.Logout, name='user_logout'),
+    path('websocket/<str:room_name>/', views_websocket.room, name='room'),
 ]
