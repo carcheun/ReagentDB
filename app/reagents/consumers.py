@@ -1,6 +1,11 @@
 import json
+import redis
+from django.conf import settings
 from channels.generic.websocket import AsyncWebsocketConsumer
-    
+
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, \
+    port=settings.REDIS_PORT, db=0)
+
 class ReagentsConsumer(AsyncWebsocketConsumer):
     # dont channel layer since the stainers do not need to talk to each other ?
     # dont really need to broadcast anything
@@ -39,7 +44,10 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
         else:
             self.autostainer_sn = 'webbrowser'
         print(self.autostainer_sn, ' : ', self.channel_name, ' connect')
-        print(self.scope)
+        #print(self.scope)
+        # add user to my redis db
+        if self.autostainer_sn is not 'webbrowser':
+            redis_instance.set('autostainer_' + self.autostainer_sn,"online")
 
     async def disconnect(self, close_code):
         # leave room group
@@ -47,6 +55,7 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        redis_instance.delete('autostainer_' + self.autostainer_sn)
         print(self.autostainer_sn, ' : ', self.channel_name, ' disconnect')
 
     async def receive(self, text_data):
@@ -63,6 +72,27 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
                 'message': message
             }
         )
+
+        if message is 'request_all_stainer_status':
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'get_stainer_status',
+                    'message': message
+                }
+            )
+
+    async def get_stainer_status(self, event):
+        message = event['message']
+        # check how many are connected...
+        cnt = 0
+        for key in redis_instance.keys('autostainer_*'):
+            cnt += 1
+        print(cnt)
+        await self.send(text_data=json.dumps({
+            'message': cnt
+        }))
+
 
 
     async def chat_message(self, event):
