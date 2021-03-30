@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from datetime import datetime
 from datetime import date
 from .models import Reagent, ReagentDelta, PA, AutoStainerStation
@@ -18,8 +19,10 @@ logger = logging.getLogger(__name__)
 class ReagentDeltaViewSet(viewsets.ModelViewSet):
     """ModelViewSet for ReagentsDelta
     """
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    debug_flag = settings.DEBUG
+    if (not debug_flag):
+        authentication_classes = (TokenAuthentication,)
+        permission_classes = (IsAuthenticated,)
 
     queryset = ReagentDelta.objects.all()
     serializer_class = ReagentDeltaSerializer
@@ -27,8 +30,10 @@ class ReagentDeltaViewSet(viewsets.ModelViewSet):
 class ReagentViewSet(viewsets.ModelViewSet):
     """ModelViewSet for Reagents
     """
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    debug_flag = settings.DEBUG
+    if (not debug_flag):
+        authentication_classes = (TokenAuthentication,)
+        permission_classes = (IsAuthenticated,)
 
     queryset = Reagent.objects.all()
     serializer_class = ReagentSerializer

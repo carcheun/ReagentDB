@@ -21,5 +21,5 @@ urlpatterns  = [
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('register/', views_users.RegisterUser, name='register_user'),
     path('logout/', views_users.Logout, name='user_logout'),
-    path('websocket/<str:room_name>/', views_websocket.room, name='room'),
+    path('index/', views_websocket.index, name='index'),
 ]

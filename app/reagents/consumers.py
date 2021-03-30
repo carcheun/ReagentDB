@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-
-class ConnectionConsumer(AsyncWebsocketConsumer):
+    
+class ReagentsConsumer(AsyncWebsocketConsumer):
     # dont channel layer since the stainers do not need to talk to each other ?
     # dont really need to broadcast anything
     # ashome/autostainer should have a listener for a disconnect signal
@@ -17,19 +17,29 @@ class ConnectionConsumer(AsyncWebsocketConsumer):
     #       server recieves message, sends ping request
     #       client recieves ping, returns pong
     #       html page updates with information~
+    # on html side: display all connected stainers
+    # on html side: display all connected stainer status
+    # receive messages: like status
+    # receive messages: uservisits page->request stainer status->return status
+    # receive messages: stainer-connect->add to pool
+    # user leaves-> send out that user has left
 
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
-        print("client connected")
-        
+        self.room_group_name = 'autostainer_clients'
         # join room group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-
         await self.accept()
+        if self.scope['query_string'] is not b'':
+            query_str = self.scope['query_string'].decode('UTF-8')
+            data = query_str.split('=')
+            self.autostainer_sn = data[-1]
+        else:
+            self.autostainer_sn = 'webbrowser'
+        print(self.autostainer_sn, ' : ', self.channel_name, ' connect')
+        print(self.scope)
 
     async def disconnect(self, close_code):
         # leave room group
@@ -37,11 +47,13 @@ class ConnectionConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        print(self.autostainer_sn, ' : ', self.channel_name, ' disconnect')
 
     async def receive(self, text_data):
         print(text_data)
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        # client sends autostainer_sn here
 
         # send message to room group
         await self.channel_layer.group_send(
@@ -52,6 +64,7 @@ class ConnectionConsumer(AsyncWebsocketConsumer):
             }
         )
 
+
     async def chat_message(self, event):
         message = event['message']
 
@@ -59,5 +72,3 @@ class ConnectionConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
-
-    

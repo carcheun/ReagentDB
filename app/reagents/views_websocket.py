@@ -1,9 +1,11 @@
+from rest_framework.parsers import JSONParser
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'reagents/index.html', {})
+    return render(request, 'reagents/index.html')
 
-def room(request, room_name):
-    return render(request, 'reagents/room.html', {
-        'room_name' : room_name
-    })
+"""
+display status
+display inventory ?
+
+"""

@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -36,8 +37,10 @@ class PAViewSet(viewsets.ModelViewSet):
     TODO: turn on authentication again, also set as DEBUG means authentication
             is turned off
     """
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    debug_flag = settings.DEBUG
+    if (not debug_flag):
+        authentication_classes = (TokenAuthentication,)
+        permission_classes = (IsAuthenticated,)
 
     queryset = PA.objects.all()
     serializer_class = PASerializer
@@ -320,8 +323,10 @@ class PAViewSet(viewsets.ModelViewSet):
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PADeltaViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
+    debug_flag = settings.DEBUG
+    if (not debug_flag):
+        authentication_classes = (TokenAuthentication,)
+        permission_classes = (IsAuthenticated,)
+        
     queryset = PADelta.objects.all()
     serializer_class = PADeltaSerializer
