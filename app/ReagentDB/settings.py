@@ -41,7 +41,8 @@ ADMINS = (
     (ADMIN_USERNAME, ADMIN_EMAIL),
 )
 
-REDIS_HOST = '127.0.0.1'
+#REDIS_HOST = '127.0.0.1'
+REDIS_HOST = 'redis://redis'
 REDIS_PORT = 6379
 
 # Application definition

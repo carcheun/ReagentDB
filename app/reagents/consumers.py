@@ -3,8 +3,8 @@ import redis
 from django.conf import settings
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, \
-    port=settings.REDIS_PORT, db=0)
+#redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, \
+#    port=settings.REDIS_PORT, db=0)
 
 class ReagentsConsumer(AsyncWebsocketConsumer):
     # dont channel layer since the stainers do not need to talk to each other ?
@@ -36,7 +36,9 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        
         await self.accept()
+
         if self.scope['query_string'] is not b'':
             query_str = self.scope['query_string'].decode('UTF-8')
             data = query_str.split('=')
@@ -46,8 +48,8 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
         print(self.autostainer_sn, ' : ', self.channel_name, ' connect')
         #print(self.scope)
         # add user to my redis db
-        if self.autostainer_sn is not 'webbrowser':
-            redis_instance.set('autostainer_' + self.autostainer_sn,"online")
+        #if self.autostainer_sn is not 'webbrowser':
+        #    redis_instance.set('autostainer_' + self.autostainer_sn,"online")
 
     async def disconnect(self, close_code):
         # leave room group
@@ -55,45 +57,53 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        redis_instance.delete('autostainer_' + self.autostainer_sn)
+        #redis_instance.delete('autostainer_' + self.autostainer_sn)
         print(self.autostainer_sn, ' : ', self.channel_name, ' disconnect')
 
     async def receive(self, text_data):
         print(text_data)
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        # client sends autostainer_sn here
-
-        # send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message
-            }
-        )
-
-        if message is 'request_all_stainer_status':
+        
+        if text_data_json['request']:
+            if text_data_json['request'] == 'request_stainer_status':
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'get_stainer_status',
+                        'request': 'get_stainer_status'
+                    }
+                )
+        elif text_data_json['status']:
+            message = text_data_json['status']
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'get_stainer_status',
+                    'type': 'chat_message',
                     'message': message
                 }
             )
 
+        
+        # client sends autostainer_sn here
+
+        # send message to room group
+        #await self.channel_layer.group_send(
+        #    self.room_group_name,
+        #    {
+        #        'type': 'chat_message',
+        #        'message': message
+        #    }
+        #)
+
     async def get_stainer_status(self, event):
-        message = event['message']
+        message = event['request']
         # check how many are connected...
-        cnt = 0
-        for key in redis_instance.keys('autostainer_*'):
-            cnt += 1
-        print(cnt)
+        #cnt = 0
+        #for key in redis_instance.keys('autostainer_*'):
+        #    cnt += 1
         await self.send(text_data=json.dumps({
-            'message': cnt
+            'request': message
         }))
-
-
 
     async def chat_message(self, event):
         message = event['message']
