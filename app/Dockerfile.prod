@@ -17,15 +17,28 @@ RUN apk update
 RUN python -m pip install --upgrade pip
 COPY ./requirements.txt .
 
-
 # install dependencies
 RUN \
  apk add --update busybox-suid vim && \
  apk add --no-cache postgresql-libs && \
+ apk add cargo && \
+ apk add rust && \
+ apk add gcc libffi-dev && \
+ apk add openssl-dev && \
  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
  pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
  -r requirements.txt && \
  apk --purge del .build-deps
+
+
+#RUN \
+# apk add --update busybox-suid vim && \
+# apk add --no-cache postgresql-libs && \
+# apk add py-cryptography && \
+# apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
+# pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
+# -r requirements.txt && \
+# apk --purge del .build-deps
 
 #########
 # FINAL #
