@@ -21,24 +21,11 @@ COPY ./requirements.txt .
 RUN \
  apk add --update busybox-suid vim && \
  apk add --no-cache postgresql-libs && \
- apk add cargo && \
- apk add rust && \
- apk add gcc libffi-dev && \
- apk add openssl-dev && \
+ apk add py-cryptography && \
  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
  pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
  -r requirements.txt && \
  apk --purge del .build-deps
-
-
-#RUN \
-# apk add --update busybox-suid vim && \
-# apk add --no-cache postgresql-libs && \
-# apk add py-cryptography && \
-# apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
-# pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
-# -r requirements.txt && \
-# apk --purge del .build-deps
 
 #########
 # FINAL #
@@ -61,10 +48,18 @@ RUN mkdir $APP_HOME/static
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apk update && apk add libpq && apk add tzdata
+RUN apk update
+RUN python -m pip install --upgrade pip
+RUN apk update && apk add libpq && apk add tzdata && \
+ apk add libffi-dev && \
+ apk add openssl-dev && \
+ apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev rust cargo
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
+RUN pip install -U channels && \
+ pip install channels_redis
+RUN apk --purge del .build-deps
 
 # copy entrypoint-prod.sh
 COPY ./entrypoint.prod.sh $APP_HOME

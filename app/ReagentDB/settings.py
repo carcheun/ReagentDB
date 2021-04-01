@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
 }
 
 # channels setting
-ASGI_APPLICATION = 'ReagentDB.asgi.application'
+ASGI_APPLICATION = 'reagents.routing.application'
 
 # Customer user model
 AUTH_USER_MODEL = 'reagents.User'

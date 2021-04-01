@@ -10,7 +10,7 @@ services:
       context: ./app
       dockerfile: Dockerfile.prod
     image: reagentsdb:v0.2
-    command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000 
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
