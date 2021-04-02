@@ -42,7 +42,8 @@ ADMINS = (
 )
 
 #REDIS_HOST = '127.0.0.1'
-REDIS_HOST = 'redis://redis'
+#REDIS_HOST = 'redis://redis'
+REDIS_HOST = 'redis'
 REDIS_PORT = 6379
 
 # Application definition
@@ -122,7 +123,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(REDIS_HOST, REDIS_PORT)],
+            "hosts": [(REDIS_HOST, REDIS_PORT)]
         }
     }
 }
@@ -153,7 +154,8 @@ REST_FRAMEWORK = {
 }
 
 # channels setting
-ASGI_APPLICATION = 'reagents.routing.application'
+#ASGI_APPLICATION = 'ReagentDB.routing.application'
+ASGI_APPLICATION = 'ReagentDB.asgi.application'
 
 # Customer user model
 AUTH_USER_MODEL = 'reagents.User'
@@ -180,7 +182,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Logger settings
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': 1,
+    'disable_existing_loggers': False,
     'formatters': {
         'info_log': {
             'format': '[{asctime}] [{levelname}] [{filename}.{funcName}:{lineno}] {message}',

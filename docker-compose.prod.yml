@@ -10,7 +10,7 @@ services:
       context: ./app
       dockerfile: Dockerfile.prod
     image: reagentsdb:v0.2
-    command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000 
+    command: /home/app/reagentdb/entrypoint.prod.sh #gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000 
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
@@ -20,6 +20,22 @@ services:
     depends_on:
       - postgres
 
+  reagentdbws:
+    restart: always
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    entrypoint: /home/app/reagentdb/entrypoint.ws-prod.sh
+    volumes:
+      - static_volume:/home/app/reagentdb/static
+    expose:
+      - 9000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     restart: always
     image: postgres:12.4-alpine
@@ -27,38 +43,42 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
+    ports:
+      - 5433:5432
 
   redis:
     restart: always
-    image: redis:6.0-alpine
+    image: redis:5.0-alpine
+    ports:
+      - 6378:6379
 
-  celery:
-    restart: always
-    build:
-      context: ./app
-      dockerfile: Dockerfile.prod
-    command: celery -A ReagentDB worker -l info
-    volumes_from:
-      - reagentdb
-    env_file:
-      - ./.env.prod
-    depends_on:
-      - reagentdb
-      - redis
+#  celery:
+#    restart: always
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile.prod
+#    command: celery -A ReagentDB worker -l info
+#    volumes_from:
+#      - reagentdb
+#    env_file:
+#      - ./.env.prod
+#    depends_on:
+#      - reagentdb
+#      - redis
 
-  celery-beat:
-    restart: always
-    build:
-      context: ./app
-      dockerfile: Dockerfile.prod
-    command: celery -A ReagentDB beat -l info
-    volumes_from:
-      - reagentdb
-    env_file:
-      - ./.env.prod
-    depends_on: 
-      - reagentdb
-      - redis
+#  celery-beat:
+#    restart: always
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile.prod
+#    command: celery -A ReagentDB beat -l info
+#    volumes_from:
+#      - reagentdb
+#    env_file:
+#      - ./.env.prod
+#    depends_on: 
+#      - reagentdb
+#      - redis
 
   nginx:
     restart: always
@@ -70,9 +90,11 @@ services:
       - ./.env.prod.db
     ports:
       - 8000:8000
+      - 9000:9000
       - 80:80
     depends_on:
       - reagentdb
+      - reagentdbws
 
 volumes:
   postgres_data:
