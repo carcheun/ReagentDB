@@ -21,7 +21,7 @@ RUN \
     python -m pip install --upgrade pip && \
     apk add --update busybox-suid vim && \
     apk add --no-cache postgresql-libs && \
-    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev py-cryptography && \
+    apk add --no-cache --virtual .build-deps openssl-dev libffi-dev gcc musl-dev postgresql-dev py-cryptography rust cargo && \
     pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
     -r requirements.txt && \
     apk --purge del .build-deps
@@ -49,20 +49,12 @@ WORKDIR $APP_HOME
 RUN apk update && \
     python -m pip install --upgrade pip && \
     apk update && apk add libpq && apk add tzdata && \
-    apk add libffi-dev && \
-    apk add openssl-dev && \
-    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev rust cargo
+    apk add py-twisted
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install --no-cache /wheels/* && \
-    pip install -Iv channels==3.0.3 && \
-    pip install -Iv channels_redis==3.2.0 && \
-    apk --purge del .build-deps
+RUN pip install --no-cache /wheels/* 
 
-# copy entrypoint-prod.sh
 COPY ./entrypoint.prod.sh $APP_HOME
-
-# copy project
 COPY . $APP_HOME
 
 # chown all the files to the app user

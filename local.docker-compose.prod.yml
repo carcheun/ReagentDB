@@ -1,11 +1,11 @@
-# ReagentDB v0.2
+# ReagentDB v0.3
 version: '3.8'
 
 services:
   reagentdb:
-    image: reagentsdb:v0.2
+    image: reagentsdb:v0.3
     restart: always
-    command: gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
+    command: /home/app/reagentdb/entrypoint.prod.sh
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
@@ -15,7 +15,21 @@ services:
     depends_on:
       - postgres
       - redis
-  
+
+  reagentdbws:
+    restart: always
+    image: reagentsdb:v0.3
+    entrypoint: /home/app/reagentdb/entrypoint.ws-prod.sh
+    volumes:
+      - static_volume:/home/app/reagentdb/static
+    expose:
+      - 9000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     image: postgres:12.4-alpine
     restart: always
@@ -26,11 +40,11 @@ services:
       
   redis:
     restart: always
-    image: redis:6.0-alpine
+    image: redis:5.0-alpine
 
   celery:
     restart: always
-    image: reagentsdb:v0.2
+    image: reagentsdb:v0.3
     command: celery -A ReagentDB worker -l info
     volumes_from:
       - reagentdb
@@ -41,7 +55,7 @@ services:
 
   celery-beat:
     restart: always
-    image: reagentsdb:v0.2
+    image: reagentsdb:v0.3
     command: celery -A ReagentDB beat -l info
     volumes_from:
       - reagentdb

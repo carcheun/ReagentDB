@@ -9,8 +9,8 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    image: reagentsdb:v0.2
-    command: /home/app/reagentdb/entrypoint.prod.sh #gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000 
+    image: reagentsdb:v0.3
+    command: /home/app/reagentdb/entrypoint.prod.sh
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
@@ -22,9 +22,7 @@ services:
 
   reagentdbws:
     restart: always
-    build:
-      context: ./app
-      dockerfile: Dockerfile.prod
+    image: reagentsdb:v0.3
     entrypoint: /home/app/reagentdb/entrypoint.ws-prod.sh
     volumes:
       - static_volume:/home/app/reagentdb/static
@@ -54,9 +52,7 @@ services:
 
 #  celery:
 #    restart: always
-#    build:
-#      context: ./app
-#      dockerfile: Dockerfile.prod
+#    image: reagentsdb:v0.3
 #    command: celery -A ReagentDB worker -l info
 #    volumes_from:
 #      - reagentdb
@@ -68,9 +64,7 @@ services:
 
 #  celery-beat:
 #    restart: always
-#    build:
-#      context: ./app
-#      dockerfile: Dockerfile.prod
+#    image: reagentsdb:v0.3
 #    command: celery -A ReagentDB beat -l info
 #    volumes_from:
 #      - reagentdb
