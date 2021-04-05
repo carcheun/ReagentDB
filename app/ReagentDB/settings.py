@@ -23,7 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-#SECRET_KEY = '_1fl$e!6#+&(brk8&qsi8&9itgglq=ti7*yhswk0od^zmg(sc9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
@@ -41,10 +40,8 @@ ADMINS = (
     (ADMIN_USERNAME, ADMIN_EMAIL),
 )
 
-#REDIS_HOST = '127.0.0.1'
-#REDIS_HOST = 'redis://redis'
-REDIS_HOST = 'redis'
-REDIS_PORT = 6379
+REDIS_HOST = os.environ.get('REDIS_HOST', default='redis')
+REDIS_PORT = os.environ.get('REDIS_PORT', default='6379')
 
 # Application definition
 
@@ -91,22 +88,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ReagentDB.wsgi.application'
-
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'reagentsdb',
-#        'USER' : 'admin',
-#        'PASSWORD' : 'admin',
-#        'HOST': 'localhost',
-#        'PORT' : 5432,
-#    }
-#}
 
 DATABASES = {
     'default': {
@@ -153,9 +136,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-# channels setting
-#ASGI_APPLICATION = 'ReagentDB.routing.application'
+# http:// & ws:// servers
 ASGI_APPLICATION = 'ReagentDB.asgi.application'
+WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 
 # Customer user model
 AUTH_USER_MODEL = 'reagents.User'
