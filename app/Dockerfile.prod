@@ -12,20 +12,19 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# update apk and install upgrade pip
-RUN apk update
-RUN python -m pip install --upgrade pip
 COPY ./requirements.txt .
 
+# update apk and install upgrade pip
 # install dependencies
 RUN \
- apk add --update busybox-suid vim && \
- apk add --no-cache postgresql-libs && \
- apk add py-cryptography && \
- apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
- pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
- -r requirements.txt && \
- apk --purge del .build-deps
+    apk update && \
+    python -m pip install --upgrade pip && \
+    apk add --update busybox-suid vim && \
+    apk add --no-cache postgresql-libs && \
+    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev py-cryptography && \
+    pip wheel  --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels \
+    -r requirements.txt && \
+    apk --purge del .build-deps
 
 #########
 # FINAL #
@@ -35,10 +34,9 @@ RUN \
 FROM python:3.7.9-alpine
 
 # create directory for the app user
-RUN mkdir -p /home/app
-
 # create the app user
-RUN addgroup -S app && adduser -S app -G app
+RUN mkdir -p /home/app && \
+    addgroup -S app && adduser -S app -G app
 
 # create the appropriate directories
 ENV HOME=/home/app
@@ -48,18 +46,18 @@ RUN mkdir $APP_HOME/static
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apk update
-RUN python -m pip install --upgrade pip
-RUN apk update && apk add libpq && apk add tzdata && \
- apk add libffi-dev && \
- apk add openssl-dev && \
- apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev rust cargo
+RUN apk update && \
+    python -m pip install --upgrade pip && \
+    apk update && apk add libpq && apk add tzdata && \
+    apk add libffi-dev && \
+    apk add openssl-dev && \
+    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev rust cargo
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install --no-cache /wheels/*
-RUN pip install -U channels && \
- pip install channels_redis
-RUN apk --purge del .build-deps
+RUN pip install --no-cache /wheels/* && \
+    pip install -Iv channels==3.0.3 && \
+    pip install -Iv channels_redis==3.2.0 && \
+    apk --purge del .build-deps
 
 # copy entrypoint-prod.sh
 COPY ./entrypoint.prod.sh $APP_HOME
@@ -68,11 +66,10 @@ COPY ./entrypoint.prod.sh $APP_HOME
 COPY . $APP_HOME
 
 # chown all the files to the app user
-RUN chown -R app:app $APP_HOME
-RUN chmod u+s /usr/sbin/crond
-
+RUN chown -R app:app $APP_HOME && \
+    chmod u+s /usr/sbin/crond && \
 # set timezone
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # change to the app user
 USER app
