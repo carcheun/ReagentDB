@@ -1,7 +1,10 @@
+import logging
 import json
 import redis
 from django.conf import settings
 from channels.generic.websocket import AsyncWebsocketConsumer
+
+logger = logging.getLogger(__name__)
 
 #redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, \
 #    port=settings.REDIS_PORT, db=0)
@@ -45,7 +48,7 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             self.autostainer_sn = data[-1]
         else:
             self.autostainer_sn = 'webbrowser'
-        print(self.autostainer_sn, ' : ', self.channel_name, ' connect')
+        logger.info('%s : %s connect', self.autostainer_sn, self.channel_name)
         #print(self.scope)
         # add user to my redis db
         #if self.autostainer_sn is not 'webbrowser':
@@ -58,13 +61,13 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         #redis_instance.delete('autostainer_' + self.autostainer_sn)
-        print(self.autostainer_sn, ' : ', self.channel_name, ' disconnect')
+        logger.info('%s : %s disconnect', self.autostainer_sn, self.channel_name)
 
     async def receive(self, text_data):
-        print(text_data)
+        logger.info(text_data)
         text_data_json = json.loads(text_data)
         
-        if text_data_json['request']:
+        if text_data_json.get('request', False):
             if text_data_json['request'] == 'request_stainer_status':
                 await self.channel_layer.group_send(
                     self.room_group_name,
@@ -73,7 +76,7 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
                         'request': 'get_stainer_status'
                     }
                 )
-        elif text_data_json['status']:
+        elif text_data_json.get('status', False):
             message = text_data_json['status']
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -83,7 +86,6 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-        
         # client sends autostainer_sn here
 
         # send message to room group
