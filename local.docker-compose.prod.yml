@@ -19,7 +19,7 @@ services:
   reagentdbws:
     restart: always
     image: reagentsdb:v0.3
-    entrypoint: /home/app/reagentdb/entrypoint.ws-prod.sh
+    command: /home/app/reagentdb/entrypoint.ws-prod.sh
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
@@ -27,6 +27,7 @@ services:
     env_file:
       - ./.env.prod
     depends_on:
+      - reagentdb
       - postgres
       - redis
 

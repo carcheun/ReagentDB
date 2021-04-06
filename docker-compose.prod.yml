@@ -33,6 +33,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - reagentdb
 
   postgres:
     restart: always

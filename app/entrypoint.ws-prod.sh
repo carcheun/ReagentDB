@@ -11,11 +11,4 @@ then
     echo "PostgreSQL started"
 fi
 
-if [ -z "$RDB_ONLY" ] && RDB_ONLY=1
-then
-    python manage.py makemigrations
-    python manage.py migrate
-fi
-
-
 daphne ReagentDB.asgi:application --bind 0.0.0.0 --port 9000
