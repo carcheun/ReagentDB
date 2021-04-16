@@ -136,9 +136,8 @@ REST_FRAMEWORK = {
     ],
 }
 
-# http:// & ws:// servers
+# ASGI handles ws:// and http://
 ASGI_APPLICATION = 'ReagentDB.asgi.application'
-WSGI_APPLICATION = 'ReagentDB.wsgi.application'
 
 # Customer user model
 AUTH_USER_MODEL = 'reagents.User'

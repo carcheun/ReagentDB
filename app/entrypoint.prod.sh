@@ -24,6 +24,7 @@ fi
 # TODO: cronjob not working
 #python manage.py crontab add
 
-#exec "$@"
+exec "$@"
 
-gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
+#gunicorn ReagentDB.wsgi:application --bind 0.0.0.0:8000
+#daphne ReagentDB.asgi:application --bind 0.0.0.0 --port 8000

@@ -10,7 +10,7 @@ services:
       context: ./app
       dockerfile: Dockerfile.prod
     image: reagentsdb:v0.3
-    command: /home/app/reagentdb/entrypoint.prod.sh
+    command: daphne ReagentDB.asgi:application --bind 0.0.0.0 --port 8000
     volumes:
       - static_volume:/home/app/reagentdb/static
     expose:
@@ -19,21 +19,6 @@ services:
       - ./.env.prod
     depends_on:
       - postgres
-
-  reagentdbws:
-    restart: always
-    image: reagentsdb:v0.3
-    entrypoint: /home/app/reagentdb/entrypoint.ws-prod.sh
-    volumes:
-      - static_volume:/home/app/reagentdb/static
-    expose:
-      - 9000
-    env_file:
-      - ./.env.prod
-    depends_on:
-      - postgres
-      - redis
-      - reagentdb
 
   postgres:
     restart: always
@@ -85,11 +70,10 @@ services:
       - ./.env.prod.db
     ports:
       - 8000:8000
-      - 9000:9000
       - 80:80
     depends_on:
       - reagentdb
-      - reagentdbws
+#      - reagentdbws
 
 volumes:
   postgres_data:
