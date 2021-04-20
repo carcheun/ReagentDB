@@ -6,10 +6,8 @@
     <title>Autostainer Dashboard</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
     <script>
+        var downloadUrl = 'http://' + window.location.host + '/reagents/api/reagent/generateReport/';
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
@@ -41,6 +39,17 @@
             }));
             messageInputDom.value = '';
         };
+
+        //document.querySelector('#download-analytics-btn').onclick = function(e) {
+        //    console.log("hello");
+        //    downloadUrl = window.location.host + '/reagents/api/reagent/generateReport/';
+        //    window.open(downloadUrl).focus();
+        //};
     </script>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+    <p></p>
+    <a href="" id="download-analytics-btn" onclick="location.href=downloadUrl; console.log(location.href); return false;"><button>Download</button></a>
 </body>
 </html>

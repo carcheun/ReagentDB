@@ -1,10 +1,12 @@
 import logging
+import csv
 
 from django.conf import settings
 from datetime import datetime
 from datetime import date
 from .models import Reagent, ReagentDelta, PA, AutoStainerStation
 from .serializers import ReagentSerializer, ReagentDeltaSerializer
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import viewsets, status
@@ -63,6 +65,26 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['get'])
+    def generateReport(self, request):
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="reagent_history.csv"'},
+        )
+        
+        reag_history = ReagentDelta.objects.all().filter(operation='UPDATE')\
+            .distinct('reagent_sn', 'vol_cur')\
+            .order_by('reagent_sn', '-vol_cur', '-date')
+        writer = csv.writer(response)
+        writer.writerow(['Reagent SN', 'Reagent Name', 'Catalog', \
+            'vol_cur', 'vol_total', 'autostainer_sn', 'date'])
+        row_cnt = 1
+        for reagent in reag_history:
+            writer.writerow([row_cnt, reagent.reagent_sn, reagent.reag_name,\
+                reagent.catalog, reagent.vol_cur, reagent.vol,\
+                reagent.executor, reagent.date])
+            row_cnt += 1
+        return response
 
     @action(detail=False, methods=['post'])
     def scan(self, request):

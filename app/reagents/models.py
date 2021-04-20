@@ -125,7 +125,6 @@ class CommonInfoPA(models.Model):
     alias = models.TextField(blank=True)
     source = models.TextField(blank=True)
     volume = models.IntegerField(default=0)
-    #incub = models.IntegerField(default=15)
     incub = ArrayField(
         models.IntegerField(default=0),
         default=get_incub_default
