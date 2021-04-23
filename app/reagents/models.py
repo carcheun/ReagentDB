@@ -168,6 +168,7 @@ class PADelta(CommonInfoPA):
     other clients) are listed here and sent to clients when clients request
     updates
     """
+    
     catalog = models.TextField()
     
     # CREATE/UPDATE/DELETE
@@ -175,7 +176,7 @@ class PADelta(CommonInfoPA):
     autostainer_sn = models.ForeignKey('AutoStainerStation', \
         on_delete=models.SET_NULL, blank=True, null=True, db_constraint=False)
 
-class QP(models.Model):
+#class QP(models.Model):
     # TODO: potential QP 
     #Quick pick, menu selection for PA's
-    name = models.TextField()
+#    name = models.TextField()

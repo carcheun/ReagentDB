@@ -80,7 +80,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
             'vol_cur', 'vol_total', 'autostainer_sn', 'date'])
         row_cnt = 1
         for reagent in reag_history:
-            writer.writerow([row_cnt, reagent.reagent_sn, reagent.reag_name,\
+            writer.writerow([reagent.reagent_sn, reagent.reag_name,\
                 reagent.catalog, reagent.vol_cur, reagent.vol,\
                 reagent.executor, reagent.date])
             row_cnt += 1
@@ -191,17 +191,18 @@ class ReagentViewSet(viewsets.ModelViewSet):
         """
         data = JSONParser().parse(request)
         logger.info(data)
+        logger.info("%s %s", data['operation'], data['reagent_sn'])
 
         # sorta validate data, database will generate it's own timestamps for
         # mfg/exp_date if it does not exist
-        if data['mfg_date'] == '':
+        if data['mfg_date'] == '' or data['mfg_date'].isspace():
             data.pop('mfg_date')
             logger.warning('"mfg_date" was not provided')
-        if data['exp_date'] == '':
+        if data['exp_date'] == '' or data['exp_date'].isspace():
             data.pop('exp_date')
             logger.warning('"exp_date" was not provided')
+        d['factory'] = True if d['factory'] > 0 else False
 
-        logger.info("%s %s", data['operation'], data['reagent_sn'])
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():
             logger.error(deltaSerializer.errors)
@@ -285,6 +286,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
             d['date'] = make_aware(d['date'])
+            d['factory'] = True if d['factory'] > 0 else False
             try:
                 obj, created = self.queryset.get_or_create(
                     reagent_sn=d['reagent_sn'],
