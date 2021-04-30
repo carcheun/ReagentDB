@@ -1,4 +1,6 @@
 import logging
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from celery import shared_task
 from .models import Reagent, ReagentDelta, PADelta, AutoStainerStation
 
@@ -31,3 +33,16 @@ def delete_old_reagents():
     old_reagents.delete()
     return
 
+@shared_task
+def heartbeat_ping():
+    # heart beat ping for clients to know they're still connected to the server
+    group_name = 'autostainer_clients'
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        group_name,
+        {
+            'type': 'send_message',
+            'message': 'ping'
+        }
+    )
+    return

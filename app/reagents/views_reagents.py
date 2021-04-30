@@ -201,7 +201,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
         if data['exp_date'] == '' or data['exp_date'].isspace():
             data.pop('exp_date')
             logger.warning('"exp_date" was not provided')
-        d['factory'] = True if d['factory'] > 0 else False
+        data['factory'] = True if data['factory'] > 0 else False
 
         deltaSerializer = self.delta_serializer_class(data=data)
         if not deltaSerializer.is_valid():

@@ -6,6 +6,13 @@
     <title>Autostainer Dashboard</title>
 </head>
 <body>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+    <p></p>
+    <!--<a href="" id="download-analytics-btn" onclick="location.href=downloadUrl; console.log(location.href); return false;">
+        <button>Download</button>
+    </a>-->
     <script>
         /*
             List of TOODO
@@ -25,8 +32,9 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+            console.log(data)
             document.querySelector('#chat-log').value += (data.message + '\n');
-            console.log(data.message)
+            //console.log(data.message)
         };
 
         chatSocket.onclose = function(e) {
@@ -43,6 +51,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
+            console.log(message)
             chatSocket.send(JSON.stringify({
                 'request': message
             }));
@@ -55,10 +64,5 @@
         //    window.open(downloadUrl).focus();
         //};
     </script>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    <p></p>
-    <a href="" id="download-analytics-btn" onclick="location.href=downloadUrl; console.log(location.href); return false;"><button>Download</button></a>
 </body>
 </html>

@@ -81,18 +81,17 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'chat_message',
+                    'type': 'send_message',
                     'message': message
                 }
             )
-
         # client sends autostainer_sn here
 
         # send message to room group
         #await self.channel_layer.group_send(
         #    self.room_group_name,
         #    {
-        #        'type': 'chat_message',
+        #        'type': 'send_message',
         #        'message': message
         #    }
         #)
@@ -107,10 +106,9 @@ class ReagentsConsumer(AsyncWebsocketConsumer):
             'request': message
         }))
 
-    async def chat_message(self, event):
+    async def send_message(self, event):
+        # send message to all clients in group
         message = event['message']
-
-        # send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message
         }))

@@ -190,19 +190,24 @@ CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_BEAT_SCHEDULE = {
     # everyday at midnight, clear deltas that are no longer needed
-    "check_and_remove_PADeltas": {
-        "task": "reagents.tasks.check_and_remove_PADeltas",
-        "schedule": crontab(minute=0, hour=0),
-    },
-    "check_and_remove_ReagentDeltas": {
-        "task": "reagents.tasks.check_and_remove_ReagentDeltas",
-        "schedule": crontab(minute=0, hour=0),
-    },
+    #"check_and_remove_PADeltas": {
+    #    "task": "reagents.tasks.check_and_remove_PADeltas",
+    #    "schedule": crontab(minute=0, hour=0),
+    #},
+    #"check_and_remove_ReagentDeltas": {
+    #    "task": "reagents.tasks.check_and_remove_ReagentDeltas",
+    #    "schedule": crontab(minute=0, hour=0),
+    #},
     # archive or delete expired/empty reagents every
     # january 4th, or whatever
-    "delete_old_reagents": {
-        "task": "reagents.tasks.delete_old_reagents",
-        "schedule": crontab(0, 0, day_of_month='1',
-            month_of_year='4'),
+    #"delete_old_reagents": {
+    #    "task": "reagents.tasks.delete_old_reagents",
+    #    "schedule": crontab(0, 0, day_of_month='1',
+    #        month_of_year='4'),
+    #},
+    # every 10 seconds
+    "client_ping": {
+        "task": "reagents.tasks.heartbeat_ping",
+        "schedule": 1.0
     },
 }
