@@ -9,7 +9,7 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    image: reagentsdb:v0.3
+    image: reagentsdb:v0.4
     command: daphne ReagentDB.asgi:application --bind 0.0.0.0 --port 8000
     volumes:
       - static_volume:/home/app/reagentdb/static
@@ -38,7 +38,7 @@ services:
 
   celery:
     restart: always
-    image: reagentsdb:v0.3
+    image: reagentsdb:v0.4
     command: celery -A ReagentDB worker -l error
     volumes_from:
       - reagentdb
@@ -50,7 +50,7 @@ services:
 
   celery-beat:
     restart: always
-    image: reagentsdb:v0.3
+    image: reagentsdb:v0.4
     command: celery -A ReagentDB beat -l error
     volumes_from:
       - reagentdb
@@ -73,7 +73,6 @@ services:
       - 80:80
     depends_on:
       - reagentdb
-#      - reagentdbws
 
 volumes:
   postgres_data:

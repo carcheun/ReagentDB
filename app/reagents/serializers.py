@@ -3,7 +3,6 @@
 from rest_framework import serializers
 
 from .models import Reagent, ReagentDelta, AutoStainerStation, PA, PADelta, User
-#from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
