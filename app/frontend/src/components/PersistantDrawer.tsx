@@ -19,7 +19,6 @@ import AndroidIcon from '@material-ui/icons/Android';
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 
 import PA from './PA'
-import Reagent from './Reagent'
 
 // TODO: are these pixels? or dp?
 const drawerWidth = 240;
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
             }),
         },
         menuButton: {
-            marginRight: 36,
+            marginRight: theme.spacing(2),
         },
         hide: {
             display: 'none',
@@ -53,37 +52,33 @@ const useStyles = makeStyles((theme: Theme) =>
         drawer: {
             width: drawerWidth,
             flexShrink: 0,
-            whiteSpace: 'nowrap',
         },
-        drawerOpen: {
+        drawerPaper: {
             width: drawerWidth,
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
         },
-        drawerClose: {
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            overflowX: 'hidden',
-            width: theme.spacing(7) + 1,
-            [theme.breakpoints.up('sm')]: {
-                width: theme.spacing(9) + 1,
-            },
-        },
-        toolbar: {
+        drawerHeader: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end',
             padding: theme.spacing(0,1),
-            // necessary for content to be below app bar
             ...theme.mixins.toolbar,
+            // necessary for content to be below app bar
+            justifyContent: 'flex-end',
         },
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
+            transition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+            }),
+            marginLeft: -drawerWidth,
+        },
+        contentShift: {
+            tansition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+            marginLeft: 0,
         },
     }),
 );
@@ -101,7 +96,7 @@ function RenderDrawerIcons() {
     );
 }
 
-const MiniDrawer = () => {
+const PersistentDrawerLeft = () => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -142,19 +137,15 @@ const MiniDrawer = () => {
         </AppBar>
 
         <Drawer
-            variant="permanent"
-            className={clsx(classes.drawer, {
-                [classes.drawerOpen] : open,
-                [classes.drawerClose]: !open,
-            })}
+            className={classes.drawer}
+            variant="persistent"
+            anchor="left"
+            open={open}
             classes={{
-                paper: clsx({
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                }),
+                paper: classes.drawerPaper,
             }}
         >
-            <div className={classes.toolbar}>
+            <div className={classes.drawerHeader}>
                 <IconButton onClick={handleDrawerClose}>
                     {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
@@ -173,12 +164,15 @@ const MiniDrawer = () => {
                 ))}
             </List>
         </Drawer>
-        <main className={classes.content}>
-            <div className={classes.toolbar}/>
-                <Reagent/>
+        <main className={clsx(classes.content, {
+            [classes.contentShift]: open,
+        })}>
+            <div className={classes.drawerHeader}/>
+            <PA/>
+
         </main>
     </div>
     )
 }
 
-export default MiniDrawer;
+export default PersistentDrawerLeft;

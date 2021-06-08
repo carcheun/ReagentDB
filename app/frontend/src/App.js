@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import Drawer from './components/Drawer'
+import Dashboard from './components/Dashboard'
+
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Drawer />
+        <Dashboard />
       </div>
     )
   }

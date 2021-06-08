@@ -18,8 +18,10 @@ import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
 import AndroidIcon from '@material-ui/icons/Android';
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 
+import PA from './PA'
+
 // TODO: are these pixels? or dp?
-const drawerWidth = 256;
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -170,6 +172,11 @@ const MiniDrawer = () => {
                 ))}
             </List>
         </Drawer>
+        <main className={classes.content}>
+            <div className={classes.toolbar}/>
+            <PA/>
+
+        </main>
     </div>
     )
 }
