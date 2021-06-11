@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios'
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
+import Typography from '@material-ui/core/Typography';
 
 import { useStyles } from './Styles';
 
@@ -11,7 +12,23 @@ const columns: GridColDef[] = [
     {field: 'catalog', headerName: 'Catalog', width: 200},
     {field: 'incub', headerName: 'Incubation', type: 'array', width: 180},
     {field: 'ar', headerName: 'AR', width: 130},
-    {field: 'is_factory', headerName: 'Factory', width: 130, type: 'boolean'}
+    {field: 'is_factory', headerName: 'Factory', width: 130, type: 'boolean'},
+    /*{field: 'edit_btn', headerName: 'Edit', width: 100,
+        disableClickEventBubbling: true,
+        renderCell: (params: GridCellParams) => {
+            const onClick = () => {
+                console.log(params.row);
+
+
+            }
+            return (
+                <IconButton color="inherit" aria-label="open drawer" 
+                onClick={onClick}edge="start">
+                    <EditIcon />
+                </IconButton>
+            );
+        }
+    }*/
 ];
 
 interface PAProperties {
@@ -37,12 +54,13 @@ export default function PA() {
         .then((res) => {
             const serverPA = res.data.map((obj, index)=> ({...obj, id: index}));
             setPAList(serverPA);
-            setLoading(false);
         })
         .catch((err) => { 
             console.log(err); 
-            setLoading(false);
         });
+        return () => {
+            setLoading(false);
+        }
     });
     return(
     <div style={{height: 800, width: '100%'}}>

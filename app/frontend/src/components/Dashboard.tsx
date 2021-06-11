@@ -9,8 +9,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
 import Divider from '@material-ui/core/Divider';
+import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -18,31 +18,29 @@ import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
 import AndroidIcon from '@material-ui/icons/Android';
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 
+import {Route, Link, HashRouter} from 'react-router-dom';
+
 import { useStyles } from './Styles';
 import PA from './PA';
 import Reagent from './Reagent';
 
-function RenderDrawerIcons() {
-    const handleReagentButtonClick = () => {
-        return (<Reagent/>)
-    }
-
-    const drawerItems = [{text: 'PA', icon: (<GitHubIcon/>)},
-        {text: 'Reagents', icon: (<EmojiFoodBeverageIcon/>)},
-        {text: 'Autostainers', icon: (<AndroidIcon/>)}];
-
-    return drawerItems.map((obj) => 
-        <ListItem button key={obj.text}>
-            <ListItemIcon>{obj.icon}</ListItemIcon>
-            <ListItemText primary={obj.text}/>
-        </ListItem>
-    );
-}
-
-const Dashboard = () => {
+export default function Dashboard() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+
+    function RenderDrawerIcons() {
+        const drawerItems = [{text: 'PA', icon: (<GitHubIcon/>)},
+            {text: 'Reagents', icon: (<EmojiFoodBeverageIcon/>)},
+            {text: 'Autostainers', icon: (<AndroidIcon/>)}];
+
+        return drawerItems.map((obj) => 
+            <ListItem button key={obj.text} component={Link} to={obj.text}>
+                <ListItemIcon>{obj.icon}</ListItemIcon>
+                <ListItemText primary={obj.text}/>
+            </ListItem>
+        );
+    }
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -54,6 +52,7 @@ const Dashboard = () => {
 
     return(
     <div className={classes.root}>
+    <HashRouter>
         <CssBaseline />
         <AppBar
             position="fixed"
@@ -70,15 +69,14 @@ const Dashboard = () => {
                     className={clsx(classes.menuButton, {
                         [classes.hide]: open,
                     })}
-                    >
-                        <MenuIcon />
+                >
+                    <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" noWrap>
                     Mini variant drawer
                 </Typography>
             </Toolbar>
         </AppBar>
-
         <Drawer
             variant="permanent"
             className={clsx(classes.drawer, {
@@ -97,10 +95,12 @@ const Dashboard = () => {
                     {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
             </div>
-            <Divider />
-            <List>
-                { RenderDrawerIcons() }
-            </List>
+            <Divider/>
+                <List>
+                    { RenderDrawerIcons() }
+                </List>
+                <div>
+                </div>
             <Divider />
             <List>
                 {['Other', 'Settings'].map((text, index) => (
@@ -113,10 +113,10 @@ const Dashboard = () => {
         </Drawer>
         <main className={classes.content}>
             <div className={classes.toolbar}/>
-                <PA/>
+            <Route path="/PA" component={PA}/>
+            <Route path="/Reagents" component={Reagent}/>
         </main>
+    </HashRouter>
     </div>
-    )
+    );
 }
-
-export default Dashboard;

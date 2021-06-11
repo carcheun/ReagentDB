@@ -33,48 +33,24 @@ interface ReagentProperties {
 export default function Reagent() {
     const [ReagentList, setReagentList] = React.useState<ReagentProperties[]>([]);
     const [loading, setLoading] = React.useState(true);
-    const [success, setSuccess] = React.useState(false);
 
     React.useEffect(() => {
         axios.get<ReagentProperties[]>('api/reagent/')
         .then((res) => {
             const ReagentList = res.data.map((obj, index)=> ({...obj, id: index}));
             setReagentList(ReagentList);
-            setLoading(false);
-            setSuccess(true);
         })
         .catch((err) => { 
             console.log(err); 
-            setLoading(false);
-            setSuccess(false);
         });
+        return () => {
+            setLoading(false);
+        }
     });
 
     return(
-        <div style={{height: 800, width: '100%'}}>
-            <DataGrid rows={ReagentList} columns={columns} pageSize={25} checkboxSelection loading={loading}/>
-        </div>
-    )
+    <div style={{height: 800, width: '100%'}}>
+        <DataGrid rows={ReagentList} columns={columns} pageSize={25} checkboxSelection loading={loading}/>
+    </div>
+    );
 }
-
-/*
-class Reagent extends Component {
-    state = { ReagentList: [] };
-    componentDidMount() {
-        axios.get<ReagentInformation[]>('api/reagent/')
-        .then((res) => {
-            const ReagentList = res.data.map((obj, index)=> ({...obj, id: index}));
-            this.setState({ReagentList});
-        })
-        .catch((err) => { console.log(err); });
-    }
-    render() {
-        return(
-        <div style={{height: 800, width: '100%'}}>
-            <DataGrid rows={this.state.ReagentList} columns={columns} pageSize={25} checkboxSelection/>
-        </div>
-        );
-    }
-}
-
-export default Reagent;*/
