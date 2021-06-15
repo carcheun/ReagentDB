@@ -20,6 +20,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import DeleteDialog from './DeletePopup';
+
 interface ReagentProps {
     reag_name: string;
     size: string;
@@ -47,6 +49,7 @@ interface HeadCell {
 
 interface TableToolbarProps {
     numSelected: number;
+    selectedSN: string[];
 }
 
 const headCells: HeadCell[] = [
@@ -138,7 +141,15 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 const ReagentTableToolbar = (props: TableToolbarProps) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, selectedSN } = props;
+    const [deleteDialog, setDeleteDialog] = React.useState(false);
+
+    const handleDelete = () => {
+        console.log(selectedSN);
+        // TODO: popup a modal and ask if you want to deleeeete
+        setDeleteDialog(true);
+    }
+
     
     return (
         <Toolbar
@@ -157,7 +168,7 @@ const ReagentTableToolbar = (props: TableToolbarProps) => {
             )}
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
+                    <IconButton aria-label="delete" onClick={handleDelete}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>
@@ -234,6 +245,7 @@ export default function Reagent() {
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof ReagentProps>('reag_name');
     const [selected, setSelected] = React.useState<string[]>([]);
+    const [selectedSN, setSelectedSN] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [ReagentList, setReagentList] = React.useState<ReagentProps[]>([]);
@@ -262,30 +274,42 @@ export default function Reagent() {
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             const newSelecteds = ReagentList.map((n) => n.reag_name);
+            const newSNSelecteds = ReagentList.map((n) => n.reagent_sn);
             setSelected(newSelecteds);
+            setSelectedSN(newSNSelecteds);
             return;
         }
         setSelected([]);
+        setSelectedSN([]);
     }
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+    const handleClick = (event: React.MouseEvent<unknown>, name: string, sn: string) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected: string[] = [];
+        let newSNSelected: string[] = [];
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, name);
+            newSNSelected = newSNSelected.concat(selectedSN, sn);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
+            newSNSelected = newSNSelected.concat(selectedSN.slice(1));
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
+            newSNSelected = newSNSelected.concat(selectedSN.slice(0, -1));
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
                 selected.slice(selectedIndex + 1),
             );
+            newSNSelected = newSNSelected.concat(
+                selectedSN.slice(0, selectedIndex),
+                selectedSN.slice(selectedIndex + 1),
+            );
         }
 
         setSelected(newSelected);
+        setSelectedSN(newSNSelected);
     };
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -303,7 +327,9 @@ export default function Reagent() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <ReagentTableToolbar numSelected={selected.length} />
+                <ReagentTableToolbar 
+                    numSelected={selected.length} 
+                    selectedSN={selectedSN} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -335,7 +361,7 @@ export default function Reagent() {
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={(event) => handleClick(event, row.reag_name)}
+                                                onClick={(event) => handleClick(event, row.reag_name, row.reagent_sn)}
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
@@ -381,6 +407,9 @@ export default function Reagent() {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
+            
+            
+            <DeleteDialog serial_nos={[]}/>
         </div>
     );
 }
