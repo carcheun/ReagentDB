@@ -21,6 +21,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import DeleteDialog from './DeletePopup';
+import { SettingsPowerRounded } from '@material-ui/icons';
 
 interface ReagentProps {
     reag_name: string;
@@ -50,6 +51,7 @@ interface HeadCell {
 interface TableToolbarProps {
     numSelected: number;
     selectedSN: string[];
+    setOpen: any;
 }
 
 const headCells: HeadCell[] = [
@@ -141,16 +143,12 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 const ReagentTableToolbar = (props: TableToolbarProps) => {
     const classes = useToolbarStyles();
-    const { numSelected, selectedSN } = props;
-    const [deleteDialog, setDeleteDialog] = React.useState(false);
+    const { numSelected, selectedSN, setOpen } = props;
 
     const handleDelete = () => {
-        console.log(selectedSN);
-        // TODO: popup a modal and ask if you want to deleeeete
-        setDeleteDialog(true);
+        setOpen(true);
     }
 
-    
     return (
         <Toolbar
             className={clsx(classes.root, {
@@ -250,6 +248,7 @@ export default function Reagent() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [ReagentList, setReagentList] = React.useState<ReagentProps[]>([]);
     const [loading, setLoading] = React.useState(true);
+    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
 
     React.useEffect(() => {
         axios.get<ReagentProps[]>('api/reagent/')
@@ -281,7 +280,7 @@ export default function Reagent() {
         }
         setSelected([]);
         setSelectedSN([]);
-    }
+    };
 
     const handleClick = (event: React.MouseEvent<unknown>, name: string, sn: string) => {
         const selectedIndex = selected.indexOf(name);
@@ -329,7 +328,8 @@ export default function Reagent() {
             <Paper className={classes.paper}>
                 <ReagentTableToolbar 
                     numSelected={selected.length} 
-                    selectedSN={selectedSN} />
+                    selectedSN={selectedSN}
+                    setOpen={setShowDeleteDialog} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -384,7 +384,7 @@ export default function Reagent() {
                                                 <TableCell align="right">{row.log}</TableCell>
                                                 <TableCell align="right">{row.mfg_date}</TableCell>
                                                 <TableCell align="right">{row.exp_date}</TableCell>
-                                                <TableCell align="right">{row.factory}</TableCell>
+                                                <TableCell align="right">{row.factory ? <>yes</> : <>no</>}</TableCell>
                                             </TableRow>
                                         );
                                         {emptyRows > 0 && (
@@ -407,9 +407,7 @@ export default function Reagent() {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            
-            
-            <DeleteDialog serial_nos={[]}/>
+            <DeleteDialog serial_nos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog}/>
         </div>
     );
 }

@@ -1,31 +1,57 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
-import Typography from '@material-ui/core/Typography';
-import { blue } from '@material-ui/core/colors';
+import Grid from "@material-ui/core/Grid";
 
 interface DeleteData {
-    serial_nos: string[]
+    serial_nos: string[];
+    setOpen: any;
+    open: boolean;
 }
 
 export default function DeleteDialog(props: DeleteData) {
-    const { serial_nos } = props;
-    const [open, setOpen] = React.useState(true);
+    const { serial_nos, setOpen, open } = props;
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleDelete = () => {
+        console.log("delete popup: " + serial_nos);
+        // TODO: delete all the serial numbers
+        setOpen(false);
+    }
 
     return (
-        <Dialog open={open}>
-            <p>
-                HELLO DIALOG!
-            </p>
+        <Dialog open={open} onClose={handleClose}>
+            <Grid container spacing={0} direction="column" alignItems="center" justify="center">
+                <Grid item>
+                    <DeleteIcon fontSize="large"/>
+                </Grid>
+                <Grid item>
+                    <DialogTitle id="alert-dialog-slide-title">{"Delete"}</DialogTitle>
+                </Grid>
+                <Grid item>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to delete the selected items?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleDelete} variant="contained" color="secondary">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Grid>
+            </Grid>
         </Dialog>
     );
 }
