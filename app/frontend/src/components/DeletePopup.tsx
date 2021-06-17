@@ -12,10 +12,11 @@ interface DeleteData {
     serialNos: string[];
     setOpen: any;
     open: boolean;
+    dataType: string;
 }
 
 export default function DeleteDialog(props: DeleteData) {
-    const { serialNos, setOpen, open } = props;
+    const { serialNos, setOpen, open, dataType } = props;
 
     const handleClose = () => {
         setOpen(false);
@@ -23,7 +24,7 @@ export default function DeleteDialog(props: DeleteData) {
 
     const handleDelete = () => {
         for (var serialNo of serialNos) {
-            let reqHtml = 'api/reagent/' + serialNo;
+            let reqHtml = 'api/' + dataType + '/' + serialNo;
             axios.delete(reqHtml).then((res) => {
                 console.log(serialNo + ' deleted!');
             })

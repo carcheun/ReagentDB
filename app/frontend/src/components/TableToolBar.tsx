@@ -10,13 +10,12 @@ import { useToolbarStyles} from './Styles';
 
 interface TableToolbarProps {
     numSelected: number;
-    selectedSN: string[];
     setOpen: any;
 }
 
 export default function TableToolBar(props: TableToolbarProps) {
     const classes = useToolbarStyles();
-    const { numSelected, selectedSN, setOpen } = props;
+    const { numSelected, setOpen } = props;
 
     const handleDelete = () => {
         setOpen(true);

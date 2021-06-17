@@ -1,8 +1,5 @@
 import React from 'react';
-import clsx from 'clsx';
 import axios from 'axios';
-import Tooltip from '@material-ui/core/Tooltip';
-import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,16 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { useToolbarStyles, PAuseStyles } from './Styles';
+import TableToolBar from './TableToolBar';
+import DeleteDialog from './DeletePopup';
+import { RDBChartStyles } from './Styles';
+import { getComparator, stableSort, Order } from './HelperFunctions';
 
 interface PAProps {
     alias: string;
@@ -30,6 +25,7 @@ interface PAProps {
     description: string;
     fullname: string;
     incub: Array<number>;
+    incubS: Array<number>;
     is_factory: boolean;
     source: string;
     volume: number;
@@ -42,26 +38,18 @@ interface HeadCell {
     numeric: boolean;
 }
 
-interface TableToolbarProps {
-    numSelected: number;
-}
-
 const headCells: HeadCell[] = [
     { id: 'alias', numeric: false, disablePadding: true, label: 'Alias' },
     { id: 'catalog', numeric: false, disablePadding: false, label: 'Catalog' },
     { id: 'ar', numeric: false, disablePadding: false, label: 'AR' },
-    //{ id: 'date', numeric: true, disablePadding: false, label: 'Date' },
-    //{ id: 'description', numeric: false, disablePadding: false, label: 'Description' },
     { id: 'incub', numeric: true, disablePadding: false, label: 'Titan Incubation' },
-    { id: 'incub', numeric: true, disablePadding: false, label: 'Titan-S Incubation' },
+    { id: 'incubS', numeric: true, disablePadding: false, label: 'Titan-S Incubation' },
     { id: 'fullname', numeric: false, disablePadding: false, label: 'Full Name' },
     { id: 'is_factory', numeric:false, disablePadding: false, label: 'Factory' },
-    //{ id: 'source', numeric: false, disablePadding: false, label: 'Source' },
-    //{ id: 'volume', numeric: false, disablePadding: false, label: 'Volumne' },
 ];
 
 interface PATableProps {
-    classes: ReturnType<typeof useStyles>;
+    classes: ReturnType<typeof RDBChartStyles>;
     numSelected: number;
     onRequestSort: (event: React.MouseEvent<unknown>, property: keyof PAProps) => void;
     onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -113,101 +101,8 @@ function ReagentTableHead(props: PATableProps) {
     );
 }
 
-const PATableToolbar = (props: TableToolbarProps) => {
-    const classes = useToolbarStyles();
-    const { numSelected } = props;
-    
-    return (
-        <Toolbar
-            className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0,
-            })}
-        >
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    PA
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon/>
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-    order: Order,
-    orderBy: Key,
-) : (a: { [key in Key]: number | string | boolean | number[] }, b: {[key in Key]: number | string | boolean | number[] }) => number {
-    return order === 'desc'
-        ? (a,b) => descendingComparator(a, b, orderBy)
-        : (a,b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
-    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-    stabilizedThis.sort((a,b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-const useStyles = makeStyles((theme: Theme) => 
-    createStyles({
-        root: {
-            width: '100%',
-        },
-        paper: {
-            width: '100%',
-            margin: theme.spacing(2),
-        },
-        table: {
-            minWidth: 750,
-        },
-        visuallyHidden: {
-            border: 0,
-            clip: 'rect(0,0,0,0)',
-            height: 1,
-            margin: -1,
-            overflow: 'hidden',
-            padding: 0,
-            position: 'absolute',
-            top: 20,
-            width: 1,
-        }
-    }),
-);
-
 export default function PA() {
-    const classes = useStyles();
+    const classes = RDBChartStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof PAProps>('catalog');
     const [selected, setSelected] = React.useState<string[]>([]);
@@ -215,6 +110,7 @@ export default function PA() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [PAList, setPAList] = React.useState<PAProps[]>([]);
     const [loading, setLoading] = React.useState(true);
+    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
 
     React.useEffect(() => {
         axios.get<PAProps[]>('api/pa/')
@@ -280,7 +176,8 @@ export default function PA() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <PATableToolbar numSelected={selected.length} />
+                <TableToolBar numSelected={selected.length} 
+                    setOpen={setShowDeleteDialog} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -333,7 +230,7 @@ export default function PA() {
                                             <TableCell align="right">{row.incub[0]}</TableCell>
                                             <TableCell align="right">{row.incub[1]}</TableCell>
                                             <TableCell align="right">{row.fullname}</TableCell>
-                                            <TableCell align="right">{row.is_factory}</TableCell>
+                                            <TableCell align="right">{row.is_factory ? <>yes</> : <>no</>}</TableCell>
                                         </TableRow>
                                     );
                                     {emptyRows > 0 && (
@@ -355,6 +252,7 @@ export default function PA() {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
+            <DeleteDialog serialNos={selected} open={showDeleteDialog} setOpen={setShowDeleteDialog} dataType={"pa"}/>
         </div>
     );
 }

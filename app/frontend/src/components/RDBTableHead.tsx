@@ -7,14 +7,14 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
 
+import { Order } from './HelperFunctions';
+
 interface HeadCell {
     disablePadding: boolean,
     id: keyof ReagentProps,
     label: string;
     numeric: boolean;
 }
-
-type Order = 'asc' | 'desc';
 
 const headCells: HeadCell[] = [
     { id: 'reag_name', numeric: false, disablePadding: true, label: 'Reagent' },

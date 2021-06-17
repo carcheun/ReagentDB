@@ -14,6 +14,7 @@ import { RDBChartStyles } from './Styles';
 import DeleteDialog from './DeletePopup';
 import TableToolBar from './TableToolBar';
 import RDBTableHead from './RDBTableHead';
+import { getComparator, stableSort, Order } from './HelperFunctions';
 
 interface ReagentProps {
     reag_name: string;
@@ -33,49 +34,19 @@ interface ReagentProps {
     in_use: boolean;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
+export default function Reagent(props: any) {
+    let v = props.nothing;
 
-type Order = 'asc' | 'desc';
-
-
-function getComparator<Key extends keyof any>(
-    order: Order,
-    orderBy: Key,
-) : (a: { [key in Key]: number | string | boolean}, b: {[key in Key]: number | string | boolean}) => number {
-    return order === 'desc'
-        ? (a,b) => descendingComparator(a, b, orderBy)
-        : (a,b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
-    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-    stabilizedThis.sort((a,b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-export default function Reagent() {
     const classes = RDBChartStyles();
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof ReagentProps>('reag_name');
     const [selected, setSelected] = React.useState<string[]>([]);
     const [selectedSN, setSelectedSN] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [ReagentList, setReagentList] = React.useState<ReagentProps[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+    const [orderBy, setOrderBy] = React.useState<keyof ReagentProps>('reag_name');
+    const [ReagentList, setReagentList] = React.useState<ReagentProps[]>([]);
 
     React.useEffect(() => {
         axios.get<ReagentProps[]>('api/reagent/')
@@ -155,7 +126,6 @@ export default function Reagent() {
             <Paper className={classes.paper}>
                 <TableToolBar 
                     numSelected={selected.length} 
-                    selectedSN={selectedSN}
                     setOpen={setShowDeleteDialog} />
                 <TableContainer>
                     <Table
@@ -234,7 +204,7 @@ export default function Reagent() {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            <DeleteDialog serialNos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog}/>
+            <DeleteDialog serialNos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog} dataType={"reagent"}/>
         </div>
     );
 }
