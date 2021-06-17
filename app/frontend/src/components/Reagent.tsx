@@ -1,27 +1,19 @@
 import React from 'react';
-import clsx from 'clsx';
 import axios from 'axios';
-import Tooltip from '@material-ui/core/Tooltip';
-import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { RDBChartStyles } from './Styles';
 import DeleteDialog from './DeletePopup';
-import { SettingsPowerRounded } from '@material-ui/icons';
+import TableToolBar from './TableToolBar';
+import RDBTableHead from './RDBTableHead';
 
 interface ReagentProps {
     reag_name: string;
@@ -41,146 +33,6 @@ interface ReagentProps {
     in_use: boolean;
 }
 
-interface HeadCell {
-    disablePadding: boolean,
-    id: keyof ReagentProps,
-    label: string;
-    numeric: boolean;
-}
-
-interface TableToolbarProps {
-    numSelected: number;
-    selectedSN: string[];
-    setOpen: any;
-}
-
-const headCells: HeadCell[] = [
-    { id: 'reag_name', numeric: false, disablePadding: true, label: 'Reagent' },
-    { id: 'reagent_sn', numeric: false, disablePadding: false, label: 'Serial Number' },
-    { id: 'catalog', numeric: false, disablePadding: false, label: 'Catalog' },
-    { id: 'vol', numeric: true, disablePadding: false, label: 'Volumne (μL)' },
-    { id: 'r_type', numeric: false, disablePadding: false, label: 'Type' },
-    { id: 'log', numeric: false, disablePadding: false, label: 'Lot' },
-    { id: 'mfg_date', numeric: false, disablePadding: false, label: 'Manufacture Date' },
-    { id: 'exp_date', numeric: false, disablePadding: false, label: 'Expire Date' },
-    { id: 'factory', numeric: false, disablePadding: false, label: 'Factory' },
-];
-
-interface ReagentTableProps {
-    classes: ReturnType<typeof useStyles>;
-    numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ReagentProps) => void;
-    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    order: Order;
-    orderBy: string;
-    rowCount: number;
-}
-
-function ReagentTableHead(props: ReagentTableProps) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof ReagentProps) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={ numSelected > 0 && numSelected < rowCount }
-                        checked={rowCount > 0 && numSelected === rowCount }
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all reagents' }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'right'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                        sortDirection={orderBy === headCell.id ? order : false }
-                        >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order: 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <span className={classes.visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </span>
-                            ): null }
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-const useToolbarStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            paddingLeft: theme.spacing(2),
-            paddingRight: theme.spacing(1),
-        },
-        highlight:
-            theme.palette.type === 'light'
-                ? {
-                    color: theme.palette.secondary.main,
-                    backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-                }
-                : {
-                    color: theme.palette.text.primary,
-                    backgroundColor: theme.palette.secondary.dark,
-                },
-        title : {
-            flex: '1 1 100%',
-        },
-    }),
-);
-
-const ReagentTableToolbar = (props: TableToolbarProps) => {
-    const classes = useToolbarStyles();
-    const { numSelected, selectedSN, setOpen } = props;
-
-    const handleDelete = () => {
-        setOpen(true);
-    }
-
-    return (
-        <Toolbar
-            className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0,
-            })}
-        >
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    Reagents
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete" onClick={handleDelete}>
-                        <DeleteIcon/>
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-}
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -192,6 +44,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 }
 
 type Order = 'asc' | 'desc';
+
 
 function getComparator<Key extends keyof any>(
     order: Order,
@@ -212,34 +65,8 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const useStyles = makeStyles((theme: Theme) => 
-    createStyles({
-        root: {
-            width: '100%',
-        },
-        paper: {
-            width: '100%',
-            margin: theme.spacing(2),
-        },
-        table: {
-            minWidth: 750,
-        },
-        visuallyHidden: {
-            border: 0,
-            clip: 'rect(0,0,0,0)',
-            height: 1,
-            margin: -1,
-            overflow: 'hidden',
-            padding: 0,
-            position: 'absolute',
-            top: 20,
-            width: 1,
-        }
-    }),
-);
-
 export default function Reagent() {
-    const classes = useStyles();
+    const classes = RDBChartStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof ReagentProps>('reag_name');
     const [selected, setSelected] = React.useState<string[]>([]);
@@ -326,7 +153,7 @@ export default function Reagent() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <ReagentTableToolbar 
+                <TableToolBar 
                     numSelected={selected.length} 
                     selectedSN={selectedSN}
                     setOpen={setShowDeleteDialog} />
@@ -336,7 +163,7 @@ export default function Reagent() {
                         aria-labelledby="tableTitle"
                         aria-label="reagent table"
                     >
-                        <ReagentTableHead
+                        <RDBTableHead
                             classes={classes}
                             numSelected={selected.length}
                             order={order}
@@ -407,7 +234,7 @@ export default function Reagent() {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            <DeleteDialog serial_nos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog}/>
+            <DeleteDialog serialNos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog}/>
         </div>
     );
 }

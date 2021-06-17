@@ -1,4 +1,4 @@
-import React from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,21 +9,29 @@ import Dialog from '@material-ui/core/Dialog';
 import Grid from "@material-ui/core/Grid";
 
 interface DeleteData {
-    serial_nos: string[];
+    serialNos: string[];
     setOpen: any;
     open: boolean;
 }
 
 export default function DeleteDialog(props: DeleteData) {
-    const { serial_nos, setOpen, open } = props;
+    const { serialNos, setOpen, open } = props;
 
     const handleClose = () => {
         setOpen(false);
     };
 
     const handleDelete = () => {
-        console.log("delete popup: " + serial_nos);
-        // TODO: delete all the serial numbers
+        for (var serialNo of serialNos) {
+            let reqHtml = 'api/reagent/' + serialNo;
+            axios.delete(reqHtml).then((res) => {
+                console.log(serialNo + ' deleted!');
+            })
+            .catch((err) => { 
+                console.log(err); 
+            });
+        }
+
         setOpen(false);
     }
 
@@ -39,7 +47,7 @@ export default function DeleteDialog(props: DeleteData) {
                 <Grid item>
                     <DialogContent>
                         <DialogContentText>
-                            Are you sure you want to delete the selected items?
+                            Are you sure you want to delete the selected {serialNos.length > 1 ? <>items?</> : <>item?</>}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
