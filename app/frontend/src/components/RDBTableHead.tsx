@@ -5,9 +5,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { Order } from './HelperFunctions';
+import { RDBChartStyles } from './Styles';
 
 interface HeadCell {
     disablePadding: boolean,
@@ -46,34 +47,8 @@ interface ReagentProps {
     in_use: boolean;
 }
 
-const useStyles = makeStyles((theme: Theme) => 
-    createStyles({
-        root: {
-            width: '100%',
-        },
-        paper: {
-            width: '100%',
-            margin: theme.spacing(2),
-        },
-        table: {
-            minWidth: 750,
-        },
-        visuallyHidden: {
-            border: 0,
-            clip: 'rect(0,0,0,0)',
-            height: 1,
-            margin: -1,
-            overflow: 'hidden',
-            padding: 0,
-            position: 'absolute',
-            top: 20,
-            width: 1,
-        }
-    }),
-);
-
 interface ReagentTableProps {
-    classes: ReturnType<typeof useStyles>;
+    classes: ReturnType<typeof RDBChartStyles>;
     numSelected: number;
     onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ReagentProps) => void;
     onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;

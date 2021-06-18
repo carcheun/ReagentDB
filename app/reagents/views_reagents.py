@@ -408,15 +408,26 @@ class ReagentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def create(self, request):
-        # override create to method to create reagentdelta entry
         data = request.data.copy()
         data['operation'] = 'CREATE'
-        # create the PA if the PA does not exist
+        # check if it is type P or other ...
+        # if type P, make the PA
+        # if not type p... it is probably EN/DX/DAB/H2O2/POLY...
+        # so check if such thing exists and bla bla bla but make sure it never
+        # shows up
 
         autostainer, created_autostainer = AutoStainerStation.objects\
             .get_or_create(autostainer_sn=data['autostainer_sn'])
 
-        pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
+        if data['r_type'] == 'P':
+            pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'], \
+                defaults={'alias' : data['reag_name'], 'is_factory' : data['factory']})
+        else:
+            # detection type .. set the PA description as 'DETETCTION_SYSTEM'
+            pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'], \
+                defaults={'alias' : data['reag_name'], 'is_factory' : data['factory'], \
+                'description' : 'DETECTION_SYSTEM'})
+
         deltaSerializer = self.delta_serializer_class(data=data)
 
         # if created_pa:

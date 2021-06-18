@@ -129,7 +129,7 @@ class CommonInfoPA(models.Model):
         models.IntegerField(default=0),
         default=get_incub_default
     )
-    ar = models.TextField(default='NO')
+    ar = models.TextField(default='High PH')
     description = models.TextField(blank=True)
     is_factory = models.BooleanField(default=False)
     date = models.DateTimeField(default=now)

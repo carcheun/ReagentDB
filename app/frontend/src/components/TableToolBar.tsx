@@ -14,6 +14,7 @@ interface TableToolbarProps {
 }
 
 export default function TableToolBar(props: TableToolbarProps) {
+    // TODO: tool bar only says REAGENTS right now, change it to reflect a variable
     const classes = useToolbarStyles();
     const { numSelected, setOpen } = props;
 

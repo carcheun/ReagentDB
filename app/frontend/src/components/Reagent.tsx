@@ -35,8 +35,6 @@ interface ReagentProps {
 }
 
 export default function Reagent(props: any) {
-    let v = props.nothing;
-
     const classes = RDBChartStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [selected, setSelected] = React.useState<string[]>([]);

@@ -46,6 +46,18 @@ class PAViewSet(viewsets.ModelViewSet):
     serializer_class = PASerializer
 
     @action(detail=False, methods=['get'])
+    def valid_pa(self, request):
+        """Valid PA are all except with description 'DETECTION_SYSTEM'
+
+        Returns:
+            Valid PAs returned as a list
+        """
+        pa = self.queryset.exclude(description='DETECTION_SYSTEM')
+        serializer = self.serializer_class(pa, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'])
     def alias(self, request):
         """Get PA by alias
 
@@ -271,7 +283,7 @@ class PAViewSet(viewsets.ModelViewSet):
         deltaSerializer = PADeltaSerializer(data=data, operation='CREATE')
         if deltaSerializer.is_valid():
             ret = super().create(request)
-            if ret.status_code == status.HTTP_201_CREATED:
+            if ret.status_code == status.HTTP_201_CREATED and data['description'] != 'DETECTION_SYSTEM':
                 deltaSerializer.save()
                 logger.info(data)
             return ret

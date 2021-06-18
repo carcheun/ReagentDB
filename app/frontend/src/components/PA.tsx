@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import TableToolBar from './TableToolBar';
 import DeleteDialog from './DeletePopup';
+import RDBTableHead from './RDBTableHead';
 import { RDBChartStyles } from './Styles';
 import { getComparator, stableSort, Order } from './HelperFunctions';
 
