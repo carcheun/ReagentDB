@@ -122,7 +122,6 @@ class CommonInfoPA(models.Model):
     """PA base class
     """
     fullname = models.TextField(blank=True)
-    alias = models.TextField(blank=True)
     source = models.TextField(blank=True)
     volume = models.IntegerField(default=0)
     incub = ArrayField(
@@ -152,6 +151,7 @@ class PA(CommonInfoPA):
     """
     # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True, blank=False)
+    alias = models.TextField(unique=True)
 
     def is_older(self, date):
         """Returns True if object is older provided given date
@@ -170,6 +170,7 @@ class PADelta(CommonInfoPA):
     """
     
     catalog = models.TextField()
+    alias = models.TextField(blank=True)
     
     # CREATE/UPDATE/DELETE
     operation = models.TextField()
