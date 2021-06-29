@@ -2,16 +2,13 @@ import logging
 
 from django.conf import settings
 from datetime import datetime
-from django.http import JsonResponse
-from django.shortcuts import render
 from django.utils.timezone import make_aware, now
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action
 from .serializers import AutoStainerStationSerializer, PASerializer, PADeltaSerializer
-from .models import Reagent, AutoStainerStation, PA, PADelta
-from .utils import convert_client_date_format
+from .models import AutoStainerStation, PA, PADelta
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -33,9 +30,6 @@ class PAViewSet(viewsets.ModelViewSet):
     A timestamped entry is added to PADelta detailing each CUD action, 
     including from whom the entry came from
 
-    TODO: refactor into serialzier?
-    TODO: turn on authentication again, also set as DEBUG means authentication
-            is turned off
     """
     debug_flag = settings.DEBUG
     if (not debug_flag):
@@ -91,7 +85,7 @@ class PAViewSet(viewsets.ModelViewSet):
             array containing PA's for client to update or create
         """
         data = JSONParser().parse(request)
-        missing = self.queryset.all()
+        missing = self.queryset.exclude(description='DETECTION_SYSTEM')
         ret = list()
         for d in data:
             logger.info(d)
@@ -172,7 +166,7 @@ class PAViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         dt_last_update = datetime.strptime(last_sync, '%Y-%m-%dT%H:%M:%S%z')
         missing_changes = PADelta.objects.filter(date__gt=dt_last_update)\
-            .exclude(autostainer_sn=autostainer_sn)
+            .exclude(autostainer_sn=autostainer_sn, description='DETECTION_SYSTEM')
         serializer = PADeltaSerializer(missing_changes, many=True)
 
         # keep a record of when the last time an autostainer has synced
@@ -185,7 +179,6 @@ class PAViewSet(viewsets.ModelViewSet):
     def client_to_database_sync(self, request):
         """Client provides the server with a change action. Server determines 
         what changes it requires via latest time stamp
-        TODO: DELETE? THIS IS UNUSED?
 
         Arguments (request):
             delta.db: PA table, Except in JSON format

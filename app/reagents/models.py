@@ -103,8 +103,7 @@ class ReagentDelta(CommonReagent):
     operation = models.TextField(blank=False)
     #which autostainer performed the action
     executor =  models.ForeignKey('AutoStainerStation', \
-        on_delete=models.SET_NULL, blank=True, null=True, \
-        related_name='+')
+        on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
 
 class AutoStainerStation(models.Model):
     """Autostainers identified by S/N, can be given custom name, SN read from 
