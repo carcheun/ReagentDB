@@ -410,12 +410,7 @@ class ReagentViewSet(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data.copy()
         data['operation'] = 'CREATE'
-        # check if it is type P or other ...
-        # if type P, make the PA
         # if not type p... it is probably EN/DX/DAB/H2O2/POLY...
-        # so check if such thing exists and bla bla bla but make sure it never
-        # shows up
-
         autostainer, created_autostainer = AutoStainerStation.objects\
             .get_or_create(autostainer_sn=data['autostainer_sn'])
 
