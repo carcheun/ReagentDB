@@ -150,7 +150,7 @@ class PA(CommonInfoPA):
     """
     # catalog # should be primary key, otherwise PK will be a GUID
     catalog = models.TextField(primary_key=True, blank=False)
-    alias = models.TextField(unique=True)
+    alias = models.TextField(blank=False)
 
     def is_older(self, date):
         """Returns True if object is older provided given date

@@ -209,7 +209,15 @@ class ReagentViewSet(viewsets.ModelViewSet):
             return Response(deltaSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if data['operation'] == 'CREATE':
-            pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'])
+            if data['r_type'] == 'P':
+                pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'], \
+                    defaults={'alias' : data['reag_name'], 'is_factory' : data['factory']})
+            else:
+                # detection type .. set the PA description as 'DETETCTION_SYSTEM'
+                pa, created_pa = PA.objects.get_or_create(catalog=data['catalog'], \
+                    defaults={'alias' : data['reag_name'], 'is_factory' : data['factory'], \
+                    'description' : 'DETECTION_SYSTEM'})
+
             autostainer, created_autostainer = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=data['autostainer_sn'])
                 
@@ -276,12 +284,14 @@ class ReagentViewSet(viewsets.ModelViewSet):
         data = JSONParser().parse(request)
         for d in data:
             logger.debug(d)
-            pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
-            # TODO: add PA delta
-            if created_pa:
-                # TODO: PA probably doesnt come with alias info, so call the alias the
-                # catalog?
-                logger.warning('%s does not exists, setting PA to None', d['catalog'])
+            if d['r_type'] == 'P':
+                pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'], \
+                    defaults={'alias' : d['reag_name'], 'is_factory' : d['factory']})
+            else:
+                # detection type .. set the PA description as 'DETETCTION_SYSTEM'
+                pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'], \
+                    defaults={'alias' : d['reag_name'], 'is_factory' : d['factory'], \
+                    'description' : 'DETECTION_SYSTEM'})
             autostainer, created = AutoStainerStation.objects\
                 .get_or_create(autostainer_sn=d['autostainer_sn'])
             d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
@@ -311,75 +321,6 @@ class ReagentViewSet(viewsets.ModelViewSet):
                 continue
         serializer = ReagentSerializer(ret, many=True)
         return Response(status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['post'])
-    def initial_sync(self, request):
-        """Initial sync request. 
-        
-        Client sends their database to server and server determines if any
-        reagents's need to be updated or created. Reagents are NEVER deleted.
-
-        Args:
-            request: empty array, or array containing client database
-        
-        Returns:
-            array containing reagents's for client to update or create
-        """
-        data = JSONParser().parse(request)
-        missing = self.queryset.all()
-        ret = list()
-        for d in data:
-            logger.debug(d)
-            pa, created_pa = PA.objects.get_or_create(catalog=d['catalog'])
-            if created_pa:
-                logger.warning('%s does not exists, setting PA to None', d['catalog'])
-            autostainer, created_autostainer = AutoStainerStation.objects\
-                .get_or_create(autostainer_sn=d['autostainer_sn'])
-            d['date'] = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S')
-            d['date'] = make_aware(d['date'])
-            obj, created = self.queryset.get_or_create(
-                reagent_sn=d['reagent_sn'],
-                defaults={
-                    'reag_name': d['reag_name'], 
-                    'catalog': pa,
-                    'size': d['size'],
-                    'log': d['log'],
-                    'vol': d['vol'], 
-                    'vol_cur': d['vol_cur'], 
-                    'sequence': d.pop('sequence', 0),
-                    'mfg_date': d.pop('mfg_date', date.today()),
-                    'exp_date': d.pop('exp_date', date.today()),
-                    'factory': d['factory'],
-                    'r_type': d['r_type'],
-                    'autostainer_sn': autostainer,
-                    'date': d['date']
-                }
-            )
-            if not created:
-                # reagent already exists, remove from queryset
-                missing = missing.exclude(reagent_sn=obj.reagent_sn)
-                if obj.vol_cur < d['vol_cur'] or obj.catalog is None:
-                    # database will update entry if it's older
-                    obj.reag_name = d['reag_name']
-                    obj.catalog = pa
-                    obj.size = d['size']
-                    obj.log = d['log']
-                    obj.vol = d['vol']
-                    obj.vol_cur = d['vol_cur']
-                    obj.sequence = d.pop('sequence', 0)
-                    obj.mfg_date = d.pop('mfg_date', date.today())
-                    obj.exp_date = d.pop('exp_date', date.today())
-                    obj.factory = d['factory']
-                    obj.r_type = d['r_type']
-                    obj.autostainer_sn = autostainer
-                    obj.date = d['date']
-                    obj.save()
-                else:
-                    # database will send the newer entry back to client
-                    ret.append(obj)
-        ret += list(missing)
-        serializer = ReagentSerializer(ret, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['put'], url_path='decrease-volume')
     def decrease_volume(self, request, pk=None):
