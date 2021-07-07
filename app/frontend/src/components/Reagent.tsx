@@ -38,7 +38,6 @@ export default function Reagent(props: any) {
     const classes = RDBChartStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [selected, setSelected] = React.useState<string[]>([]);
-    const [selectedSN, setSelectedSN] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [loading, setLoading] = React.useState(true);
@@ -68,43 +67,31 @@ export default function Reagent(props: any) {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelecteds = ReagentList.map((n) => n.reag_name);
-            const newSNSelecteds = ReagentList.map((n) => n.reagent_sn);
+            const newSelecteds = ReagentList.map((n) => n.reagent_sn);
             setSelected(newSelecteds);
-            setSelectedSN(newSNSelecteds);
             return;
         }
         setSelected([]);
-        setSelectedSN([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: string, sn: string) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event: React.MouseEvent<unknown>, sn: string) => {
+        const selectedIndex = selected.indexOf(sn);
         let newSelected: string[] = [];
-        let newSNSelected: string[] = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-            newSNSelected = newSNSelected.concat(selectedSN, sn);
+            newSelected = newSelected.concat(selected, sn);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
-            newSNSelected = newSNSelected.concat(selectedSN.slice(1));
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
-            newSNSelected = newSNSelected.concat(selectedSN.slice(0, -1));
         } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
+            newSelected = selected.concat(
                 selected.slice(0, selectedIndex),
                 selected.slice(selectedIndex + 1),
-            );
-            newSNSelected = newSNSelected.concat(
-                selectedSN.slice(0, selectedIndex),
-                selectedSN.slice(selectedIndex + 1),
             );
         }
 
         setSelected(newSelected);
-        setSelectedSN(newSNSelected);
     };
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -124,7 +111,8 @@ export default function Reagent(props: any) {
             <Paper className={classes.paper}>
                 <TableToolBar 
                     numSelected={selected.length} 
-                    setOpen={setShowDeleteDialog} />
+                    setOpen={setShowDeleteDialog}
+                    toolTitle={"Reagent"} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -150,17 +138,17 @@ export default function Reagent(props: any) {
                                 : stableSort(ReagentList, getComparator(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row, index) => {
-                                        const isItemSelected = isSelected(row.reag_name);
+                                        const isItemSelected = isSelected(row.reagent_sn);
                                         const labelId = `enhanced-table-checkbox-${index}`;
 
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={(event) => handleClick(event, row.reag_name, row.reagent_sn)}
+                                                onClick={(event) => handleClick(event, row.reagent_sn)}
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
-                                                key={row.reag_name}
+                                                key={row.reagent_sn}
                                                 selected={isItemSelected}
                                             >
                                                 <TableCell padding="checkbox">
@@ -202,7 +190,7 @@ export default function Reagent(props: any) {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            <DeleteDialog serialNos={selectedSN} open={showDeleteDialog} setOpen={setShowDeleteDialog} dataType={"reagent"}/>
+            <DeleteDialog serialNos={selected} open={showDeleteDialog} setOpen={setShowDeleteDialog} dataType={"reagent"}/>
         </div>
     );
 }

@@ -11,12 +11,13 @@ import { useToolbarStyles} from './Styles';
 interface TableToolbarProps {
     numSelected: number;
     setOpen: any;
+    toolTitle: string;
 }
 
 export default function TableToolBar(props: TableToolbarProps) {
     // TODO: tool bar only says REAGENTS right now, change it to reflect a variable
     const classes = useToolbarStyles();
-    const { numSelected, setOpen } = props;
+    const { numSelected, setOpen, toolTitle } = props;
 
     const handleDelete = () => {
         setOpen(true);
@@ -34,7 +35,7 @@ export default function TableToolBar(props: TableToolbarProps) {
                 </Typography>
             ) : (
                 <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    Reagents
+                    {toolTitle}
                 </Typography>
             )}
             {numSelected > 0 ? (

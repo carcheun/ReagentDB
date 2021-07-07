@@ -114,7 +114,7 @@ export default function PA() {
     const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
 
     React.useEffect(() => {
-        axios.get<PAProps[]>('api/pa/')
+        axios.get<PAProps[]>('api/pa/valid_pa/')
         .then((res) => {
             const serverPA = res.data.map((obj, index)=> ({...obj, id: index}));
             setPAList(serverPA);
@@ -178,7 +178,8 @@ export default function PA() {
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <TableToolBar numSelected={selected.length} 
-                    setOpen={setShowDeleteDialog} />
+                    setOpen={setShowDeleteDialog}
+                    toolTitle={"PA"} />
                 <TableContainer>
                     <Table
                         className={classes.table}
