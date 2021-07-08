@@ -79,7 +79,7 @@ function ReagentTableHead(props: PATableProps) {
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'right'}
+                        align={headCell.id === 'alias' ? 'left' : 'right'}
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false }
                         >
@@ -140,7 +140,7 @@ export default function PA() {
             return;
         }
         setSelected([]);
-    }
+    };
 
     const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
         const selectedIndex = selected.indexOf(name);
@@ -179,7 +179,8 @@ export default function PA() {
             <Paper className={classes.paper}>
                 <TableToolBar numSelected={selected.length} 
                     setOpen={setShowDeleteDialog}
-                    toolTitle={"PA"} />
+                    toolTitle={"PA"} 
+                    setClear={setSelected} />
                 <TableContainer>
                     <Table
                         className={classes.table}

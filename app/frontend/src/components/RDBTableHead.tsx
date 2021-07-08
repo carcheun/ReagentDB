@@ -5,6 +5,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { Order } from './HelperFunctions';
@@ -77,7 +79,7 @@ export default function RDBTableHead(props: ReagentTableProps) {
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'right'}
+                        align={headCell.id === 'reag_name' ? 'left' : 'right'}
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false }
                         >
@@ -95,6 +97,9 @@ export default function RDBTableHead(props: ReagentTableProps) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                <TableCell padding="checkbox">
+
+                </TableCell>
             </TableRow>
         </TableHead>
     );

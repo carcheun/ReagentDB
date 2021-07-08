@@ -9,6 +9,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import EditIcon from '@material-ui/icons/Edit';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import ErrorIcon from '@material-ui/icons/Error';
+import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { RDBChartStyles } from './Styles';
 import DeleteDialog from './DeletePopup';
@@ -32,6 +37,48 @@ interface ReagentProps {
     factory: boolean;
     autostainer_sn: number;
     in_use: boolean;
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            height: 7,
+            borderRadius: 3,
+        },
+        colorPrimary: {
+            backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+        },
+        barGreen: {
+            borderRadius: 3,
+            backgroundColor: '#4CAF50',
+        },
+        barYellow: {
+            borderRadius: 3,
+            backgroundColor: '#FFEB3B',
+        },
+        barRed: {
+            borderRadius: 3,
+            backgroundColor: '#d32f2f',
+        },
+    }),
+);
+
+const BorderLinearProgress = (props: any) => {
+    const classes = useStyles();
+    const { percentage } = props;
+    if (percentage > 60) {
+        return (
+            <LinearProgress variant="determinate" classes={{root: classes.root, colorPrimary: classes.colorPrimary, bar: classes.barGreen}} value={percentage}></LinearProgress>
+        );
+    } else if (percentage > 30) {
+        return (
+            <LinearProgress variant="determinate" classes={{root: classes.root, colorPrimary: classes.colorPrimary, bar: classes.barYellow}} value={percentage}></LinearProgress>
+        );
+    } else {
+        return (
+            <LinearProgress variant="determinate" classes={{root: classes.root, colorPrimary: classes.colorPrimary, bar: classes.barRed}} value={percentage}></LinearProgress>
+        );
+    }
 }
 
 export default function Reagent(props: any) {
@@ -78,6 +125,8 @@ export default function Reagent(props: any) {
         const selectedIndex = selected.indexOf(sn);
         let newSelected: string[] = [];
 
+        console.log(selectedIndex);
+
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, sn);
         } else if (selectedIndex === 0) {
@@ -85,7 +134,7 @@ export default function Reagent(props: any) {
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
-            newSelected = selected.concat(
+            newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
                 selected.slice(selectedIndex + 1),
             );
@@ -105,6 +154,7 @@ export default function Reagent(props: any) {
 
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, ReagentList.length - page * rowsPerPage);
+    const todayDate = new Date();
 
     return (
         <div className={classes.root}>
@@ -112,7 +162,8 @@ export default function Reagent(props: any) {
                 <TableToolBar 
                     numSelected={selected.length} 
                     setOpen={setShowDeleteDialog}
-                    toolTitle={"Reagent"} />
+                    toolTitle={"Reagent"}
+                    setClear={setSelected} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -140,6 +191,10 @@ export default function Reagent(props: any) {
                                     .map((row, index) => {
                                         const isItemSelected = isSelected(row.reagent_sn);
                                         const labelId = `enhanced-table-checkbox-${index}`;
+                                        let isExpired = false;
+                                        if (todayDate > new Date(row.exp_date)) {
+                                            isExpired = true;
+                                        }
 
                                         return (
                                             <TableRow
@@ -162,12 +217,25 @@ export default function Reagent(props: any) {
                                                 </TableCell>
                                                 <TableCell align="right">{row.reagent_sn}</TableCell>
                                                 <TableCell align="right">{row.catalog}</TableCell>
-                                                <TableCell align="right">{row.vol_cur} / {row.vol}</TableCell>
+                                                <TableCell align="right">
+                                                    {row.vol_cur} / {row.vol}
+                                                    <br />
+                                                    <BorderLinearProgress percentage={(row.vol_cur / row.vol) * 100}/>    
+                                                </TableCell>
                                                 <TableCell align="right">{row.r_type}</TableCell>
                                                 <TableCell align="right">{row.log}</TableCell>
                                                 <TableCell align="right">{row.mfg_date}</TableCell>
-                                                <TableCell align="right">{row.exp_date}</TableCell>
+                                                <TableCell align="right">
+                                                    {isExpired ? 
+                                                    <Tooltip title="Expired" aria-label="expired">
+                                                        <ErrorIcon fontSize="small" style={{ color: "#d32f2f"}}/> 
+                                                    </Tooltip> :
+                                                        <></> }{row.exp_date}
+                                                </TableCell>
                                                 <TableCell align="right">{row.factory ? <>yes</> : <>no</>}</TableCell>
+                                                <TableCell>
+                                                    <EditIcon></EditIcon>
+                                                </TableCell>
                                             </TableRow>
                                         );
                                         {emptyRows > 0 && (

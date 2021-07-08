@@ -114,7 +114,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-
 const RDBChartStyles = makeStyles((theme: Theme) => 
     createStyles({
         root: {

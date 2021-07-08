@@ -24,7 +24,7 @@ export default function DeleteDialog(props: DeleteData) {
 
     const handleDelete = () => {
         for (var serialNo of serialNos) {
-            let reqHtml = 'api/' + dataType + '/' + serialNo;
+            let reqHtml = 'api/' + dataType + '/' + serialNo + '/';
             axios.delete(reqHtml).then((res) => {
                 console.log(serialNo + ' deleted!');
             })
